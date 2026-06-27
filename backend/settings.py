@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -117,3 +118,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+#on importe le module systeme de python pour manipuler les dossiers de mon pc
+#on definit l'addresse URL visible dans le naviguateur pour acceder aux fichiers
+MEDIA_URL ='/media/'
+#on cree le chemin absolu sur mon pc pour stocker physiquement
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

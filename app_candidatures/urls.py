@@ -2,6 +2,8 @@ from django.urls import path,include# On importe les outils pour gérer les chem
 from rest_framework.routers import DefaultRouter#On importe le routeur automatique de Django REST Framework
 #On importe ton contrôleur (la vue) créé à l'étape précédente
 from .views import CandidatureViewSet
+from django.conf import settings
+from django.conf.urls.static import static
 # On crée un routeur automatique
 router = DefaultRouter()
 #On enregistre ton contrôleur sur le mot-clé 'candidatures'
@@ -11,3 +13,6 @@ router.register(r'candidatures',CandidatureViewSet, basename='candidature')
 urlpatterns = [
     path('', include(router.urls)),
 ]
+# On ajoute ce bloc pour autoriser Django à afficher les fichiers stockés dans le dossier 'media'
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,document_root= settings.MEDIA_ROOT)
