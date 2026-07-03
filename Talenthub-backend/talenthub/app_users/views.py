@@ -3,59 +3,31 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
 from .models import Profil
-from .serializers import ProfilSerializer
+from .serializers import ProfilSerializer, InscriptionSerializer
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
+from .models import Profil
+from .serializers import ProfilSerializer, InscriptionSerializer
 
-# ============================================================
-# 1. ViewSet pour l'inscription (Création d'un User + Profil)
-# ============================================================
 class InscriptionViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet pour gérer l'inscription.
-    - GET /api/inscription/ -> Liste tous les profils (visible par tout le monde en développement)
-    - POST /api/inscription/ -> Crée un nouvel utilisateur et son profil
-    """
     queryset = Profil.objects.all()
-    serializer_class = ProfilSerializer
     permission_classes = [permissions.AllowAny]
 
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return InscriptionSerializer 
+        return ProfilSerializer  
+
     def create(self, request, *args, **kwargs):
-        data = request.data
-        
-        # 1. Validation des champs obligatoires
-        if not data.get('username') or not data.get('email') or not data.get('password'):
-            return Response(
-                {"error": "Les champs username, email et password sont obligatoires"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # On utilise InscriptionSerializer pour valider et créer
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        profil = serializer.save()
 
-        # 2. Création de l'utilisateur Django
-        user = User.objects.create_user(
-            username=data['username'],
-            email=data['email'],
-            password=data['password']
-        )
-
-        # 3. Création du profil associé
-        profil = Profil.objects.create(
-            user=user,
-            role=data.get('role', 'candidat'),
-            telephone=data.get('telephone', ''),
-            numCni=data.get('numCni', ''),
-            dateNaissance=data.get('dateNaissance', None),
-            lieuNaissance=data.get('lieuNaissance', ''),
-            sexe=data.get('sexe', ''),
-            niveauEtude=data.get('niveauEtude', ''),
-            nationalite=data.get('nationalite', ''),
-            specialite=data.get('specialite', ''),
-            statut=data.get('statut', 'Actif')
-        )
-
-        return Response(ProfilSerializer(profil).data, status=status.HTTP_201_CREATED)
-
-
-# ============================================================
-# 2. ViewSet pour le profil de l'utilisateur connecté
-# ============================================================
+        # On utilise ProfilSerializer pour renvoyer la réponse
+        read_serializer = ProfilSerializer(profil)
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+# ViewSet pour le profil de l'utilisateur connecté
 class MonProfilViewSet(viewsets.ModelViewSet):
     serializer_class = ProfilSerializer
     permission_classes = [permissions.IsAuthenticated]

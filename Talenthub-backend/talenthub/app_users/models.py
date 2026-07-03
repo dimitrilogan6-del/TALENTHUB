@@ -17,6 +17,8 @@ class Profil(models.Model):
         ('candidat', 'Candidat'),
         ('recruteur', 'Recruteur'),
         ('admin', 'Administrateur'),
+        ('freelance', 'Freelance')
+
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='candidat')
 
