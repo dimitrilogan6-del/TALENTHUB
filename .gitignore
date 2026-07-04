@@ -45,3 +45,6 @@ Thumbs.dbTalenthub-backend/talenthub/venv/
 Talenthub-backend/talenthub/venv/
 __pycache__/
 *.pyc
+Talenthub-backend/talenthub/venv/
+__pycache__/
+*.pyc
