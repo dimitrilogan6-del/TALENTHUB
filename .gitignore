@@ -41,4 +41,7 @@ __screenshots__/
 
 # System files
 .DS_Store
-Thumbs.db
+Thumbs.dbTalenthub-backend/talenthub/venv/
+Talenthub-backend/talenthub/venv/
+__pycache__/
+*.pyc
