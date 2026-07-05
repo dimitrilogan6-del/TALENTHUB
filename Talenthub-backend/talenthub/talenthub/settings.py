@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'TalentHub-R',
         'USER': 'postgres',
-        'PASSWORD': 'a7832140',
+        'PASSWORD': 'yesna',
         'HOST': 'localhost',
         'PORT': '5432',
     }
