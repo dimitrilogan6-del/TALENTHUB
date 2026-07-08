@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app_users',
+    'documents',
     "rest_framework",
     'rest_framework_simplejwt',
 ]
@@ -80,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'TalentHub-R',
         'USER': 'postgres',
-        'PASSWORD': 'a7832140',
+        'PASSWORD': 'Dianko123456',
         'HOST': 'localhost',
         'PORT': '5432',
     }
