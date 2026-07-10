@@ -10,5 +10,6 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls')),  # Pour l'interface de navigation DRF
     path('api/documents/', include('documents.urls')),  # Inclure les URLs de l'application documents                                                               
     path('api/offres/', include('offres.urls')),
-
+   path('api/competences/', include('Competances.urls')),
 ]
+
