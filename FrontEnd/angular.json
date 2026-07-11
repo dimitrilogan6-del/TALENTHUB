@@ -6,9 +6,19 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "TalentHub-Front": {
+    "FrontEnd": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -64,10 +74,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "TalentHub-Front:build:production"
+              "buildTarget": "FrontEnd:build:production"
             },
             "development": {
-              "buildTarget": "TalentHub-Front:build:development"
+              "buildTarget": "FrontEnd:build:development"
             }
           },
           "defaultConfiguration": "development"

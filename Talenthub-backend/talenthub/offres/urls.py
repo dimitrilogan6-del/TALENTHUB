@@ -10,3 +10,4 @@ router.register(r'offres', OffreViewSet, basename='offres')
 urlpatterns = [
     path('', include(router.urls)),
 ]
+

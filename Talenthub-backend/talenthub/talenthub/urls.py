@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/documents/', include('documents.urls')),  # Inclure les URLs de l'application documents                                                               
     path('api/offres/', include('offres.urls')),
 
+
 ]

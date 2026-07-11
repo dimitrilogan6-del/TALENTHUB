@@ -27,3 +27,5 @@ class OffreSerializer(serializers.ModelSerializer):
             'niveauRequis': c.niveauRequis,
             'estObligatoire': c.estObligatoire
         } for c in competences]
+
+

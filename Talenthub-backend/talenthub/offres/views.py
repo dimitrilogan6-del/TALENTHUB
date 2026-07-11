@@ -32,3 +32,6 @@ class OffreViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(recruteur=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+
+
