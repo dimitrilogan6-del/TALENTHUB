@@ -6,4 +6,4 @@ class Entretien(models.Model):
 
     def __str__(self):
         return f"{self.typeE} - {self.dateHeure}"
-# Create your models here.
+
