@@ -1,0 +1,108 @@
+<!-- Header / Navigation -->
+<header class="navbar">
+  <div class="logo">
+    <span class="logo-blue">Talent</span><span class="logo-green">Hub</span>
+  </div>
+  <nav class="nav-links">
+    <a href="#">Accueil</a>
+    <a href="#">Candidats</a>
+    <a href="#" class="active">Freelance</a>
+    <a href="#">Entreprises</a>
+    <a href="#">Offres</a>
+    <a href="#">À Propos</a>
+  </nav>
+  <button class="btn-login">Se connecter</button>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Travaillez en toute liberté</h1>
+    <p>Accédez à des missions de haut niveau et gérez votre activité de manière indépendante et sécurisée.</p>
+    <button class="btn-green">Inscrivez-vous maintenant</button>
+  </div>
+  <div class="hero-image">
+    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop" alt="Freelance travail">
+  </div>
+</section>
+
+<!-- Features / Avantages -->
+<section class="features">
+  <div class="feature-card">
+    <div class="feature-icon icon-green">⚖️</div>
+    <h3>Paiement Garanti</h3>
+    <p>Les fonds remis au service sont sécurisés dès le démarrage du projet.</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon icon-yellow">💡</div>
+    <h3>Missions Qualifiées</h3>
+    <p>Accès direct à des clients sérieux et vérifiés.</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-icon icon-blue">📈</div>
+    <h3>Zéro Commission Cachée</h3>
+    <p>Des prix clairs et transparents avec plus de bénéfice pour votre travail.</p>
+  </div>
+</section>
+
+<!-- Entreprises Collaboratrices (Dynamique avec @for) -->
+<section class="companies-section">
+  <h2>Nos Entreprises Collaboratrices <span>(Besoins Freelance réguliers)</span></h2>
+
+  <div class="companies-grid">
+    @for (company of companies; track company.id) {
+      <div class="company-card">
+        <div class="card-header">
+          <div>
+            <h3>{{ company.name }}</h3>
+            <p class="location">{{ company.location }}</p>
+          </div>
+          <span class="badge" [class]="company.badgeClass">{{ company.badge }}</span>
+        </div>
+        <p class="description">{{ company.description }}</p>
+        <button class="btn-card">Déposer une candidature spontanée</button>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-col brand">
+      <div class="logo">
+        <span class="logo-blue">Talent</span><span class="logo-green">Hub</span>
+      </div>
+      <p>La plateforme idéale pour connecter les experts et les meilleures opportunités du continent.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Liens utiles</h4>
+      <ul>
+        <li><a href="#">Espace Client</a></li>
+        <li><a href="#">Espace Talent</a></li>
+        <li><a href="#">Espace Recruteur</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Légal</h4>
+      <ul>
+        <li><a href="#">Mentions Légales</a></li>
+        <li><a href="#">Politique de confidentialité</a></li>
+        <li><a href="#">Conditions Générales</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>✉️ contact&#64;talenthub.com</p>
+      <p>📞 +212 600 00 00 00</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 TalentHub. Tous droits réservés.</p>
+  </div>
+</footer>
