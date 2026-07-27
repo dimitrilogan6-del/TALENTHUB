@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "FrontEnd": {
+    "TalentHub-Front": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -66,10 +66,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "FrontEnd:build:production"
+              "buildTarget": "TalentHub-Front:build:production"
             },
             "development": {
-              "buildTarget": "FrontEnd:build:development"
+              "buildTarget": "TalentHub-Front:build:development"
             }
           },
           "defaultConfiguration": "development"
