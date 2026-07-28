@@ -1,0 +1,56 @@
+<!-- SECTION RECHERCHE ET FILTRES -->
+<section class="search-section">
+  <div class="container">
+    <div class="search-bar">
+      <input type="text" 
+             placeholder="Rechercher une offre ( ex: Développeur, Architecte)" 
+             class="search-input"
+             (input)="onSearch($event)">
+    </div>
+
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label>Type de contrat</label>
+        <select class="filter-select" (change)="onFilterChange()" [(ngModel)]="selectedType">
+          <option>Tous les contrats</option>
+          <option>CDI</option>
+          <option>CDD</option>
+          <option>Stage</option>
+          <option>Freelance</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Ville</label>
+        <select class="filter-select" (change)="onFilterChange()" [(ngModel)]="selectedVille">
+          <option>Toutes les villes</option>
+          <option>Dakar</option>
+          <option>Thiès</option>
+          <option>Saint-Louis</option>
+          <option>Ziguinchor</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION OFFRES -->
+<section class="offres-section">
+  <div class="container">
+    <h2 class="section-title">Nouvelles Offres</h2>
+    
+    <div class="offres-grid">
+<div class="offre-card" *ngFor="let offre of filteredOffres">
+  <h3>{{ offre.titre }}</h3>
+  <p class="company">{{ offre.entreprise?.nom || 'Entreprise inconnue' }}</p>
+  <p class="details">{{ offre.typeOffre }} • {{ offre.dateLimite | date:'dd/MM/yyyy' }}</p>
+  <button class="btn-offre" [routerLink]="['/offres', offre.id]">Voir l'offre</button>
+</div>
+    </div>
+<div class="pagination" *ngIf="totalPages > 1">
+  <button class="page-btn" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Précédent</button>
+  <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
+  <button class="page-btn" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Suivant</button>
+</div>
+
+  </div>
+</section>
