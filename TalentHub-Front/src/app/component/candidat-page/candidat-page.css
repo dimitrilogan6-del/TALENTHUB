@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* --- POLICE GLOBALE --- */
+* { font-family: 'Inter', sans-serif; }
+body { margin: 0; padding: 0; }
+
+/* --- SECTION HERO (2 colonnes) --- */
+.hero-section {
+  background-color: #f9f9f9;
+  padding: 4rem 0;
+}
+
+.hero-grid {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.hero-text {
+  flex: 1;
+}
+
+.hero-text h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 1rem;
+}
+
+.hero-text p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-style: italic;
+  max-width: 450px;
+}
+
+.btn-hero {
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-hero:hover {
+  background: #27ae60;
+  transform: translateY(-2px);
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  content: url('../../assets/slide1.png'); 
+}
+
+/* --- SECTION PROCESSUS --- */
+.process-section {
+  background: #fcfcfc;
+  padding: 5rem 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3.5rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.process-card {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  transition: 0.3s;
+}
+
+.process-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.process-number {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background: #2ecc71;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: 50%;
+  margin-bottom: 1.2rem;
+}
+
+.process-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #000;
+}
+
+.process-card p {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* --- SECTION CANDIDATURE SPONTANÉE --- */
+.spontanee-section {
+  padding: 3rem 1.5rem;
+  background: white;
+}
+
+.spontanee-box {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.spontanee-icon {
+  font-size: 3.5rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+  background: #d4edda;
+  color: #2ecc71;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 50%;
+}
+
+.spontanee-box h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1B365D;
+}
+
+.spontanee-box p {
+  font-size: 1rem;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.6;
+}
+
+.btn-spontanee {
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn-spontanee:hover {
+  background: #27ae60;
+  transform: scale(1.02);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .hero-grid { flex-direction: column; text-align: center; }
+  .hero-text p { max-width: 100%; margin-left: auto; margin-right: auto; }
+  .process-grid { grid-template-columns: 1fr; }
+  .hero-image img { width: 100%; }
+}

@@ -1,0 +1,42 @@
+<div class="modal-container">
+  <!-- Bouton Fermer (X) en haut à droite -->
+  <button class="close-btn" (click)="closeModal()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+
+  <!-- Titre de l'offre -->
+  <h2 class="offre-title">{{ data.titre }}</h2>
+  <p class="offre-entreprise">Entreprise : {{ data.entreprise }}</p>
+
+  <hr class="divider">
+
+  <!-- Section Importer CV -->
+  <div class="upload-section">
+    <label class="upload-label">Importer votre CV (PDF)</label>
+    <div class="upload-area">
+      <input type="file" accept=".pdf" (change)="onFileSelected($event)" #fileInput hidden>
+      <button class="btn-choose-file" (click)="fileInput.click()">Choisir un fichier</button>
+      <span class="file-name">{{ selectedFileName || 'Aucun fichier n\'a été sélectionné' }}</span>
+    </div>
+  </div>
+
+  <!-- Section Lettre de motivation -->
+  <div class="motivation-section">
+    <label class="motivation-label">Lettre de motivation courte</label>
+    <textarea class="motivation-input" placeholder="Pourquoi vous ?" [(ngModel)]="lettreMotivation"></textarea>
+  </div>
+
+  <!-- Bouton Envoyer -->
+  <div class="actions">
+    <button class="btn-submit" (click)="submitCandidature()">Envoyer ma candidature</button>
+  </div>
+
+  <!-- Message d'erreur si non connecté -->
+<div *ngIf="errorMessage" class="error-box">
+  <p class="error-text">{{ errorMessage }}</p>
+  <button class="btn-login-redirect" (click)="goToLogin()">Se connecter</button>
+</div>
+</div>
