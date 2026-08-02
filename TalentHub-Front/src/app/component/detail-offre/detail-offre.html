@@ -1,0 +1,39 @@
+<section class="detail-section">
+  <div class="container">
+    
+    <!-- BANDEAU DES INFORMATIONS (Titre, date, limite, type) -->
+    <div class="info-band">
+      <div class="info-item">
+        <span class="label">Titre du poste:</span>
+        <span class="value">{{ offre.titre }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Date de publication:</span>
+        <span class="value">{{ offre.datePublication }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Date limite:</span>
+        <span class="value">{{ offre.dateLimite }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Type d'offre:</span>
+        <span class="value">{{ offre.typeOffre }}</span>
+      </div>
+    </div>
+
+    <!-- CONTENU PRINCIPAL (Description) -->
+    <div class="content-area">
+      <h3 class="section-subtitle">Description:</h3>
+      <div class="description-text">
+        <p>{{ offre.description }}</p>
+      </div>
+    </div>
+
+    <!-- BOUTONS D'ACTION -->
+    <div class="action-buttons">
+      <button class="btn-back" (click)="goBack()">← Retour aux offres</button>
+    <button class="btn-postuler" (click)="openPostulerModal()">Postuler</button>
+    </div>
+
+  </div>
+</section>

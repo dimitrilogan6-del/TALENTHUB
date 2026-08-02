@@ -12,6 +12,7 @@ import { Header } from './component/header/header';
 import { Footer } from './component/footer/footer';
 import { InscriptionComponent } from './component/inscription/inscription';
 import { SuccessInscriptionModalComponent } from './component/success-inscription-modal/success-inscription-modal';
+import { DetailOffreComponent } from './component/detail-offre/detail-offre';
 @NgModule({
   declarations: [
     App,
@@ -22,6 +23,7 @@ import { SuccessInscriptionModalComponent } from './component/success-inscriptio
     Footer,
     InscriptionComponent,
     SuccessInscriptionModalComponent,
+    DetailOffreComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, HttpClientModule],
   providers: [],
