@@ -26,7 +26,7 @@ class InscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profil
         fields = [
-            'username', 'email', 'password', 'first_name', 'last_name',
+            'email', 'username', 'first_name', 'last_name', 'password', 
             'role', 'telephone', 'numCni', 'dateNaissance', 'lieuNaissance', 'sexe',
             'niveauEtude', 'nationalite', 'specialite', 'statut', 'dernierDiplome', 
             'dateObtentionDiplome', 'numPassport', 'dateEmbauche'
