@@ -1,0 +1,72 @@
+.inscription-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 3rem;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+
+.header { text-align: center; margin-bottom: 2rem; }
+.logo { font-size: 1.5rem; font-weight: 700; color: #0A1E42; margin-bottom: 0.5rem; }
+.logo span { color: #2EBD6B; }
+h1 { font-size: 2rem; font-weight: 700; color: #0A1E42; margin-bottom: 0.5rem; }
+.subtitle { color: #666; font-size: 1.1rem; }
+
+.stepper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+.step { display: flex; align-items: center; }
+.circle {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #e0e0e0; color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+.step.active .circle { background: #2EBD6B; }
+.line { width: 30px; height: 2px; background: #e0e0e0; margin: 0 10px; }
+
+.step-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0A1E42;
+  margin-bottom: 1.5rem;
+}
+
+.form-group { margin-bottom: 1.2rem; width: 100%; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 0.3rem; color: #0A1E42; }
+.form-group input, .form-group select {
+  width: 100%; padding: 0.8rem 1rem;
+  border: 1px solid #e0e0e0; border-radius: 8px;
+  font-size: 1rem; outline: none;
+}
+.form-group input:focus { border-color: #2EBD6B; }
+
+.form-row { display: flex; gap: 1.5rem; }
+.half { flex: 1; }
+
+.error { color: #dc2626; font-size: 0.85rem; margin-top: 0.3rem; }
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+.btn-back {
+  background: #e5e7eb; color: #333; border: none; padding: 0.8rem 2.5rem;
+  border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.btn-next {
+  background: #0A1E42; color: white; border: none; padding: 0.8rem 2.5rem;
+  border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.btn-next:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.login-link { text-align: center; margin-top: 2rem; color: #0A1E42; }
+.login-link a { color: #2EBD6B; text-decoration: none; font-weight: 600; }
+
+@media (max-width: 600px) { .form-row { flex-direction: column; } }
