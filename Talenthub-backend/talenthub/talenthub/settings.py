@@ -41,15 +41,15 @@ INSTALLED_APPS = [
     'documents',
     "rest_framework",
     'rest_framework_simplejwt',
-    'corsheaders',
     "offres",
     'Competances',
     'app_candidatures',
     'entretien',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -83,15 +83,12 @@ WSGI_APPLICATION = 'talenthub.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "TalentHub-R",
-        "USER": "postgres",
-        "PASSWORD": "a7832140",
-        "HOST": "localhost",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 
@@ -136,9 +133,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+
 }
 
 CORS_ALLOWED_ORIGINS = [
-     # <-- Autorise Angular
-    "http://localhost:4200", 
+    "http://localhost:4200",
+   
 ]
