@@ -28,11 +28,11 @@ INSTALLED_APPS = [
     'documents',
     "rest_framework",
     'rest_framework_simplejwt',
-    'corsheaders',
     "offres",
     'Competances',
     'app_candidatures',
     'entretien',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -70,15 +70,13 @@ WSGI_APPLICATION = 'talenthub.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get('DB_NAME', 'TalentHub-R'),
-        "USER": os.environ.get('DB_USER', 'postgres'),
-        "PASSWORD": os.environ.get('DB_PASSWORD', ''),
-        "HOST": os.environ.get('DB_HOST', 'localhost'),
-        "PORT": os.environ.get('DB_PORT', '5432'),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
 
 
 # Password validation
@@ -126,10 +124,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+
 }
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "https://talenthub-front.vercel.app",  # <-- AJOUTEZ CECI POUR VERCEL
-    "https://talenthub-front.vercel.app",
+   
 ]
