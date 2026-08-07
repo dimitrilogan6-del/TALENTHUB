@@ -1,0 +1,75 @@
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+
+
+/* --- HERO SECTION --- */
+.main-header {
+  background: #ffffff;
+  padding: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+}
+
+/* Lorsque le lien est actif (page en cours) */
+.active-link {
+  color: #2EBD6B !important;   /* Vert de votre marque */
+  font-weight: 700;
+  border-bottom: 2px solid #2EBD6B;
+  padding-bottom: 4px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.logo-blue { color: #1B365D; }
+.logo-green { color: #2ecc71; }
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+
+.main-nav a:hover, .main-nav a.active {
+  color: #2ecc71;
+}
+
+.btn-login {
+  background: #1B365D;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-login:hover {
+  background: #2ecc71;
+}
