@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { font-family: 'Inter', sans-serif; }
+
+.login-page {
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 650px;
+  background: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* --- Colonne Gauche (Image) --- */
+.login-image {
+  flex: 1;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  content: url('../../assets/connexion.png');
+}
+
+/* --- Colonne Droite (Formulaire) --- */
+.login-form {
+  flex: 1;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Logo */
+.login-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+.logo-blue { color: #0A1E42; }
+.logo-green { color: #2EBD6B; }
+
+.form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0A1E42;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+/* Champs de formulaire */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #0A1E42;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: #f3f4f6;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: 0.3s;
+  outline: none;
+}
+
+.form-control:focus {
+  background: white;
+  border-color: #2EBD6B;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Options */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0A1E42;
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: #2EBD6B;
+  text-decoration: none;
+}
+
+.btn-submit {
+  width: 100%;
+  background: #2EBD6B;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-submit:hover {
+  background: #1a9c54;
+}
+
+/* Boutons sociaux */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.btn-social {
+  width: 100%;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 0.7rem;
+  font-weight: 500;
+  color: #0A1E42;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: 0.3s;
+}
+
+.btn-social:hover {
+  background: #f9f9f9;
+  border-color: #2EBD6B;
+}
+
+.google-icon { font-weight: 700; color: #EA4335; }
+.linkedin-icon { font-weight: 700; color: #0077B5; }
+
+.signup-link {
+  text-align: center;
+  margin-top: 2rem;
+  color: #0A1E42;
+}
+
+.signup-link-green {
+  color: #2EBD6B;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    max-width: 400px;
+    border-radius: 0;
+  }
+  .login-image {
+    height: 200px;
+    padding: 0;
+  }
+  .login-image img {
+    border-radius: 0;
+  }
+  .login-form {
+    padding: 2rem;
+  }
+}

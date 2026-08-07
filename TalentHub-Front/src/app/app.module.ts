@@ -13,6 +13,8 @@ import { Footer } from './component/footer/footer';
 import { InscriptionComponent } from './component/inscription/inscription';
 import { SuccessInscriptionModalComponent } from './component/success-inscription-modal/success-inscription-modal';
 import { DetailOffreComponent } from './component/detail-offre/detail-offre';
+import { APropos } from './component/a-propos/a-propos';
+import { ConnexionComponent } from './component/connexion/connexion';
 @NgModule({
   declarations: [
     App,
@@ -24,6 +26,8 @@ import { DetailOffreComponent } from './component/detail-offre/detail-offre';
     InscriptionComponent,
     SuccessInscriptionModalComponent,
     DetailOffreComponent,
+    APropos,
+    ConnexionComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, HttpClientModule],
   providers: [],
