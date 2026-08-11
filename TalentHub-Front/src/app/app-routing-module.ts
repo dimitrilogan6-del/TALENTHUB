@@ -9,19 +9,22 @@ import { Accueil } from './component/accueil/accueil';
 import { InscriptionComponent } from './component/inscription/inscription';
 import { DetailOffreComponent } from './component/detail-offre/detail-offre';
 import { APropos } from './component/a-propos/a-propos';
-import { ConnexionComponent } from './component/connexion/connexion';
+import { ConnexionComponent} from './component/connexion/connexion';
+import { Entreprise } from './component/entreprise/entreprise';
+import { Freelances } from './component/freelances/freelances';
 const routes: Routes =[
   { path: '', redirectTo: '/accueil',pathMatch: 'full' },
   { path: 'accueil', component: Accueil },
   { path: 'candidat', component: CandidatPage },
   { path: 'offre', component: OffreList },
-    { path: 'offres/:id', component: DetailOffreComponent },
+    { path: 'offre/:id', component: DetailOffreComponent },
   { path: 'candidature', component: CandidatureModal },
   { path: 'inscription', component: InscriptionComponent },
   {path: 'a-propos', component: APropos},
-  {path: 'connexion', component: ConnexionComponent}
-
-]
+  {path: 'connexion', component: ConnexionComponent},
+  {path: 'entreprise', component: Entreprise},
+  { path: 'freelances', component: Freelances }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

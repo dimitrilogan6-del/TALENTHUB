@@ -1,0 +1,335 @@
+/* =========================
+   PAGE FREELANCES
+========================= */
+
+:host {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #172033;
+  background: #ffffff;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  min-height: 430px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 70px 8%;
+  background: linear-gradient(135deg, #f5f9ff, #ffffff);
+  box-sizing: border-box;
+}
+
+.hero-content {
+  width: 48%;
+}
+
+.hero-content h1 {
+  margin: 0 0 20px;
+  font-size: 42px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #172033;
+}
+
+.hero-content p {
+  max-width: 500px;
+  margin-bottom: 30px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #667085;
+}
+
+.btn-primary {
+  border: none;
+  padding: 14px 25px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.hero-visual {
+  width: 45%;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-visual img {
+  width: 100%;
+  max-width: 500px;
+  height: 330px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================
+   FREELANCES / AVANTAGES
+========================= */
+
+.freelances {
+  padding: 65px 8%;
+  background: #ffffff;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 45px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #172033;
+}
+
+.cards-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 35px;
+}
+
+.card {
+  text-align: center;
+  padding: 25px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.icon-circle {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 25px;
+}
+
+.icon-green {
+  background: #e5f8ed;
+}
+
+.icon-orange {
+  background: #fff2df;
+}
+
+.icon-blue {
+  background: #e8f0ff;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  color: #172033;
+}
+
+.card p {
+  margin: 0 auto;
+  max-width: 260px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #7a8496;
+}
+
+
+/* =========================
+   ENTREPRISES
+========================= */
+
+.companies {
+  padding: 70px 8%;
+  background: #f8fafc;
+}
+
+.companies h2 {
+  max-width: 750px;
+  margin: 0 auto 45px;
+  text-align: center;
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: #172033;
+}
+
+.companies h2 span {
+  font-weight: 600;
+}
+
+.companies-grid {
+  max-width: 1050px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.company-card {
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e7eaf0;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+  transition: 0.3s;
+}
+
+.company-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.company-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.company-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #172033;
+}
+
+.badge {
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-fintech {
+  background: #e7f8ee;
+  color: #16834a;
+}
+
+.badge-telecom {
+  background: #e9f0ff;
+  color: #2563eb;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0;
+  font-size: 12px;
+  color: #7a8496;
+}
+
+.pin-icon {
+  flex-shrink: 0;
+}
+
+.description {
+  min-height: 55px;
+  margin: 15px 0 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #667085;
+}
+
+.btn-outline {
+  width: 100%;
+  padding: 11px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-outline:hover {
+  background: #1d4ed8;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 50px 6%;
+  }
+
+  .hero-content,
+  .hero-visual {
+    width: 100%;
+  }
+
+  .hero-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-visual img {
+    height: 280px;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .companies-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .hero-content h1 {
+    font-size: 30px;
+  }
+
+  .hero-content p {
+    font-size: 15px;
+  }
+
+  .hero {
+    padding: 40px 5%;
+  }
+
+  .freelances,
+  .companies {
+    padding: 45px 5%;
+  }
+
+  .section-title,
+  .companies h2 {
+    font-size: 23px;
+  }
+
+  .company-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
