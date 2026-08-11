@@ -1,0 +1,176 @@
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+}
+
+/* HERO */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 60px 8%;
+  background: linear-gradient(100deg, rgba(8,23,54,0.95) 20%, rgba(8,23,54,0.55) 55%, rgba(8,23,54,0.2) 100%);
+  color: #fff;
+}
+.hero-content h1 {
+  color: #fff;
+}
+
+.hero-content p {
+  color: #d1d5db;
+}
+
+.checklist {
+  padding: 20px 8%;
+  list-style: none;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.checklist li {
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.btn-primary {
+  background: #22c55e;
+}
+
+.btn-primary:hover {
+  background: #16a34a;
+}
+
+.checklist li {
+  color: #fff;
+}
+
+.btn-primary {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+.btn-primary:hover {
+  background: #16296b;
+}
+
+.checklist {
+  list-style: none;
+  padding: 0;
+}
+
+.checklist li {
+  margin-bottom: 8px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.hero-visual img {
+  max-width: 320px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* COMPANIES SECTION */
+.companies {
+  padding: 60px 8%;
+  text-align: center;
+}
+
+.companies h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #0a1f44;
+}
+
+.companies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.company-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.company-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.company-header h3 {
+  font-size: 1.1rem;
+  color: #0a1f44;
+}
+ .badge-telecom {
+  background: #eaf2ff;
+  color: #1d4ed8;
+}
+
+.badge-fintech {
+  background: #fef9c3;
+  color: #92400e;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.btn-outline {
+  width: 100%;
+  background: #fff;
+  color: #1e3a8a;
+  border: 1px solid #1e3a8a;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: #1e3a8a;
+  color: #fff;
+}
+.pin-icon {
+  color: #ef4444;
+  flex-shrink: 0;
+}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-visual img {
+    max-width: 100%;
+  }
+}

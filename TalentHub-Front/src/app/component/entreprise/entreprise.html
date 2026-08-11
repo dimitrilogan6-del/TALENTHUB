@@ -1,0 +1,40 @@
+<section class="hero">
+  <div class="hero-content">
+    <h1>Recrutez les meilleurs talents locaux</h1>
+    <p>Qu’il s’agisse d’un besoin en CDI ou d’un renfort freelance sur un projet technique, accédez instantanément à notre vivier qualifié.</p>
+    <button class="btn-primary">Recruter Maintenant</button>
+  </div>
+
+  <div class="hero-visual">
+    <img src="/assets/image.hero-bg.jpg" >
+  </div>
+</section>
+
+<ul class="checklist">
+  <li>✔ Profils vérifiés individuellement</li>
+  <li>✔ Publication d'offres simplifiée</li>
+  <li>✔ Suivi des candidatures en temps réel</li>
+</ul>
+<section class="companies">
+  <h2>Nos Entreprises Collaboratrices</h2>
+
+  <div class="companies-grid">
+    <div class="company-card" *ngFor="let entreprise of entreprises">
+      <div class="company-header">
+        <h3>{{ entreprise.nom }}</h3>
+        <span class="badge" [ngClass]="entreprise.secteur === 'Fintech' ? 'badge-fintech' : 'badge-telecom'">
+          {{ entreprise.secteur }}
+        </span>
+      </div>
+      <p class="location">
+        <svg class="pin-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-7.58 8-13a8 8 0 1 0-16 0c0 5.42 8 13 8 13z"></path>
+          <circle cx="12" cy="9" r="2.5"></circle>
+        </svg>
+        {{ entreprise.localisation }}
+      </p>
+      <p class="description">{{ entreprise.description }}</p>
+      <button class="btn-outline">Déposer une candidature spontanée</button>
+    </div>
+  </div>
+</section>
