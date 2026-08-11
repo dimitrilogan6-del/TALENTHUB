@@ -1,0 +1,133 @@
+<section class="hero">
+  <div class="hero-content">
+    <h1>Travaillez en toute liberté</h1>
+
+    <p>
+      Accédez à des missions de haut niveau et gérez votre activité
+      de manière indépendante et sécurisée.
+    </p>
+
+    <button class="btn-primary">
+      Inscrivez-vous maintenant
+    </button>
+  </div>
+
+  <div class="hero-visual">
+    <img src="assets/image.hero-bg.jpg" alt="Freelance">
+  </div>
+</section>
+
+
+<section class="freelances">
+  <div class="section-title">
+    Freelances réguliers
+  </div>
+
+  <div class="cards-container">
+
+    <div class="card">
+      <div class="icon-circle icon-green">⚖️</div>
+
+      <h3>Paiement Garanti</h3>
+
+      <p>
+        Les fonds de vos missions sont sécurisés dès le démarrage du projet.
+      </p>
+    </div>
+
+
+    <div class="card">
+      <div class="icon-circle icon-orange">🤝</div>
+
+      <h3>Missions Qualifiées</h3>
+
+      <p>
+        Fini le sourcing fastidieux. Les entreprises viennent directement
+        vers vous.
+      </p>
+    </div>
+
+
+    <div class="card">
+      <div class="icon-circle icon-blue">💰</div>
+
+      <h3>Zéro Commission</h3>
+
+      <p>
+        Des grilles de tarifs transparentes, sans surprise,
+        sur tout ce que vous touchez.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="companies">
+
+  <h2>
+    Nos Entreprises Collaboratrices
+    <span>(besoins Freelance réguliers)</span>
+  </h2>
+
+  <div class="companies-grid">
+
+    <div class="company-card" *ngFor="let entreprise of entreprises">
+
+      <div class="company-header">
+
+        <h3>{{ entreprise.nom }}</h3>
+
+        <span
+          class="badge"
+          [ngClass]="entreprise.secteur === 'Fintech'
+            ? 'badge-fintech'
+            : 'badge-telecom'"
+        >
+          {{ entreprise.secteur }}
+        </span>
+
+      </div>
+
+
+      <p class="location">
+
+        <svg
+          class="pin-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M12 22s8-7.58 8-13a8 8 0 1 0-16 0c0 5.42 8 13 8 13z"
+          ></path>
+
+          <circle
+            cx="12"
+            cy="9"
+            r="2.5"
+          ></circle>
+        </svg>
+
+        {{ entreprise.localisation }}
+
+      </p>
+
+
+      <p class="description">
+        {{ entreprise.description }}
+      </p>
+
+
+      <button class="btn-outline">
+        Déposer une candidature spontanée
+      </button>
+
+    </div>
+
+  </div>
+
+</section>

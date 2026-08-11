@@ -18,6 +18,7 @@ import { APropos } from './component/a-propos/a-propos';
 import { Accueil } from './component/accueil/accueil';
 import { ConnexionComponent } from './component/connexion/connexion';
 import { Entreprise } from './component/entreprise/entreprise';
+import { Freelances } from './component/freelances/freelances';
 @NgModule({
   declarations: [
     App,
@@ -32,9 +33,16 @@ import { Entreprise } from './component/entreprise/entreprise';
     APropos,
     Accueil,
     ConnexionComponent,
-  
+    Freelances,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, HttpClientModule, Entreprise],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    Entreprise,
+  ],
   providers: [],
   bootstrap: [App],
 })
