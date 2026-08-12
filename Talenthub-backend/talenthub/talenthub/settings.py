@@ -5,17 +5,19 @@ Django settings for talenthub project.
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-s1%vxy&!hz^%_e_y7z_cwz&$rg@t@n06agu1%+njc*o($)4!ui')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-s1%vxy&!hz^%_e_y7z_cwz&$rg@t@n06agu1%+njc*o($)4!ui'
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -25,13 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app_users',
-    'documents',
+    "offres",
+    'app_candidatures',
     "rest_framework",
     'rest_framework_simplejwt',
-    "offres",
-    'Competances',
-    'app_candidatures',
-    'entretien',
     'corsheaders',
 ]
 
