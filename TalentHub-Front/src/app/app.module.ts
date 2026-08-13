@@ -17,8 +17,10 @@ import { DetailOffreComponent } from './component/detail-offre/detail-offre';
 import { APropos } from './component/a-propos/a-propos';
 import { Accueil } from './component/accueil/accueil';
 import { ConnexionComponent } from './component/connexion/connexion';
-import { Entreprise } from './component/entreprise/entreprise';
 import { Freelances } from './component/freelances/freelances';
+import { FreelanceDashboard } from './dashboard/freelance-dashboard/freelance-dashboard';
+import { EntreprisesComponent } from './entreprises/entreprises';
+
 @NgModule({
   declarations: [
     App,
@@ -29,11 +31,10 @@ import { Freelances } from './component/freelances/freelances';
     Footer,
     InscriptionComponent,
     SuccessInscriptionModalComponent,
-    DetailOffreComponent,
-    APropos,
-    Accueil,
-    ConnexionComponent,
     Freelances,
+    FreelanceDashboard,
+      
+    // ... vos autres composants
   ],
   imports: [
     BrowserModule,
@@ -41,7 +42,7 @@ import { Freelances } from './component/freelances/freelances';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    Entreprise,
+    // ... vos autres modules
   ],
   providers: [],
   bootstrap: [App],

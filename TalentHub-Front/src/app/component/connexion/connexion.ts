@@ -1,32 +1,29 @@
 import { Component } from '@angular/core';
-import { Connexion} from '../../services/connexion';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Connexion } from '../../services/connexion';
+
 @Component({
   selector: 'app-connexion',
-  standalone: false,
   templateUrl: './connexion.html',
-  styleUrl: './connexion.css',
+  styleUrls: ['./connexion.css'],
+  standalone: true,
+  imports: [FormsModule]
 })
 export class ConnexionComponent {
-   credentials = {
-    email: '',
-    password: ''
-  };
   rememberMe: boolean = false;
   showPassword: boolean = false;
   message: string = '';
 
+  credentials = {
+    email: '',
+    password: ''
+  };
+
   constructor(private auth: Connexion, private router: Router) {}
 
-  onSubmit() {
-    this.auth.login(this.credentials).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.access);
-        this.router.navigate(['/offres']);
-      },
-      error: (err) => {
-        this.message = 'Identifiants incorrects.';
-      }
-    });
+  onSubmit(): void {
+    console.log('Tentative de connexion avec :', this.credentials);
+    // Ajoutez ici la logique d'appel au service de connexion
   }
 }

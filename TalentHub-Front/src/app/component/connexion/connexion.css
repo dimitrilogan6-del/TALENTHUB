@@ -36,7 +36,6 @@
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
-  content: url('../../assets/connexion.png');
 }
 
 /* --- Colonne Droite (Formulaire) --- */
