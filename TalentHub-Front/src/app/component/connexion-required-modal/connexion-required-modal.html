@@ -1,0 +1,39 @@
+<div class="connexion-modal">
+
+  <div class="modal-icon">
+    🔐
+  </div>
+
+
+  <h2>
+    Connexion requise
+  </h2>
+
+
+  <p>
+    Vous devez être connecté pour pouvoir
+    postuler à cette offre.
+  </p>
+
+
+  <p
+    class="offer-name"
+    *ngIf="data?.titre"
+  >
+    Offre :
+    <strong>
+      {{ data.titre }}
+    </strong>
+  </p>
+
+
+  <div class="modal-actions">
+
+    <button class="btn-cancel" type="button"(click)="close()">Annuler</button>
+
+
+    <button class="btn-login" type="button" (click)="goToLogin()" routerLink="/login" >Se connecter </button>
+
+  </div>
+
+</div>

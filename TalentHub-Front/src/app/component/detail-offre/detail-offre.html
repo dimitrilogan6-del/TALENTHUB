@@ -1,39 +1,180 @@
-<section class="detail-section">
-  <div class="container">
-    
-    <!-- BANDEAU DES INFORMATIONS (Titre, date, limite, type) -->
+<!-- ========================================= -->
+<!-- PAGE DETAIL DE L'OFFRE -->
+<!-- ========================================= -->
+<br><br>
+<div class="detail-page">
+
+  <!-- ========================================= -->
+  <!-- CONTENU DE L'OFFRE -->
+  <!-- ========================================= -->
+
+  <div class="detail-content" *ngIf="offre">
+
+    <!-- ======================================= -->
+    <!-- BANDEAU DES INFORMATIONS -->
+    <!-- ======================================= -->
+
     <div class="info-band">
+
+      <!-- Titre -->
       <div class="info-item">
-        <span class="label">Titre du poste:</span>
-        <span class="value">{{ offre.titre }}</span>
+
+        <span class="label">
+          Titre du poste:
+        </span>
+
+        <span class="value">
+          {{ offre.titre }}
+        </span>
+
       </div>
+
+
+      
+      <!-- Salaire -->
       <div class="info-item">
-        <span class="label">Date de publication:</span>
-        <span class="value">{{ offre.datePublication }}</span>
+
+        <span class="label">
+          Salaire:
+        </span>
+
+        <span class="value">
+          {{ offre.salaireMin | number }}  -
+          {{ offre.salaireMax | number }}
+          {{ offre.deviseSalaire }}
+        </span>
+
       </div>
+
+      <!-- Date publication -->
       <div class="info-item">
-        <span class="label">Date limite:</span>
-        <span class="value">{{ offre.dateLimite }}</span>
+
+        <span class="label">
+          Date de publication:
+        </span>
+
+        <span class="value">
+          {{ offre.datePublication | date:'dd/MM/yyyy HH:mm' }}
+        </span>
+
       </div>
+
+
+      <!-- Date limite -->
       <div class="info-item">
-        <span class="label">Type d'offre:</span>
-        <span class="value">{{ offre.typeOffre }}</span>
+
+        <span class="label">
+          Date limite:
+        </span>
+
+        <span class="value">
+          {{ offre.dateLimite | date:'dd/MM/yyyy HH:mm' }}
+        </span>
+
       </div>
+
+
+      <!-- Type -->
+      <div class="info-item">
+
+        <span class="label">
+          Type d'offre:
+        </span>
+
+        <span class="value">
+          {{ offre.typeOffre }}
+        </span>
+
+      </div>
+
     </div>
 
-    <!-- CONTENU PRINCIPAL (Description) -->
+
+    <!-- ======================================= -->
+    <!-- ENTREPRISE -->
+    <!-- ======================================= -->
+
+    <div class="company-info">
+
+      <h2>
+        {{ offre.entrepriseDetail?.nom || 'Entreprise inconnue' }}
+      </h2>
+
+      <p *ngIf="offre.entrepriseDetail?.adresse">
+        {{ offre.entrepriseDetail?.adresse }}
+      </p>
+
+      <p *ngIf="offre.entrepriseDetail?.secteur">
+        Secteur :
+        {{ offre.entrepriseDetail?.secteur }}
+      </p>
+
+    </div>
+
+
+    <!-- ======================================= -->
+    <!-- DESCRIPTION -->
+    <!-- ======================================= -->
+
     <div class="content-area">
-      <h3 class="section-subtitle">Description:</h3>
+
+      <h3 class="section-subtitle">
+        Description:
+      </h3>
+
       <div class="description-text">
-        <p>{{ offre.description }}</p>
+
+        <p>
+          {{ offre.description }}
+        </p>
+
       </div>
+
     </div>
 
-    <!-- BOUTONS D'ACTION -->
+
+    <!-- ======================================= -->
+    <!-- BOUTONS -->
+    <!-- ======================================= -->
+
     <div class="action-buttons">
-      <button class="btn-back" (click)="goBack()">← Retour aux offres</button>
-    <button class="btn-postuler" (click)="openPostulerModal()">Postuler</button>
+
+      <button
+        class="btn-back"
+        type="button"
+        (click)="goBack()"
+      >
+        ← Retour aux offres
+      </button>
+
+
+      <button
+        class="btn-postuler"
+        type="button"
+        (click)="openPostulerModal()"
+      >
+        Postuler
+      </button>
+
     </div>
 
   </div>
-</section>
+
+
+  <!-- ========================================= -->
+  <!-- CHARGEMENT -->
+  <!-- ========================================= -->
+
+  <div
+    class="loading-container"
+    *ngIf="!offre"
+  >
+
+    <p>
+      Chargement de l'offre...
+    </p>
+
+  </div>
+
+</div>
+<br><br>

@@ -1,133 +1,325 @@
-<section class="hero">
-  <div class="hero-content">
-    <h1>Travaillez en toute liberté</h1>
+<!-- ============================================================
+     HERO
+============================================================ -->
+
+<section class="hero-section">
+
+  <div class="hero-grid">
+
+    <!-- TEXTE -->
+
+    <div class="hero-text">
+
+      <span class="hero-badge">
+        TALENTS INDÉPENDANTS
+      </span>
+
+      <h1>
+        Trouvez les meilleurs
+        <span>freelances</span>
+      </h1>
+
+      <p>
+        Développeurs, designers,
+        experts DevOps, data analysts,
+        consultants et spécialistes
+        disponibles pour vos projets.
+      </p>
+
+      <button
+        type="button"
+        class="btn-hero"
+        /* (click)="scrollToTalents()" */
+      >
+
+        Explorer les talents
+
+        <span>→</span>
+
+      </button>
+
+    </div>
+
+
+    <!-- IMAGE -->
+
+    <div class="hero-image">
+
+      <img
+        src="assets/slide3.png"
+        alt="Freelances professionnels"
+      >
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- ============================================================
+     TALENTS
+============================================================ -->
+
+<section
+  #talents
+  id="talents"
+  class="partners-section"
+>
+
+
+  <!-- ==========================================================
+       TITRE
+  =========================================================== -->
+
+  <div class="section-heading">
+
+    <div>
+
+      <span class="section-label">
+        NOS TALENTS
+      </span>
+
+      <h2>
+        Talents Freelances Disponibles
+      </h2>
+
+      <p>
+        Découvrez les professionnels disponibles
+        sur notre plateforme.
+      </p>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ==========================================================
+       CHARGEMENT
+  =========================================================== -->
+
+  <div
+    *ngIf="loading"
+    class="loading-container"
+  >
+
+    <div class="spinner"></div>
 
     <p>
-      Accédez à des missions de haut niveau et gérez votre activité
-      de manière indépendante et sécurisée.
+      Chargement des talents...
     </p>
 
-    <button class="btn-primary">
-      Inscrivez-vous maintenant
+  </div>
+
+
+
+  <!-- ==========================================================
+       ERREUR
+  =========================================================== -->
+
+  <div
+    *ngIf="
+      !loading &&
+      errorMessage
+    "
+    class="error-container"
+  >
+
+    <div class="error-icon">
+      !
+    </div>
+
+    <h3>
+      Une erreur est survenue
+    </h3>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      type="button"
+      class="retry-btn"
+      (click)="loadFreelances()"
+    >
+
+      Réessayer
+
     </button>
+
   </div>
 
-  <div class="hero-visual">
-    <img src="assets/image.hero-bg.jpg" alt="Freelance">
+
+
+  <!-- ==========================================================
+       AUCUN FREELANCE
+  =========================================================== -->
+
+  <div
+    *ngIf="
+      !loading &&
+      !errorMessage &&
+      freelances.length === 0
+    "
+    class="empty-container"
+  >
+
+    <div class="empty-icon">
+      👤
+    </div>
+
+    <h3>
+      Aucun freelance disponible
+    </h3>
+
+    <p>
+      Aucun freelance actif n'est actuellement
+      disponible sur la plateforme.
+    </p>
+
   </div>
-</section>
 
 
-<section class="freelances">
-  <div class="section-title">
-    Freelances réguliers
-  </div>
 
-  <div class="cards-container">
+  <!-- ==========================================================
+       LISTE DES FREELANCES
+  =========================================================== -->
+<div
+  *ngIf="
+    !loading &&
+    !errorMessage &&
+    freelances.length > 0
+  "
+  class="partners-grid"
+>
 
-    <div class="card">
-      <div class="icon-circle icon-green">⚖️</div>
+  <div
+    *ngFor="
+      let freelance of freelances;
+      trackBy: trackByFreelance
+    "
+    class="partner-card"
+  >
 
-      <h3>Paiement Garanti</h3>
+    <!-- PHOTO -->
 
-      <p>
-        Les fonds de vos missions sont sécurisés dès le démarrage du projet.
-      </p>
+    <div class="freelance-photo">
+
+      <img
+        [src]="getPhoto(freelance)"
+        [alt]="freelance.nom_complet"
+      >
+
+      <span
+        class="availability"
+        [class.unavailable]="
+          !freelance.disponibilite
+        "
+      >
+
+        <span class="status-dot"></span>
+
+        {{
+          freelance.disponibilite
+            ? 'Disponible'
+            : 'Indisponible'
+        }}
+
+      </span>
+
     </div>
 
 
-    <div class="card">
-      <div class="icon-circle icon-orange">🤝</div>
+    <!-- CONTENU -->
 
-      <h3>Missions Qualifiées</h3>
+    <div class="partner-content">
 
-      <p>
-        Fini le sourcing fastidieux. Les entreprises viennent directement
-        vers vous.
-      </p>
-    </div>
+      <h3>
+        {{ freelance.nom_complet }}
+      </h3>
 
 
-    <div class="card">
-      <div class="icon-circle icon-blue">💰</div>
+      <div class="specialite">
 
-      <h3>Zéro Commission</h3>
-
-      <p>
-        Des grilles de tarifs transparentes, sans surprise,
-        sur tout ce que vous touchez.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-
-<section class="companies">
-
-  <h2>
-    Nos Entreprises Collaboratrices
-    <span>(besoins Freelance réguliers)</span>
-  </h2>
-
-  <div class="companies-grid">
-
-    <div class="company-card" *ngFor="let entreprise of entreprises">
-
-      <div class="company-header">
-
-        <h3>{{ entreprise.nom }}</h3>
-
-        <span
-          class="badge"
-          [ngClass]="entreprise.secteur === 'Fintech'
-            ? 'badge-fintech'
-            : 'badge-telecom'"
-        >
-          {{ entreprise.secteur }}
+        <span class="specialite-icon">
+          ◆
         </span>
+
+        {{ getSpecialite(freelance) }}
 
       </div>
 
 
-      <p class="location">
+      <div class="infos">
 
-        <svg
-          class="pin-icon"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+        <div class="info-item">
+
+          <span class="info-label">
+            Expérience
+          </span>
+
+          <strong>
+
+            {{ freelance.anneesExperience }}
+
+            {{
+              freelance.anneesExperience > 1
+                ? 'ans'
+                : 'an'
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div
+          class="info-item"
+          *ngIf="
+            freelance.tarifHoraire !== null
+          "
         >
-          <path
-            d="M12 22s8-7.58 8-13a8 8 0 1 0-16 0c0 5.42 8 13 8 13z"
-          ></path>
 
-          <circle
-            cx="12"
-            cy="9"
-            r="2.5"
-          ></circle>
-        </svg>
+          <span class="info-label">
+            Tarif horaire
+          </span>
 
-        {{ entreprise.localisation }}
+          <strong>
 
-      </p>
+            {{ freelance.tarifHoraire | number }}
 
+            {{ freelance.deviseTarif }}/h
 
-      <p class="description">
-        {{ entreprise.description }}
-      </p>
+          </strong>
+
+        </div>
+
+      </div>
 
 
-      <button class="btn-outline">
-        Déposer une candidature spontanée
+      <button
+        type="button"
+        class="btn-partner"
+        [routerLink]="[
+          '/freelances',
+          freelance.id
+        ]"
+      >
+
+        Voir le profil
+
+        <span>
+          →
+        </span>
+
       </button>
 
     </div>
 
   </div>
+
+</div>
 
 </section>

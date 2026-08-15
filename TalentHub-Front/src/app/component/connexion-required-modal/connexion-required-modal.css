@@ -1,0 +1,109 @@
+.connexion-modal {
+  padding: 30px;
+
+  text-align: center;
+
+  font-family: 'Inter', sans-serif;
+}
+
+
+.modal-icon {
+  width: 65px;
+  height: 65px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #E6F7ED;
+
+  font-size: 28px;
+}
+
+
+.connexion-modal h2 {
+  margin: 0 0 12px;
+
+  color: #1B365D;
+
+  font-size: 22px;
+}
+
+
+.connexion-modal p {
+  margin: 0 auto 15px;
+
+  max-width: 360px;
+
+  color: #666;
+
+  line-height: 1.6;
+
+  font-size: 14px;
+}
+
+
+.offer-name {
+  padding: 12px;
+
+  background: #f7f7f7;
+
+  border-radius: 8px;
+}
+
+
+.offer-name strong {
+  color: #1B365D;
+}
+
+
+.modal-actions {
+  margin-top: 25px;
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 12px;
+}
+
+
+.btn-cancel,
+.btn-login {
+  padding: 11px 20px;
+
+  border-radius: 7px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.btn-cancel {
+  background: white;
+
+  color: #555;
+
+  border: 1px solid #ddd;
+}
+
+
+.btn-login {
+  background: #2ecc71;
+
+  color: white;
+
+  border: none;
+}
+
+
+.btn-login:hover {
+  background: #27ae60;
+}

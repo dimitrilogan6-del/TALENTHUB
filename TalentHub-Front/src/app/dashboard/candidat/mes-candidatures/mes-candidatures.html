@@ -1,0 +1,892 @@
+<div class="mes-candidatures-page">
+
+  <!-- ======================================================
+       EN-TÊTE
+  ======================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="page-badge">
+        MES CANDIDATURES
+      </span>
+
+      <h1>
+        Suivez vos candidatures
+      </h1>
+
+      <p>
+        Consultez l'état de vos candidatures,
+        vos entretiens et les réponses des recruteurs.
+      </p>
+
+    </div>
+
+    <button
+      class="btn-nouvelle-candidature"
+      routerLink="/dashboard/candidat/offres"
+    >
+      <i class="fas fa-search"></i>
+
+      Rechercher une offre
+
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       STATISTIQUES
+  ======================================================= -->
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+
+      <div class="stat-icon total-icon">
+        <i class="fas fa-file-alt"></i>
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Total
+        </span>
+
+        <strong>
+          {{ total }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon attente-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          En attente
+        </span>
+
+        <strong>
+          {{ enAttente }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon preselection-icon">
+        <i class="fas fa-user-check"></i>
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Présélectionnées
+        </span>
+
+        <strong>
+          {{ preselectionnees }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon entretien-icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Entretiens
+        </span>
+
+        <strong>
+          {{ entretiens }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon accepte-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Acceptées
+        </span>
+
+        <strong>
+          {{ acceptees }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon refuse-icon">
+        <i class="fas fa-times-circle"></i>
+      </div>
+
+      <div>
+
+        <span class="stat-label">
+          Refusées
+        </span>
+
+        <strong>
+          {{ refusees }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       BARRE DE RECHERCHE / FILTRES
+  ======================================================= -->
+
+  <div class="filters-card">
+
+    <div class="search-wrapper">
+
+      <i class="fas fa-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="recherche"
+        (input)="rechercher()"
+        placeholder="Rechercher une candidature..."
+      >
+
+    </div>
+
+
+    <div class="status-filters">
+
+      <button
+        [class.active]="filtreStatut === 'Toutes'"
+        (click)="filtrerParStatut('Toutes')"
+      >
+        Toutes
+      </button>
+
+      <button
+        [class.active]="filtreStatut === 'En attente'"
+        (click)="filtrerParStatut('En attente')"
+      >
+        En attente
+      </button>
+
+      <button
+        [class.active]="filtreStatut === 'Présélectionnée'"
+        (click)="filtrerParStatut('Présélectionnée')"
+      >
+        Présélectionnées
+      </button>
+
+      <button
+        [class.active]="filtreStatut === 'Entretien'"
+        (click)="filtrerParStatut('Entretien')"
+      >
+        Entretiens
+      </button>
+
+      <button
+        [class.active]="filtreStatut === 'Acceptée'"
+        (click)="filtrerParStatut('Acceptée')"
+      >
+        Acceptées
+      </button>
+
+      <button
+        [class.active]="filtreStatut === 'Refusée'"
+        (click)="filtrerParStatut('Refusée')"
+      >
+        Refusées
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       CHARGEMENT
+  ======================================================= -->
+
+  <div
+    class="loading-container"
+    *ngIf="chargement"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement de vos candidatures...
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       ERREUR
+  ======================================================= -->
+
+  <div
+    class="error-message"
+    *ngIf="!chargement && erreur"
+  >
+
+    <i class="fas fa-exclamation-triangle"></i>
+
+    <span>
+      {{ erreur }}
+    </span>
+
+    <button
+      (click)="chargerCandidatures()"
+    >
+      Réessayer
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       AUCUNE CANDIDATURE
+  ======================================================= -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !chargement &&
+      !erreur &&
+      candidaturesFiltrees.length === 0
+    "
+  >
+
+    <div class="empty-icon">
+
+      <i class="fas fa-file-signature"></i>
+
+    </div>
+
+    <h2>
+      Aucune candidature
+    </h2>
+
+    <p>
+      Vous n'avez pas encore postulé à une offre
+      correspondant à votre recherche.
+    </p>
+
+    <button
+      routerLink="/dashboard/candidat/offres"
+      class="btn-primary"
+    >
+      <i class="fas fa-search"></i>
+
+      Découvrir les offres
+
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       LISTE DES CANDIDATURES
+  ======================================================= -->
+
+  <div
+    class="candidatures-list"
+    *ngIf="
+      !chargement &&
+      !erreur &&
+      candidaturesFiltrees.length > 0
+    "
+  >
+
+    <div
+      class="candidature-card"
+      *ngFor="let candidature of candidaturesFiltrees"
+    >
+
+      <!-- Logo / icône entreprise -->
+
+      <div class="entreprise-logo">
+
+        <i class="fas fa-building"></i>
+
+      </div>
+
+
+      <!-- Informations principales -->
+
+      <div class="candidature-main">
+
+        <div class="candidature-title-row">
+
+          <div>
+
+            <h2>
+              {{ candidature.offre_detail.titre }}
+            </h2>
+
+            <p class="entreprise-name">
+
+              <i class="fas fa-building"></i>
+
+              {{ candidature.offre_detail.entreprise }}
+
+            </p>
+
+          </div>
+
+
+          <span
+            class="statut-badge"
+            [ngClass]="
+              getClasseStatut(candidature.statut)
+            "
+          >
+            {{ candidature.statut }}
+          </span>
+
+        </div>
+
+
+        <div class="candidature-meta">
+
+          <div>
+
+            <i class="far fa-calendar"></i>
+
+            <span>
+              Candidature envoyée le
+              {{ formaterDate(candidature.dateSoumission) }}
+            </span>
+
+          </div>
+
+
+          <div>
+
+            <i class="fas fa-history"></i>
+
+            <span>
+              {{ candidature.nombre_modifications }}
+              modification(s)
+            </span>
+
+          </div>
+
+
+          <div
+            *ngIf="
+              candidature.documents &&
+              candidature.documents.length > 0
+            "
+          >
+
+            <i class="fas fa-paperclip"></i>
+
+            <span>
+              {{ candidature.documents.length }}
+              document(s)
+            </span>
+
+          </div>
+
+
+          <div
+            *ngIf="
+              candidature.entretiens &&
+              candidature.entretiens.length > 0
+            "
+          >
+
+            <i class="fas fa-calendar-check"></i>
+
+            <span>
+              {{ candidature.entretiens.length }}
+              entretien(s)
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Commentaire recruteur -->
+
+        <div
+          class="commentaire"
+          *ngIf="candidature.commentaireRecruteur"
+        >
+
+          <i class="fas fa-comment-alt"></i>
+
+          <div>
+
+            <strong>
+              Message du recruteur
+            </strong>
+
+            <p>
+              {{ candidature.commentaireRecruteur }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="candidature-actions">
+
+          <button
+            class="btn-details"
+            (click)="voirDetails(candidature)"
+          >
+
+            <i class="fas fa-eye"></i>
+
+            Voir détails
+
+          </button>
+
+
+          <button
+            class="btn-modifier"
+            *ngIf="
+              candidature.statut === 'En attente' ||
+              candidature.statut === 'Présélectionnée'
+            "
+            (click)="modifierCandidature(candidature)"
+          >
+
+            <i class="fas fa-edit"></i>
+
+            Modifier
+
+          </button>
+
+
+          <button
+            class="btn-retirer"
+            *ngIf="
+              candidature.statut !== 'Retirée' &&
+              candidature.statut !== 'Acceptée' &&
+              candidature.statut !== 'Refusée'
+            "
+            [disabled]="retirerEnCours"
+            (click)="retirerCandidature(candidature)"
+          >
+
+            <i class="fas fa-times"></i>
+
+            Retirer
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================================
+     MODAL DETAILS
+======================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="afficherDetails && candidatureSelectionnee"
+  (click)="fermerDetails()"
+>
+
+  <div
+    class="details-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Header -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-label">
+          DÉTAIL DE LA CANDIDATURE
+        </span>
+
+        <h2>
+          {{ candidatureSelectionnee.offre_detail.titre }}
+        </h2>
+
+        <p>
+          {{ candidatureSelectionnee.offre_detail.entreprise }}
+        </p>
+
+      </div>
+
+
+      <button
+        class="close-button"
+        (click)="fermerDetails()"
+      >
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- Statut -->
+
+    <div class="modal-status">
+
+      <span
+        class="statut-badge"
+        [ngClass]="
+          getClasseStatut(
+            candidatureSelectionnee.statut
+          )
+        "
+      >
+        {{ candidatureSelectionnee.statut }}
+      </span>
+
+    </div>
+
+
+    <!-- Informations -->
+
+    <div class="details-section">
+
+      <h3>
+        <i class="fas fa-info-circle"></i>
+
+        Informations
+      </h3>
+
+
+      <div class="details-grid">
+
+        <div>
+
+          <span>
+            Date de candidature
+          </span>
+
+          <strong>
+            {{
+              formaterDate(
+                candidatureSelectionnee.dateSoumission
+              )
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Dernière modification
+          </span>
+
+          <strong>
+            {{
+              formaterDate(
+                candidatureSelectionnee.dateModification
+              )
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Modifications
+          </span>
+
+          <strong>
+            {{ candidatureSelectionnee.nombre_modifications }}
+          </strong>
+
+        </div>
+
+
+        <div
+          *ngIf="candidatureSelectionnee.dateDecision"
+        >
+
+          <span>
+            Décision
+          </span>
+
+          <strong>
+            {{
+              formaterDate(
+                candidatureSelectionnee.dateDecision!
+              )
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Lettre -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        candidatureSelectionnee.lettreMotivation
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-envelope-open-text"></i>
+
+        Lettre de motivation
+
+      </h3>
+
+      <div class="lettre">
+
+        {{ candidatureSelectionnee.lettreMotivation }}
+
+      </div>
+
+    </div>
+
+
+    <!-- Documents -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        candidatureSelectionnee.documents &&
+        candidatureSelectionnee.documents.length > 0
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-paperclip"></i>
+
+        Documents
+
+      </h3>
+
+
+      <div class="documents-list">
+
+        <div
+          class="document-item"
+          *ngFor="
+            let document
+            of candidatureSelectionnee.documents
+          "
+        >
+
+          <div class="document-icon">
+
+            <i class="fas fa-file-alt"></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              {{ document.nomFichier }}
+            </strong>
+
+            <span>
+              {{ document.typeFichier }}
+              ·
+              {{ formaterTaille(document.taille) }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Entretiens -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        candidatureSelectionnee.entretiens &&
+        candidatureSelectionnee.entretiens.length > 0
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-calendar-alt"></i>
+
+        Entretiens
+
+      </h3>
+
+
+      <div
+        class="entretien-card"
+        *ngFor="
+          let entretien
+          of candidatureSelectionnee.entretiens
+        "
+      >
+
+        <div class="entretien-date">
+
+          <i class="fas fa-calendar-check"></i>
+
+        </div>
+
+
+        <div class="entretien-info">
+
+          <strong>
+            {{ entretien.type }}
+          </strong>
+
+          <span>
+
+            {{ formaterDate(entretien.dateHeure) }}
+
+          </span>
+
+
+          <span
+            *ngIf="entretien.lieu"
+          >
+
+            <i class="fas fa-map-marker-alt"></i>
+
+            {{ entretien.lieu }}
+
+          </span>
+
+
+          <a
+            *ngIf="entretien.lienVisio"
+            [href]="entretien.lienVisio"
+            target="_blank"
+            rel="noopener"
+          >
+
+            <i class="fas fa-video"></i>
+
+            Rejoindre la visioconférence
+
+          </a>
+
+        </div>
+
+
+        <span
+          class="entretien-statut"
+        >
+          {{ entretien.statut }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Commentaire recruteur -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        candidatureSelectionnee.commentaireRecruteur
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-comment"></i>
+
+        Commentaire du recruteur
+
+      </h3>
+
+      <div class="commentaire-detail">
+
+        {{
+          candidatureSelectionnee.commentaireRecruteur
+        }}
+
+      </div>
+
+    </div>
+
+
+    <!-- Footer -->
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-close"
+        (click)="fermerDetails()"
+      >
+        Fermer
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

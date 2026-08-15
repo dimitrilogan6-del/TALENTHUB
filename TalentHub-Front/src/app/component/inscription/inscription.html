@@ -1,164 +1,460 @@
-<div class="inscription-container">
+<div class="register-container">
+
+  <!-- HEADER -->
   <div class="header">
-    <div class="logo">Talent<span>Hub</span></div>
-    <h1>Créer un compte</h1>
-    <p class="subtitle">Rejoignez la communauté en quelques étapes fluides.</p>
+
+    <div class="logo">
+      Talent<span>Hub</span>
+    </div>
+
+    <h1>Créer votre compte</h1>
+
+    <p class="subtitle">
+      Rejoignez TalentHub et commencez votre parcours professionnel.
+    </p>
+
   </div>
 
-  <!-- Barre de progression -->
+
+  <!-- INDICATEUR D'ÉTAPE -->
   <div class="stepper">
-    <div class="step" [class.active]="currentStep >= 1">
-      <div class="circle">{{ currentStep > 1 ? '✓' : '1' }}</div>
-      <div class="line" *ngIf="currentStep < 3"></div>
+
+    <div class="step active">
+      <div class="circle">1</div>
+      <span>Compte</span>
     </div>
-    <div class="step" [class.active]="currentStep >= 2">
-      <div class="circle">{{ currentStep > 2 ? '✓' : '2' }}</div>
-      <div class="line" *ngIf="currentStep < 3"></div>
+
+    <div class="line"></div>
+
+    <div class="step disabled">
+      <div class="circle">2</div>
+      <span>Profil</span>
     </div>
-    <div class="step" [class.active]="currentStep >= 3">
+
+    <div class="line"></div>
+
+    <div class="step disabled">
       <div class="circle">3</div>
+      <span>Professionnel</span>
     </div>
+
   </div>
 
-  <form [formGroup]="inscriptionForm" (ngSubmit)="nextStep()">
-    
-    <!-- ÉTAPE 1 -->
-    <div *ngIf="currentStep === 1" class="step-content">
-      <h3 class="step-title">Étape 1 : Vos accès principaux</h3>
-      
+
+  <!-- MESSAGE D'ERREUR GLOBAL -->
+  <div
+    class="alert alert-error"
+    *ngIf="errorMessage"
+  >
+    <span class="alert-icon">!</span>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+  </div>
+
+
+  <!-- MESSAGE DE SUCCÈS -->
+  <div
+    class="alert alert-success"
+    *ngIf="successMessage"
+  >
+    <span class="alert-icon">✓</span>
+
+    <span>
+      {{ successMessage }}
+    </span>
+  </div>
+
+
+  <!-- FORMULAIRE -->
+  <form
+    [formGroup]="inscriptionForm"
+    (ngSubmit)="submitInscription()"
+    novalidate
+  >
+
+    <div class="step-content">
+
+      <h2 class="step-title">
+        Créez votre compte
+      </h2>
+
+      <p class="step-description">
+        Quelques informations suffisent pour commencer.
+        Vous pourrez compléter votre profil plus tard.
+      </p>
+
+
+      <!-- ROLE -->
       <div class="form-group">
-        <label>Vous êtes un :</label>
-        <select formControlName="role">
-          <option value="candidat">Candidat</option>
-          <option value="recruteur">Recruteur</option>
-          <option value="freelance">Freelance</option>
+
+        <label for="role">
+          Je souhaite m'inscrire comme
+        </label>
+
+        <select
+          id="role"
+          formControlName="role"
+          class="form-control"
+        >
+
+          <option value="candidat">
+            Candidat
+          </option>
+
+          <option value="freelance">
+            Freelance
+          </option>
+
+          <option value="recruteur">
+            Recruteur
+          </option>
+
         </select>
+
+        <div
+          class="field-error"
+          *ngIf="
+            inscriptionForm.get('role')?.invalid &&
+            inscriptionForm.get('role')?.touched
+          "
+        >
+          Le rôle est obligatoire.
+        </div>
+
       </div>
 
+
+      <!-- PRENOM / NOM -->
       <div class="form-row">
+
         <div class="form-group half">
-          <label>Prénom</label>
-          <input type="text" formControlName="first_name" placeholder="Ex: Seynabou">
-          <div *ngIf="inscriptionForm.get('first_name')?.invalid && inscriptionForm.get('first_name')?.touched" class="error">
-            Le prénom est requis.
+
+          <label for="first_name">
+            Prénom
+          </label>
+
+          <input
+            id="first_name"
+            type="text"
+            formControlName="first_name"
+            class="form-control"
+            placeholder="Ex : Fatou"
+            autocomplete="given-name"
+          >
+
+          <div
+            class="field-error"
+            *ngIf="
+              inscriptionForm.get('first_name')?.invalid &&
+              inscriptionForm.get('first_name')?.touched
+            "
+          >
+            Le prénom est obligatoire.
           </div>
+
         </div>
+
+
         <div class="form-group half">
-          <label>Nom</label>
-          <input type="text" formControlName="last_name" placeholder="Ex: Fall">
-          <div *ngIf="inscriptionForm.get('last_name')?.invalid && inscriptionForm.get('last_name')?.touched" class="error">
-            Le nom est requis.
+
+          <label for="last_name">
+            Nom
+          </label>
+
+          <input
+            id="last_name"
+            type="text"
+            formControlName="last_name"
+            class="form-control"
+            placeholder="Ex : Dieng"
+            autocomplete="family-name"
+          >
+
+          <div
+            class="field-error"
+            *ngIf="
+              inscriptionForm.get('last_name')?.invalid &&
+              inscriptionForm.get('last_name')?.touched
+            "
+          >
+            Le nom est obligatoire.
           </div>
+
         </div>
+
       </div>
 
+
+      <!-- USERNAME -->
       <div class="form-group">
-        <label>Adresse Email</label>
-        <input type="email" formControlName="email" placeholder="Ex: exemple@gmail.com">
-        <div *ngIf="inscriptionForm.get('email')?.invalid && inscriptionForm.get('email')?.touched" class="error">
-          <span *ngIf="inscriptionForm.get('email')?.errors?.['required']">L'email est requis.</span>
-          <span *ngIf="inscriptionForm.get('email')?.errors?.['email']">Veuillez entrer une adresse email valide.</span>
+
+        <label for="username">
+          Nom d'utilisateur
+        </label>
+
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          class="form-control"
+          placeholder="Ex : fatou.dieng"
+          autocomplete="username"
+        >
+
+        <div
+          class="field-error"
+          *ngIf="
+            inscriptionForm.get('username')?.invalid &&
+            inscriptionForm.get('username')?.touched
+          "
+        >
+
+          <span
+            *ngIf="
+              inscriptionForm.get('username')?.errors?.['required']
+            "
+          >
+            Le nom d'utilisateur est obligatoire.
+          </span>
+
+          <span
+            *ngIf="
+              inscriptionForm.get('username')?.errors?.['minlength']
+            "
+          >
+            Le nom d'utilisateur doit contenir au moins 3 caractères.
+          </span>
+
         </div>
+
       </div>
 
+
+      <!-- EMAIL -->
+      <div class="form-group">
+
+        <label for="email">
+          Adresse email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-control"
+          placeholder="Ex : exemple@gmail.com"
+          autocomplete="email"
+        >
+
+        <div
+          class="field-error"
+          *ngIf="
+            inscriptionForm.get('email')?.invalid &&
+            inscriptionForm.get('email')?.touched
+          "
+        >
+
+          <span
+            *ngIf="
+              inscriptionForm.get('email')?.errors?.['required']
+            "
+          >
+            L'adresse email est obligatoire.
+          </span>
+
+          <span
+            *ngIf="
+              inscriptionForm.get('email')?.errors?.['email']
+            "
+          >
+            Veuillez saisir une adresse email valide.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- MOTS DE PASSE -->
       <div class="form-row">
+
         <div class="form-group half">
-          <label>Mot de passe</label>
-          <input type="password" formControlName="password" placeholder="****">
-          <div *ngIf="inscriptionForm.get('password')?.invalid && inscriptionForm.get('password')?.touched" class="error">
-            <span *ngIf="inscriptionForm.get('password')?.errors?.['required']">Le mot de passe est requis.</span>
-            <span *ngIf="inscriptionForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères.</span>
+
+          <label for="password">
+            Mot de passe
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="form-control"
+              placeholder="Minimum 6 caractères"
+              autocomplete="new-password"
+            >
+
+            <!-- <button
+              type="button"
+              class="toggle-password"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="
+                showPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
+              "
+            >
+              {{ showPassword ? 'Masquer' : 'Afficher' }}
+            </button> -->
+
           </div>
+
+          <div
+            class="field-error"
+            *ngIf="
+              inscriptionForm.get('password')?.invalid &&
+              inscriptionForm.get('password')?.touched
+            "
+          >
+
+            <span
+              *ngIf="
+                inscriptionForm.get('password')?.errors?.['required']
+              "
+            >
+              Le mot de passe est obligatoire.
+            </span>
+
+            <span
+              *ngIf="
+                inscriptionForm.get('password')?.errors?.['minlength']
+              "
+            >
+              Le mot de passe doit contenir au moins 6 caractères.
+            </span>
+
+          </div>
+
         </div>
+
+
         <div class="form-group half">
-          <label>Confirmer mot de passe</label>
-          <input type="password" formControlName="confirmPassword" placeholder="****">
-          <div *ngIf="inscriptionForm.get('confirmPassword')?.invalid && inscriptionForm.get('confirmPassword')?.touched" class="error">
-            La confirmation est requise.
+
+          <label for="confirmPassword">
+            Confirmer le mot de passe
+          </label>
+
+          <input
+            id="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            class="form-control"
+            placeholder="Répétez le mot de passe"
+            autocomplete="new-password"
+          >
+
+
+          <!-- <button
+            type="button"
+            class="simple-toggle"
+            (click)="showConfirmPassword = !showConfirmPassword">
+            {{ showConfirmPassword ? 'Masquer' : 'Afficher' }}
+          </button> -->
+
+          <div
+            class="field-error"
+            *ngIf="
+              inscriptionForm.get('confirmPassword')?.touched &&
+              inscriptionForm.get('confirmPassword')?.errors?.['required']
+            "
+          >
+            La confirmation du mot de passe est obligatoire.
           </div>
+
         </div>
+
       </div>
 
-      <div *ngIf="inscriptionForm.hasError('mismatch') && inscriptionForm.get('confirmPassword')?.touched" class="error">
+
+      <!-- ERREUR PASSWORD -->
+      <div
+        class="field-error form-error"
+        *ngIf="
+          inscriptionForm.hasError('mismatch') &&
+          inscriptionForm.get('confirmPassword')?.touched
+        "
+      >
         Les mots de passe ne correspondent pas.
       </div>
+
+
+      <!-- CONDITIONS -->
+      <div class="terms">
+
+        <label>
+
+          <input
+            type="checkbox"
+            formControlName="acceptTerms"
+          >
+
+          <span>
+            J'accepte les conditions d'utilisation et la politique de confidentialité de TalentHub.
+          </span>
+
+        </label>
+
+        <div
+          class="field-error"
+          *ngIf="
+            inscriptionForm.get('acceptTerms')?.invalid &&
+            inscriptionForm.get('acceptTerms')?.touched
+          "
+        >
+          Vous devez accepter les conditions pour continuer.
+        </div>
+
+      </div>
+
+
+      <!-- BOUTON -->
+      <div class="actions">
+
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="isSubmitting"
+        >
+
+          <span *ngIf="!isSubmitting">
+            Créer mon compte
+          </span>
+
+          <span *ngIf="isSubmitting">
+            Création du compte...
+          </span>
+
+        </button>
+
+      </div>
+
     </div>
 
-    <!-- ÉTAPE 2 -->
-    <div *ngIf="currentStep === 2" class="step-content">
-      <h3 class="step-title">Étape 2 : Informations personnelles</h3>
-      
-      <div class="form-row">
-        <div class="form-group half">
-          <label>Sexe</label>
-          <select formControlName="sexe">
-            <option value="M">Masculin</option>
-            <option value="F">Féminin</option>
-          </select>
-        </div>
-        <div class="form-group half">
-          <label>Nationalité</label>
-          <input type="text" formControlName="nationalite" placeholder="Sénégalaise">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Numéro de téléphone</label>
-        <input type="tel" formControlName="telephone" placeholder="7X XXX XX XX">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group half">
-          <label>Date de Naissance</label>
-          <input type="date" formControlName="dateNaissance">
-        </div>
-        <div class="form-group half">
-          <label>Lieu de Naissance</label>
-          <input type="text" formControlName="lieuNaissance" placeholder="Dakar">
-        </div>
-      </div>
-    </div>
-
-    <!-- ÉTAPE 3 -->
-    <div *ngIf="currentStep === 3" class="step-content">
-      <h3 class="step-title">Étape 3 : Compétences & Documents</h3>
-      
-      <div class="form-group">
-        <label>Spécialité</label>
-        <input type="text" formControlName="specialite" placeholder="Ex: Ingénieur Civil, Electromécanicien">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group half">
-          <label>Niveau d'Étude</label>
-          <input type="text" formControlName="niveauEtude" placeholder="Ex: Licence 3, Master 2">
-        </div>
-        <div class="form-group half">
-          <label>Dernier Diplôme</label>
-          <input type="text" formControlName="dernierDiplome" placeholder="Diplôme d'ingénieur">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group half">
-          <label>Numéro CNI</label>
-          <input type="text" formControlName="numCni" placeholder="0 000 0000 00000">
-        </div>
-        <div class="form-group half">
-          <label>Numéro Passeport (Optionnel)</label>
-          <input type="text" formControlName="numPassport" placeholder="A0000000">
-        </div>
-      </div>
-    </div>
-
-    <!-- BOUTONS -->
-    <div class="actions">
-      <button type="button" class="btn-back" *ngIf="currentStep > 1" (click)="prevStep()">Retour</button>
-      <button type="submit" class="btn-next" [disabled]="currentStep === 1 && !isStep1Valid()">
-        {{ currentStep === 3 ? 'Créer mon compte !' : 'Continuer →' }}
-      </button>
-    </div>
   </form>
 
-  <p class="login-link">J'ai déjà un compte ! <a routerLink="/login">Se connecter</a></p>
+
+  <!-- CONNEXION -->
+  <p class="login-link">
+
+    Vous avez déjà un compte ?
+
+    <a routerLink="/login">
+      Se connecter
+    </a>
+
+  </p>
+
 </div>

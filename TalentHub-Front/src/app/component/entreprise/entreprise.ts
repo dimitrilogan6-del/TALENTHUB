@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EntrepriseService, type Entreprise as EntrepriseModel } from '../../services/entreprise';
+import { EntrepriseService } from '../../services/entreprise';
 
 @Component({
   selector: 'app-entreprise',
@@ -9,21 +9,22 @@ import { EntrepriseService, type Entreprise as EntrepriseModel } from '../../ser
   templateUrl: './entreprise.html',
   styleUrl: './entreprise.css'
 })
-export class Entreprise implements OnInit {
-  entreprises: EntrepriseModel[] = [];
+export class Entreprise{}
+// export class Entreprise implements OnInit {
+  // entreprises: EntrepriseModel[] = [];
 
-  constructor(private entrepriseService: EntrepriseService) {}
+  // constructor(private entrepriseService: EntrepriseService) {}
 
-  ngOnInit(): void {
-    this.entrepriseService.getEntreprises().subscribe({
-      next: (data: EntrepriseModel[]) => {
-        console.log('Données reçues:', data);
-        this.entreprises = data;
-        console.log('entreprises après assignation:', this.entreprises);
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des entreprises:', err);
-      }
-    });
-  }
-}
+  // ngOnInit(): void {
+  //   this.entrepriseService.getEntreprises().subscribe({
+  //     next: (data: EntrepriseModel[]) => {
+  //       console.log('Données reçues:', data);
+  //       this.entreprises = data;
+  //       console.log('entreprises après assignation:', this.entreprises);
+  //     },
+  //     error: (err) => {
+  //       console.error('Erreur lors du chargement des entreprises:', err);
+  //     }
+  //   });
+  // }
+// }

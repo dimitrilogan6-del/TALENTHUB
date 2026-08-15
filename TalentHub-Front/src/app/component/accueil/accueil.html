@@ -1,69 +1,367 @@
+<!-- =====================================================
+     PAGE D'ACCUEIL TALENTHUB
+===================================================== -->
 
-<section class="hero">
-  <div class="hero-visual" aria-hidden="true"></div>
-  <div class="hero-content">
-    <h1>Propulsez votre carriere,<br>Boostez votre entreprise</h1>
-    <p>La plateforme unique qui connecte les meilleurs talents, freelances et entreprises dans un ecosysteme fluide et securise</p>
-    <a href="#" class="btn-cta">Inscrivez-vous Maintenant</a>
-  </div>
-</section>
+<div class="home-page">
 
-<section class="stats">
-  <div>
-    <div class="stat-number">+500</div>
-    <div class="stat-label">Offres actives</div>
-  </div>
-  <div>
-    <div class="stat-number">+1200</div>
-    <div class="stat-label">Talents certifies</div>
-  </div>
-  <div>
-    <div class="stat-number">+300</div>
-    <div class="stat-label">Entreprises partenaires</div>
-  </div>
-</section>
+  <!-- ===================================================
+       HERO
+  ==================================================== -->
 
-<section class="why-section">
-  <h2>Pourquoi choisir TalentHub ?</h2>
-  <div class="cards">
-    <div class="card">
-      <div class="icon blue">🛡️</div>
-      <h3>Securite &amp; Confiance</h3>
-      <p>Des profils authentifies et des donnees securisees pour garantir des echanges professionnels fiables et transparents.</p>
-    </div>
-    <div class="card">
-      <div class="icon yellow">⚡</div>
-      <h3>Rapidite</h3>
-      <p>Une mise en relation rapide et efficace pour connecter les talents et les recruteurs sans delai.</p>
-    </div>
-    <div class="card">
-      <div class="icon green">🌍</div>
-      <h3>Impact Local</h3>
-      <p>Contribuez au developpement de l'ecosysteme professionnel local.</p>
-    </div>
-  </div>
-</section>
+  <section class="hero">
 
-<section class="offers-section">
-  <h2>Nouvelles Offres</h2>
-  <div class="offer-cards">
-    <div class="offer-card">
-      <h3>Developpeur Full Stack</h3>
-      <div class="company">Sonatel</div>
-      <div class="meta">CDI • Dakar</div>
-      <a href="#" class="btn-offer">Voir l'offre</a>
+    <!-- Image de fond -->
+    <img
+      src="assets/hero-bg.png"
+      alt=""
+      class="hero-background"
+    >
+
+    <!-- Overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Contenu -->
+    <div class="hero-container">
+
+      <div class="hero-text">
+
+        <h1>
+          Propulsez votre carrière,<br>
+          Boostez votre entreprise
+        </h1>
+
+        <p>
+          La plateforme qui connecte les talents,
+          freelances et entreprises pour créer
+          de nouvelles opportunités professionnelles.
+        </p>
+
+        <button
+          type="button"
+          class="btn-hero"
+          routerLink="/register"
+        >
+          Inscrivez-vous maintenant
+        </button>
+
+      </div>
+
     </div>
-    <div class="offer-card">
-      <h3>Developpeur Full Stack</h3>
-      <div class="company">Sonatel</div>
-      <div class="meta">CDI • Dakar</div>
-      <a href="#" class="btn-offer">Voir l'offre</a>
+
+  </section>
+
+
+  <!-- ===================================================
+       STATISTIQUES
+  ==================================================== -->
+
+  <section class="stats">
+
+    <div class="stats-grid">
+
+      <!-- TALENTS -->
+
+      <div class="stat-item">
+
+        <span class="stat-number">
+          +{{ nombreTalents }}
+        </span>
+
+        <span class="stat-label">
+          Talents inscrits
+        </span>
+
+      </div>
+
+
+      <!-- ENTREPRISES -->
+
+      <div class="stat-item">
+
+        <span class="stat-number">
+          +{{ nombreEntreprises }}
+        </span>
+
+        <span class="stat-label">
+          Entreprises
+        </span>
+
+      </div>
+
+
+      <!-- OFFRES -->
+
+      <div class="stat-item">
+
+        <span class="stat-number">
+          +{{ nombreOffres }}
+        </span>
+
+        <span class="stat-label">
+          Offres disponibles
+        </span>
+
+      </div>
+
     </div>
-    <div class="offer-card">
-      <h3>Developpeur Full Stack</h3>
-      <div class="company">Sonatel</div>
-      <div class="meta">CDI • Dakar</div>
-      <a href="#" class="btn-offer">Voir l'offre</a>
+
+  </section>
+
+
+  <!-- ===================================================
+       POURQUOI TALENTHUB
+  ==================================================== -->
+
+  <section class="features">
+
+    <div class="features-container">
+
+      <h2 class="section-title">
+        Pourquoi choisir TalentHub ?
+      </h2>
+
+
+      <div class="features-grid">
+
+
+        <!-- RAPIDITÉ -->
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1B365D"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+
+              <polyline
+                points="13 2 3 14 12 14 11 22 21 10 12 10"
+              ></polyline>
+
+            </svg>
+
+          </div>
+
+          <h3>
+            Rapidité
+          </h3>
+
+          <p>
+            Trouvez rapidement des opportunités et
+            connectez-vous facilement avec les bons profils.
+          </p>
+
+        </div>
+
+
+        <!-- IMPACT LOCAL -->
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1B365D"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              ></circle>
+
+              <line
+                x1="2"
+                y1="12"
+                x2="22"
+                y2="12"
+              ></line>
+
+              <path
+                d="M12 2a15.3 15.3 0 0 1 4 10
+                   15.3 15.3 0 0 1-4 10
+                   15.3 15.3 0 0 1-4-10
+                   15.3 15.3 0 0 1 4-10z"
+              ></path>
+
+            </svg>
+
+          </div>
+
+          <h3>
+            Impact local
+          </h3>
+
+          <p>
+            Participez au développement de l'écosystème
+            professionnel et valorisez les talents locaux.
+          </p>
+
+        </div>
+
+
+        <!-- CONFIANCE -->
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1B365D"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+
+              <path
+                d="M20 21v-2a4 4 0 0 0-4-4H8
+                   a4 4 0 0 0-4 4v2"
+              ></path>
+
+              <circle
+                cx="12"
+                cy="7"
+                r="4"
+              ></circle>
+
+            </svg>
+
+          </div>
+
+          <h3>
+            Confiance
+          </h3>
+
+          <p>
+            Un environnement professionnel pensé pour
+            favoriser des collaborations fiables et durables.
+          </p>
+
+        </div>
+
+      </div>
+
     </div>
-  </div>
-</section>
+
+  </section>
+
+
+  <!-- ===================================================
+       OFFRES DISPONIBLES
+  ==================================================== -->
+
+  <section class="offres-section">
+
+    <div class="offres-container">
+
+      <h2 class="section-title">
+        Dernières offres
+      </h2>
+
+
+      <!-- Chargement -->
+
+      <div
+        class="loading-message"
+        *ngIf="isLoading"
+      >
+        Chargement des offres...
+      </div>
+
+
+      <!-- Erreur -->
+
+      <div
+        class="error-message"
+        *ngIf="errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <!-- Aucune offre -->
+
+      <div
+        class="empty-message"
+        *ngIf="
+          !isLoading &&
+          !errorMessage &&
+          filteredOffres.length === 0
+        "
+      >
+        Aucune offre disponible pour le moment.
+      </div>
+
+
+      <!-- Offres -->
+
+      <div
+        class="offres-grid"
+        *ngIf="
+          !isLoading &&
+          filteredOffres.length > 0
+        "
+      >
+
+        <div
+          class="offre-card"
+          *ngFor="let offre of filteredOffres">
+
+          <div class="offre-top">
+            <span class="badge">
+              {{ offre.typeOffre }}
+            </span>
+            <span class="date">
+              {{ offre.datePublication | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <h3>
+            {{ offre.titre }}
+          </h3>
+
+          <p class="company">
+            {{ offre.entrepriseDetail?.nom || 'Entreprise' }}
+          </p>
+
+          <p class="details">
+            {{ offre.typeOffre }}
+          </p>
+
+          <button
+            type="button"
+            class="btn-offre"
+          >
+            Voir l'offre
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

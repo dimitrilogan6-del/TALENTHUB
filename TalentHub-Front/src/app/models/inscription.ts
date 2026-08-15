@@ -1,4 +1,4 @@
-export interface InscriptionData {
+export interface RegisterData {
   // Champs pour l'utilisateur (User)
   username: string;
   email: string;

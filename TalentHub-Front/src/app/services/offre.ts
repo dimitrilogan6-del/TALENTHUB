@@ -1,34 +1,70 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
-export interface Offre {
-  id: number;
-  titre: string;
-  datePublication: string;
-  dateLimite: string;
-  typeOffre: string;
-  description: string;
-  entreprise?: {
-    nom: string;
-    adresse?: string;
-    secteur?: string;
-  };
-}
+import {
+  HttpClient
+} from '@angular/common/http';
+
+import {
+  Observable
+} from 'rxjs';
+
+import {
+  Offre
+} from '../models/offre.model';
+
+import {
+  environment
+} from '../../environments/environment';
+
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class OffreService {
-  private apiUrl = 'http://127.0.0.1:8000/api/offres/offres/';
 
-  constructor(private http: HttpClient) {}
+  // =====================================================
+  // URL DE L'API
+  // =====================================================
+
+  private apiUrl =
+    environment.apiUrl +
+    'offres/offres/';
+
+
+  // =====================================================
+  // CONSTRUCTEUR
+  // =====================================================
+
+  constructor(
+    private http: HttpClient
+  ) {}
+
+
+  // =====================================================
+  // RÉCUPÉRER TOUTES LES OFFRES
+  // =====================================================
 
   getOffres(): Observable<Offre[]> {
-    return this.http.get<Offre[]>(this.apiUrl);
+
+    return this.http.get<Offre[]>(
+      this.apiUrl
+    );
+
   }
 
-  getOffreById(id: number): Observable<Offre> {
-    return this.http.get<Offre>(`${this.apiUrl}${id}/`);
+
+  // =====================================================
+  // RÉCUPÉRER UNE OFFRE
+  // =====================================================
+
+  getOffreById(
+    id: number
+  ): Observable<Offre> {
+
+    return this.http.get<Offre>(
+      `${this.apiUrl}${id}/`
+    );
+
   }
+
 }

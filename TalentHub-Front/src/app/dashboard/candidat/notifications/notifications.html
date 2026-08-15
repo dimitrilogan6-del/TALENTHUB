@@ -1,0 +1,50 @@
+<div class="notifications-page">
+
+  <div class="header">
+
+    <h2>
+      Notifications
+    </h2>
+
+    <button
+      (click)="toutMarquerLu()"
+    >
+      Tout marquer lu
+    </button>
+
+  </div>
+
+  <div
+    *ngFor="
+      let notification
+      of notifications
+    "
+    class="notification-card"
+    [class.unread]="!notification.lu"
+  >
+
+    <p>
+      {{ notification.contenu }}
+    </p>
+
+    <small>
+
+      {{
+        notification.dateEnvoi
+        | date:'dd/MM/yyyy HH:mm'
+      }}
+
+    </small>
+
+    <br>
+
+    <button
+      *ngIf="!notification.lu"
+      (click)="marquerLue(notification)"
+    >
+      Marquer comme lue
+    </button>
+
+  </div>
+
+</div>
