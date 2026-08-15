@@ -1,0 +1,310 @@
+/* =========================================================
+   PAGE NOTIFICATIONS
+========================================================= */
+
+.notifications-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 30px;
+  background: #f5f7fb;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   EN-TÊTE
+========================================================= */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 25px;
+  padding: 22px 25px;
+
+  background: #ffffff;
+  border: 1px solid #e8ebf2;
+  border-radius: 14px;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.header h2 {
+  margin: 0;
+
+  font-size: 25px;
+  font-weight: 700;
+
+  color: #1f2937;
+}
+
+
+/* =========================================================
+   BOUTON "TOUT MARQUER LU"
+========================================================= */
+
+.header button {
+  border: none;
+  outline: none;
+
+  padding: 11px 18px;
+
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.header button:hover {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.2);
+}
+
+.header button:active {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   CARTE NOTIFICATION
+========================================================= */
+
+.notification-card {
+  position: relative;
+
+  margin-bottom: 14px;
+  padding: 20px 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e7eaf0;
+  border-radius: 12px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.035);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.notification-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #d8deea;
+
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   NOTIFICATION NON LUE
+========================================================= */
+
+.notification-card.unread {
+  background: #f8fbff;
+
+  border-left: 4px solid #2563eb;
+
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.notification-card.unread::before {
+  content: "";
+
+  position: absolute;
+
+  top: 20px;
+  right: 20px;
+
+  width: 9px;
+  height: 9px;
+
+  background: #2563eb;
+
+  border-radius: 50%;
+}
+
+
+/* =========================================================
+   CONTENU
+========================================================= */
+
+.notification-card p {
+  margin: 0 0 10px 0;
+
+  padding-right: 25px;
+
+  color: #374151;
+
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.notification-card.unread p {
+  color: #111827;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.notification-card small {
+  display: inline-block;
+
+  margin-bottom: 12px;
+
+  color: #8a93a3;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   BOUTON MARQUER COMME LUE
+========================================================= */
+
+.notification-card button {
+  margin-top: 5px;
+
+  padding: 8px 13px;
+
+  border: 1px solid #dbe3f0;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #2563eb;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.notification-card button:hover {
+  background: #2563eb;
+
+  border-color: #2563eb;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   AUCUNE NOTIFICATION
+========================================================= */
+
+.notifications-page:has(.notification-card) {
+  /* Les cartes existent */
+}
+
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+.notifications-page {
+  overflow-y: auto;
+}
+
+
+/* Barre de défilement */
+
+.notifications-page::-webkit-scrollbar {
+  width: 7px;
+}
+
+.notifications-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notifications-page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.notifications-page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* =========================================================
+   RESPONSIVE TABLETTE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .notifications-page {
+    padding: 20px;
+  }
+
+  .header {
+    padding: 18px;
+  }
+
+  .header h2 {
+    font-size: 21px;
+  }
+
+  .header button {
+    padding: 9px 13px;
+
+    font-size: 13px;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE MOBILE
+========================================================= */
+
+@media (max-width: 500px) {
+
+  .notifications-page {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .header button {
+    width: 100%;
+  }
+
+  .notification-card {
+    padding: 17px;
+  }
+
+  .notification-card p {
+    font-size: 14px;
+  }
+
+}

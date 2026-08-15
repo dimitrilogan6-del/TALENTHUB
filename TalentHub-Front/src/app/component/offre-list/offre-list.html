@@ -1,56 +1,260 @@
-<!-- SECTION RECHERCHE ET FILTRES -->
+<!-- ============================= -->
+<!-- SECTION RECHERCHE -->
+<!-- ============================= -->
+
 <section class="search-section">
+
   <div class="container">
+
+    <!-- Barre de recherche -->
     <div class="search-bar">
-      <input type="text" 
-             placeholder="Rechercher une offre ( ex: Développeur, Architecte)" 
-             class="search-input"
-             (input)="onSearch($event)">
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Rechercher une offre, un poste ou une entreprise..."
+        [value]="searchTerm"
+        (input)="onSearch($event)"
+      />
+
     </div>
 
+
+    <!-- Filtres -->
     <div class="filters-bar">
+
       <div class="filter-group">
-        <label>Type de contrat</label>
-        <select class="filter-select" (change)="onFilterChange()" [(ngModel)]="selectedType">
-          <option>Tous les contrats</option>
-          <option>CDI</option>
-          <option>CDD</option>
-          <option>Stage</option>
-          <option>Freelance</option>
+
+        <label for="typeOffre">
+          Type de contrat
+        </label>
+
+        <select
+          id="typeOffre"
+          class="filter-select"
+          [(ngModel)]="selectedType"
+          (change)="onFilterChange()"
+        >
+
+          <option value="Tous les contrats">
+            Tous les contrats
+          </option>
+
+        <option value="stage">
+  Stage
+</option>
+
+<option value="freelance">
+  Freelance
+</option>
+
+<option value="alternance">
+  Alternance
+</option>
+
+<option value="interim">
+  Intérim
+</option>
+
         </select>
+
       </div>
+
+
       <div class="filter-group">
-        <label>Ville</label>
-        <select class="filter-select" (change)="onFilterChange()" [(ngModel)]="selectedVille">
-          <option>Toutes les villes</option>
-          <option>Dakar</option>
-          <option>Thiès</option>
-          <option>Saint-Louis</option>
-          <option>Ziguinchor</option>
+
+        <label for="ville">
+          Ville
+        </label>
+
+        <select
+          id="ville"
+          class="filter-select"
+          [(ngModel)]="selectedVille"
+          (change)="onFilterChange()"
+        >
+
+          <option value="Toutes les villes">
+            Toutes les villes
+          </option>
+
+          <option value="Dakar">
+            Dakar
+          </option>
+
+          <option value="Thiès">
+            Thiès
+          </option>
+
+          <option value="Saint-Louis">
+            Saint-Louis
+          </option>
+
+          <option value="Ziguinchor">
+            Ziguinchor
+          </option>
+
         </select>
+
       </div>
+
     </div>
+
   </div>
+
 </section>
 
+
+
+<!-- ============================= -->
 <!-- SECTION OFFRES -->
+<!-- ============================= -->
+
 <section class="offres-section">
+
   <div class="container">
-    <h2 class="section-title">Nouvelles Offres</h2>
-    
-    <div class="offres-grid">
-<div class="offre-card" *ngFor="let offre of filteredOffres">
-  <h3>{{ offre.titre }}</h3>
-  <p class="company">{{ offre.entreprise?.nom || 'Entreprise inconnue' }}</p>
-  <p class="details">{{ offre.typeOffre }} • {{ offre.dateLimite | date:'dd/MM/yyyy' }}</p>
-  <button class="btn-offre" [routerLink]="['/offres', offre.id]">Voir l'offre</button>
-</div>
+
+    <h2 class="section-title">
+      Offres disponibles
+    </h2>
+
+
+    <!-- Chargement -->
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Chargement des offres...
     </div>
-<div class="pagination" *ngIf="totalPages > 1">
-  <button class="page-btn" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Précédent</button>
-  <span class="page-info">Page {{ currentPage }} sur {{ totalPages }}</span>
-  <button class="page-btn" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Suivant</button>
-</div>
+
+
+    <!-- Erreur -->
+    <div
+      class="error-message"
+      *ngIf="!isLoading && errorMessage"
+    >
+      {{ errorMessage }}
+    </div>
+
+
+    <!-- Liste des offres -->
+    <div
+      class="offres-grid"
+      *ngIf="!isLoading && !errorMessage && filteredOffres.length > 0"
+    >
+
+    <div
+  class="offre-card"
+  *ngFor="let offre of filteredOffres">
+
+  <div class="offre-header">
+
+    <h3>
+      {{ offre.titre }}
+    </h3>
+
+    <span class="badge-type">
+      {{ offre.typeOffre }}
+    </span>
 
   </div>
+
+  <p class="company">
+
+
+    {{ offre.entrepriseDetail?.nom }}
+
+  </p>
+
+  <p class="location">
+
+
+    {{ offre.localisation }}
+
+  </p>
+
+  <p
+    class="salary"
+    *ngIf="offre.salaireMin"
+  >
+
+
+
+    {{ offre.salaireMin | number }}
+
+    -
+
+    {{ offre.salaireMax | number }}
+
+    {{ offre.deviseSalaire }}
+
+  </p>
+
+ 
+
+  <p class="date">
+
+    Expire le
+
+    {{ offre.dateLimite | date:'dd/MM/yyyy' }}
+
+  </p>
+
+  <button
+    class="btn-offre"
+    [routerLink]="['/offres', offre.id]">
+    Voir les détails
+  </button>
+
+</div>
+    </div>
+
+
+    <!-- Aucun résultat -->
+    <p
+      *ngIf="
+        !isLoading &&
+        !errorMessage &&
+        filteredOffres.length === 0
+      "
+      class="no-results"
+    >
+      Aucune offre ne correspond à vos critères.
+    </p>
+
+
+    <!-- Pagination -->
+    <div
+      class="pagination"
+      *ngIf="totalPages > 1"
+    >
+
+      <button
+        class="page-btn"
+        type="button"
+        (click)="changePage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        Précédent
+      </button>
+
+
+      <span class="page-info">
+        Page {{ currentPage }} sur {{ totalPages }}
+      </span>
+
+
+      <button
+        class="page-btn"
+        type="button"
+        (click)="changePage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >
+        Suivant
+      </button>
+
+    </div>
+
+  </div>
+
 </section>

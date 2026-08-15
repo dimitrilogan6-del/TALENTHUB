@@ -1,0 +1,367 @@
+<div class="candidate-layout">
+
+  <!-- ==========================================================
+       SIDEBAR
+  =========================================================== -->
+
+  <aside class="dashboard-sidebar">
+
+    <!-- LOGO -->
+
+    <div class="sidebar-logo">
+
+      <span class="logo-blue">
+        Talent
+      </span>
+
+      <span class="logo-green">
+        Hub
+      </span>
+
+    </div>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="sidebar-nav">
+
+      <span class="nav-title">
+        PRINCIPAL
+      </span>
+
+
+      <!-- DASHBOARD -->
+
+      <a
+        routerLink="/candidat/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+      >
+
+        <span class="nav-icon">
+          🏠
+        </span>
+
+        <span>
+          Tableau de bord
+        </span>
+
+      </a>
+
+
+      <!-- CANDIDATURES -->
+
+      <a
+        routerLink="/candidat/candidatures"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+
+        <span class="nav-icon">
+          📄
+        </span>
+
+        <span>
+          Mes candidatures
+        </span>
+
+        <span
+          class="nav-badge"
+          *ngIf="totalCandidatures > 0"
+        >
+          {{ totalCandidatures }}
+        </span>
+
+      </a>
+
+
+      <!-- ENTRETIENS -->
+
+      <a
+        routerLink="/candidat/entretiens"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+
+        <span class="nav-icon">
+          📅
+        </span>
+
+        <span>
+          Mes entretiens
+        </span>
+
+      </a>
+
+
+      <!-- OFFRES -->
+
+      <a
+        routerLink="/offres"
+        class="nav-item"
+      >
+
+        <span class="nav-icon">
+          🔎
+        </span>
+
+        <span>
+          Rechercher une offre
+        </span>
+
+      </a>
+
+
+      <span class="nav-title second-title">
+        COMMUNICATION
+      </span>
+
+
+      <!-- MESSAGES -->
+
+     <a
+  routerLink="/candidat/messages"
+  routerLinkActive="active"
+  class="nav-item"
+>
+
+  <span class="nav-icon">
+    💬
+  </span>
+
+  <span>
+    Messages
+  </span>
+
+  <span
+    class="nav-badge"
+    *ngIf="
+      dashboard &&
+      dashboard.statistiques.messages_non_lus > 0
+    "
+  >
+    {{ dashboard.statistiques.messages_non_lus }}
+  </span>
+
+</a>
+
+
+      <!-- NOTIFICATIONS -->
+
+   <a
+  routerLink="/candidat/notifications"
+  routerLinkActive="active"
+  class="nav-item"
+>
+
+  <span class="nav-icon">
+    🔔
+  </span>
+
+  <span>
+    Notifications
+  </span>
+
+  <span
+    class="nav-badge"
+    *ngIf="
+      dashboard &&
+      dashboard.statistiques.notifications_non_lues > 0
+    "
+  >
+    {{ dashboard.statistiques.notifications_non_lues }}
+  </span>
+
+</a>
+
+
+      <span class="nav-title second-title">
+        MON COMPTE
+      </span>
+
+
+      <!-- PARAMÈTRES -->
+
+      <a
+        routerLink="/candidat/parametres"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+
+        <span class="nav-icon">
+          ⚙️
+        </span>
+
+        <span>
+          Paramètres
+        </span>
+
+      </a>
+
+    </nav>
+
+
+    <!-- BAS SIDEBAR -->
+
+    <div class="sidebar-bottom">
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+
+        <span class="nav-icon">
+          🚪
+        </span>
+
+        <span>
+          Déconnexion
+        </span>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ==========================================================
+       ZONE PRINCIPALE
+  =========================================================== -->
+
+  <main class="main-area">
+
+
+    <!-- ========================================================
+         TOPBAR FIXE
+    ========================================================= -->
+
+    <header class="dashboard-topbar">
+
+
+      <!-- GAUCHE -->
+
+      <div class="topbar-left">
+
+        <div class="mobile-brand">
+
+          <span class="logo-blue">
+            Talent
+          </span>
+
+          <span class="logo-green">
+            Hub
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- DROITE -->
+
+      <div class="topbar-actions">
+
+
+        <!-- MODE SOMBRE -->
+
+        <button
+          type="button"
+          class="topbar-button theme-button"
+          (click)="toggleDarkMode()"
+          [title]="darkMode ? 'Mode clair' : 'Mode sombre'"
+        >
+
+          <span *ngIf="!darkMode">
+            🌙
+          </span>
+
+          <span *ngIf="darkMode">
+            ☀️
+          </span>
+
+        </button>
+
+
+        <!-- NOTIFICATIONS -->
+
+        <button
+          type="button"
+          class="topbar-button notification-button"
+          routerLink="/candidat/notifications"
+          title="Notifications"
+        >
+
+          🔔
+
+          <span
+            class="topbar-badge"
+            *ngIf="notificationsNonLues > 0"
+          >
+            {{ notificationsNonLues }}
+          </span>
+
+        </button>
+
+
+        <!-- PROFIL -->
+
+        <button
+          type="button"
+          class="topbar-user"
+          routerLink="/candidat/parametres"
+        >
+
+          <!-- PHOTO -->
+
+          <div class="topbar-avatar">
+
+            <img
+              *ngIf="photoProfil"
+              [src]="photoProfil"
+              alt="Photo de profil"
+            />
+
+            <span *ngIf="!photoProfil">
+              {{ initialeUtilisateur }}
+            </span>
+
+          </div>
+
+
+          <!-- INFOS -->
+
+          <div class="topbar-user-info">
+
+            <strong>
+              {{ nomComplet }}
+            </strong>
+
+            <span>
+              Candidat
+            </span>
+
+          </div>
+
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================================================
+         CONTENU
+    ========================================================= -->
+
+    <div class="page-content">
+
+      <router-outlet></router-outlet>
+
+    </div>
+
+  </main>
+
+</div>

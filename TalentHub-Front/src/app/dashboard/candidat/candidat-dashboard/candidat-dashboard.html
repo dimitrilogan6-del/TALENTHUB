@@ -1,0 +1,811 @@
+<p>candidat-dashboard works!</p>
+<!-- ============================================================
+     DASHBOARD CANDIDAT
+============================================================= -->
+
+<div class="candidate-dashboard">
+
+
+  <!-- ==========================================================
+       CONTENU PRINCIPAL
+  =========================================================== -->
+
+  <main class="dashboard-content">
+
+
+    <!-- ========================================================
+         CHARGEMENT
+    ========================================================= -->
+
+    <div
+      class="loading-state"
+      *ngIf="isLoading"
+    >
+
+      <div class="spinner"></div>
+
+      <p>
+        Chargement de votre tableau de bord...
+      </p>
+
+    </div>
+
+
+    <!-- ========================================================
+         ERREUR
+    ========================================================= -->
+
+    <div
+      class="error-state"
+      *ngIf="
+        !isLoading &&
+        errorMessage
+      "
+    >
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <h3>
+        Une erreur est survenue
+      </h3>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadDashboard()"
+      >
+
+        Réessayer
+
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         DASHBOARD
+    ========================================================= -->
+
+    <ng-container
+      *ngIf="
+        !isLoading &&
+        !errorMessage &&
+        dashboard as d
+      "
+    >
+
+
+      <!-- ======================================================
+           TOPBAR
+      ======================================================= -->
+
+    
+
+      <!-- ======================================================
+           STATISTIQUES
+      ======================================================= -->
+
+      <section class="stats-grid">
+
+
+        <!-- TOTAL -->
+
+        <div class="stat-card">
+
+          <div class="stat-icon blue">
+            📄
+          </div>
+
+          <div class="stat-content">
+
+            <span>
+              Candidatures
+            </span>
+
+            <strong>
+              {{
+                d.statistiques
+                  .total_candidatures
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- ATTENTE -->
+
+        <div class="stat-card">
+
+          <div class="stat-icon orange">
+            ⏳
+          </div>
+
+          <div class="stat-content">
+
+            <span>
+              En attente
+            </span>
+
+            <strong>
+              {{
+                d.statistiques
+                  .candidatures_en_attente
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- PRÉSÉLECTION -->
+
+        <div class="stat-card">
+
+          <div class="stat-icon purple">
+            ⭐
+          </div>
+
+          <div class="stat-content">
+
+            <span>
+              Présélectionnées
+            </span>
+
+            <strong>
+              {{
+                d.statistiques
+                  .candidatures_presselectionnees
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- ENTRETIEN -->
+
+        <div class="stat-card">
+
+          <div class="stat-icon cyan">
+            📅
+          </div>
+
+          <div class="stat-content">
+
+            <span>
+              Entretiens
+            </span>
+
+            <strong>
+              {{
+                d.statistiques
+                  .candidatures_entretien
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACCEPTÉES -->
+
+        <div class="stat-card">
+
+          <div class="stat-icon green">
+            ✓
+          </div>
+
+          <div class="stat-content">
+
+            <span>
+              Acceptées
+            </span>
+
+            <strong>
+              {{
+                d.statistiques
+                  .candidatures_acceptees
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- REFUSÉES -->
+
+        <div class="stat-card">
+
+          <div class="stat-icon red">
+            ×
+          </div>
+
+          <div class="stat-content">
+
+            <span>
+              Refusées
+            </span>
+
+            <strong>
+              {{
+                d.statistiques
+                  .candidatures_refusees
+              }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           GRILLE PRINCIPALE
+      ======================================================= -->
+
+      <div class="dashboard-grid">
+
+
+        <!-- ====================================================
+             CANDIDATURES RÉCENTES
+        ===================================================== -->
+
+        <section class="dashboard-section applications-section">
+
+          <div class="section-header">
+
+            <div>
+
+              <span class="section-label">
+                ACTIVITÉ RÉCENTE
+              </span>
+
+              <h2>
+                Mes dernières candidatures
+              </h2>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="section-link"
+              routerLink="/candidat/candidatures"
+            >
+
+              Voir tout
+
+              <span>
+                →
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- AUCUNE CANDIDATURE -->
+
+          <div
+            class="empty-state"
+            *ngIf="
+              d.candidatures_recentes.length === 0
+            "
+          >
+
+            <div class="empty-icon">
+              📄
+            </div>
+
+            <h3>
+              Aucune candidature
+            </h3>
+
+            <p>
+              Vous n'avez pas encore postulé
+              à une offre.
+            </p>
+
+            <button
+              type="button"
+              class="empty-button"
+              routerLink="/offres"
+            >
+
+              Découvrir les offres
+
+              <span>
+                →
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- LISTE -->
+
+          <div
+            class="applications-list"
+            *ngIf="
+              d.candidatures_recentes.length > 0
+            "
+          >
+
+            <div
+              class="application-card"
+              *ngFor="
+                let candidature of d.candidatures_recentes
+              "
+            >
+
+
+              <div class="application-main">
+
+                <div class="application-icon">
+                  💼
+                </div>
+
+
+                <div class="application-info">
+
+                  <h3>
+                    {{ candidature.titre_offre }}
+                  </h3>
+
+                  <p>
+                    {{ candidature.entreprise }}
+                  </p>
+
+                  <small>
+                    {{
+                      candidature.date
+                        | date:'dd/MM/yyyy'
+                    }}
+                  </small>
+
+                </div>
+
+              </div>
+
+
+              <span
+                class="status"
+                [ngClass]="
+                  getStatutClass(
+                    candidature.statut
+                  )
+                "
+              >
+
+                {{
+                  getStatutLabel(
+                    candidature.statut
+                  )
+                }}
+
+              </span>
+
+
+              <button
+                type="button"
+                class="view-application"
+                [routerLink]="[
+                  '/offres',
+                  candidature.offre_id
+                ]"
+              >
+
+                Voir
+
+                <span>
+                  →
+                </span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ====================================================
+             PROCHAIN ENTRETIEN
+        ===================================================== -->
+
+        <section class="dashboard-section interview-section">
+
+          <div class="section-header">
+
+            <div>
+
+              <span class="section-label">
+                PROCHAIN ENTRETIEN
+              </span>
+
+              <h2>
+                Votre prochain entretien
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <!-- ENTRETIEN DISPONIBLE -->
+
+          <div
+            class="interview-card"
+            *ngIf="d.prochain_entretien as entretien"
+          >
+
+            <div class="interview-icon">
+              📅
+            </div>
+
+
+            <div class="interview-content">
+
+              <span class="interview-status">
+                {{ entretien.statut }}
+              </span>
+
+              <h3>
+                {{ entretien.titre_offre }}
+              </h3>
+
+              <p class="interview-company">
+                {{ entretien.entreprise }}
+              </p>
+
+
+              <div class="interview-details">
+
+                <div>
+
+                  <span>
+                    📅
+                  </span>
+
+                  <strong>
+                    {{
+                      entretien.dateHeure
+                        | date:'dd/MM/yyyy'
+                    }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    🕐
+                  </span>
+
+                  <strong>
+                    {{
+                      entretien.dateHeure
+                        | date:'HH:mm'
+                    }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    📍
+                  </span>
+
+                  <strong>
+                    {{ entretien.type }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <!-- LIEU -->
+
+              <p
+                class="interview-place"
+                *ngIf="
+                  entretien.lieu
+                "
+              >
+
+                📍
+                {{ entretien.lieu }}
+
+              </p>
+
+
+              <!-- VISIO -->
+
+              <a
+                *ngIf="
+                  entretien.lienVisio
+                "
+                [href]="entretien.lienVisio"
+                target="_blank"
+                rel="noopener"
+                class="meeting-link"
+              >
+
+                Rejoindre l'entretien
+
+                <span>
+                  →
+                </span>
+
+              </a>
+
+            </div>
+
+          </div>
+
+
+          <!-- AUCUN ENTRETIEN -->
+
+          <div
+            class="empty-interview"
+            *ngIf="
+              !d.prochain_entretien
+            "
+          >
+
+            <div class="empty-interview-icon">
+              📅
+            </div>
+
+            <h3>
+              Aucun entretien prévu
+            </h3>
+
+            <p>
+              Vous n'avez pas encore
+              d'entretien à venir.
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- ======================================================
+           PROFIL
+      ======================================================= -->
+
+      <section class="profile-card">
+
+        <div class="profile-card-content">
+
+          <div class="profile-card-title">
+
+            <span class="section-label">
+              MON PROFIL
+            </span>
+
+            <h2>
+              Complétez votre profil
+            </h2>
+
+            <p>
+              Un profil complet augmente vos chances
+              d'être remarqué par les recruteurs.
+            </p>
+
+          </div>
+
+
+          <!-- PROGRESSION -->
+
+          <div class="profile-progress">
+
+            <div class="progress-header">
+
+              <span>
+                Profil complété
+              </span>
+
+              <strong>
+                {{ d.profil.profile_completion }}%
+              </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+              <div
+                class="progress-value"
+                [style.width.%]="
+                  d.profil.profile_completion
+                "
+              ></div>
+
+            </div>
+
+
+            <span class="progress-message">
+
+              <ng-container
+                *ngIf="
+                  d.profil.profile_completion < 50
+                "
+              >
+                Complétez votre profil pour
+                améliorer votre visibilité.
+              </ng-container>
+
+
+              <ng-container
+                *ngIf="
+                  d.profil.profile_completion >= 50 &&
+                  d.profil.profile_completion < 100
+                "
+              >
+                Votre profil est bien avancé.
+                Encore quelques informations !
+              </ng-container>
+
+
+              <ng-container
+                *ngIf="
+                  d.profil.profile_completion >= 100
+                "
+              >
+                🎉 Votre profil est complet !
+              </ng-container>
+
+            </span>
+
+          </div>
+
+
+          <!-- BOUTON -->
+
+          <button
+            type="button"
+            class="profile-button"
+            routerLink="/profil"
+          >
+
+            Modifier mon profil
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           ENTRETIENS À VENIR
+      ======================================================= -->
+
+      <section
+        class="dashboard-section upcoming-section"
+        *ngIf="
+          d.entretiens_a_venir.length > 1
+        "
+      >
+
+        <div class="section-header">
+
+          <div>
+
+            <span class="section-label">
+              CALENDRIER
+            </span>
+
+            <h2>
+              Mes prochains entretiens
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="section-link"
+            routerLink="/candidat/entretiens"
+          >
+
+            Voir le calendrier
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <div class="upcoming-list">
+
+          <div
+            class="upcoming-item"
+            *ngFor="
+              let entretien of d.entretiens_a_venir
+            "
+          >
+
+            <div class="upcoming-date">
+
+              <strong>
+                {{
+                  entretien.dateHeure
+                    | date:'dd'
+                }}
+              </strong>
+
+              <span>
+                {{
+                  entretien.dateHeure
+                    | date:'MMM'
+                }}
+              </span>
+
+            </div>
+
+
+            <div class="upcoming-info">
+
+              <h3>
+                {{ entretien.titre_offre }}
+              </h3>
+
+              <p>
+                {{ entretien.entreprise }}
+              </p>
+
+            </div>
+
+
+            <div class="upcoming-time">
+
+              {{
+                entretien.dateHeure
+                  | date:'HH:mm'
+              }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+    </ng-container>
+
+  </main>
+
+</div>

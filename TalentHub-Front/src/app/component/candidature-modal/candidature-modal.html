@@ -1,42 +1,167 @@
 <div class="modal-container">
-  <!-- Bouton Fermer (X) en haut à droite -->
-  <button class="close-btn" (click)="closeModal()">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+  <!-- ============================= -->
+  <!-- BOUTON FERMER -->
+  <!-- ============================= -->
+
+  <button
+    class="close-btn"
+    type="button"
+    (click)="closeModal()"
+    [disabled]="isSubmitting"
+    aria-label="Fermer"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#666"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
       <line x1="18" y1="6" x2="6" y2="18"></line>
       <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
   </button>
 
-  <!-- Titre de l'offre -->
-  <h2 class="offre-title">{{ data.titre }}</h2>
-  <p class="offre-entreprise">Entreprise : {{ data.entreprise }}</p>
+
+  <!-- ============================= -->
+  <!-- INFORMATIONS OFFRE -->
+  <!-- ============================= -->
+
+  <h2 class="offre-title">
+    Postuler à {{ data.titre }}
+  </h2>
+
+  <p class="offre-entreprise">
+    {{ data.entreprise }}
+  </p>
 
   <hr class="divider">
 
-  <!-- Section Importer CV -->
+
+  <!-- ============================= -->
+  <!-- MESSAGE D'ERREUR -->
+  <!-- ============================= -->
+
+  <div
+    class="error-box"
+    *ngIf="errorMessage"
+    role="alert"
+    aria-live="assertive"
+  >
+
+    <span class="error-icon">
+      !
+    </span>
+
+    <p class="error-text">
+      {{ errorMessage }}
+    </p>
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- CV -->
+  <!-- ============================= -->
+
   <div class="upload-section">
-    <label class="upload-label">Importer votre CV (PDF)</label>
+
+    <label class="upload-label">
+      Importer votre CV (PDF)
+    </label>
+
     <div class="upload-area">
-      <input type="file" accept=".pdf" (change)="onFileSelected($event)" #fileInput hidden>
-      <button class="btn-choose-file" (click)="fileInput.click()">Choisir un fichier</button>
-      <span class="file-name">{{ selectedFileName || 'Aucun fichier n\'a été sélectionné' }}</span>
+
+      <input
+        type="file"
+        accept=".pdf,application/pdf"
+        (change)="onFileSelected($event)"
+        #fileInput
+        hidden
+      >
+
+      <button
+        type="button"
+        class="btn-choose-file"
+        (click)="fileInput.click()"
+        [disabled]="isSubmitting"
+      >
+        Choisir un fichier
+      </button>
+
+      <span class="file-name">
+
+        {{
+          selectedFileName
+            ? selectedFileName
+            : "Aucun fichier sélectionné"
+        }}
+
+      </span>
+
     </div>
+
   </div>
 
-  <!-- Section Lettre de motivation -->
+
+  <!-- ============================= -->
+  <!-- LETTRE DE MOTIVATION -->
+  <!-- ============================= -->
+
   <div class="motivation-section">
-    <label class="motivation-label">Lettre de motivation courte</label>
-    <textarea class="motivation-input" placeholder="Pourquoi vous ?" [(ngModel)]="lettreMotivation"></textarea>
+
+    <label
+      class="motivation-label"
+      for="motivation"
+    >
+      Lettre de motivation courte
+    </label>
+
+    <textarea
+      id="motivation"
+      class="motivation-input"
+      placeholder="Pourquoi vous ? Présentez brièvement votre motivation..."
+      [(ngModel)]="lettreMotivation"
+      [disabled]="isSubmitting"
+      maxlength="1000"
+    ></textarea>
+
+    <small class="character-count">
+      {{ lettreMotivation.length }}/1000
+    </small>
+
   </div>
 
-  <!-- Bouton Envoyer -->
+
+  <!-- ============================= -->
+  <!-- BOUTON ENVOYER -->
+  <!-- ============================= -->
+
   <div class="actions">
-    <button class="btn-submit" (click)="submitCandidature()">Envoyer ma candidature</button>
+
+    <button
+      type="button"
+      class="btn-submit"
+      (click)="submitCandidature()"
+      [disabled]="isSubmitting"
+    >
+
+      <!-- Etat normal -->
+      <span *ngIf="!isSubmitting">
+        Envoyer ma candidature
+      </span>
+
+      <!-- Etat chargement uniquement -->
+      <span *ngIf="isSubmitting">
+        Envoi en cours...
+      </span>
+
+    </button>
+
   </div>
 
-  <!-- Message d'erreur si non connecté -->
-<div *ngIf="errorMessage" class="error-box">
-  <p class="error-text">{{ errorMessage }}</p>
-  <button class="btn-login-redirect" (click)="goToLogin()">Se connecter</button>
-</div>
 </div>

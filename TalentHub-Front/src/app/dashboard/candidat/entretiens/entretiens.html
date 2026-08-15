@@ -1,0 +1,1000 @@
+<div class="entretiens-page">
+
+  <!-- ======================================================
+       HEADER
+  ======================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="page-badge">
+        MES ENTRETIENS
+      </span>
+
+      <h1>
+        Vos entretiens
+      </h1>
+
+      <p>
+        Retrouvez ici tous vos entretiens avec les recruteurs
+        et gérez vos réponses.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       PROCHAIN ENTRETIEN
+  ======================================================= -->
+
+  <div
+    class="next-interview-card"
+    *ngIf="prochainEntretien as prochain"
+  >
+
+    <div class="next-icon">
+
+      <i class="fas fa-calendar-check"></i>
+
+    </div>
+
+    <div class="next-content">
+
+      <span class="next-label">
+        PROCHAIN ENTRETIEN
+      </span>
+
+      <h2>
+        {{ prochain.offre.titre }}
+      </h2>
+
+      <p>
+
+        <i class="fas fa-calendar"></i>
+
+        {{ formaterDateHeure(prochain.dateHeure) }}
+
+      </p>
+
+      <p>
+
+        <i class="fas fa-user-tie"></i>
+
+        Avec
+        {{ getNomUtilisateur(prochain.recruteur) }}
+
+      </p>
+
+    </div>
+
+    <button
+      class="btn-next-details"
+      (click)="voirDetails(prochain)"
+    >
+
+      Voir les détails
+
+      <i class="fas fa-arrow-right"></i>
+
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       STATISTIQUES
+  ======================================================= -->
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+
+      <div class="stat-icon total">
+
+        <i class="fas fa-calendar-alt"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Total
+        </span>
+
+        <strong>
+          {{ total }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon avenir">
+
+        <i class="fas fa-clock"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          À venir
+        </span>
+
+        <strong>
+          {{ aVenir }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon attente">
+
+        <i class="fas fa-hourglass-half"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          En attente
+        </span>
+
+        <strong>
+          {{ enAttente }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon confirme">
+
+        <i class="fas fa-check-circle"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Confirmés
+        </span>
+
+        <strong>
+          {{ confirmes }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon termine">
+
+        <i class="fas fa-check-double"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Terminés
+        </span>
+
+        <strong>
+          {{ termines }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon annule">
+
+        <i class="fas fa-times-circle"></i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Annulés
+        </span>
+
+        <strong>
+          {{ annules }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       FILTRES
+  ======================================================= -->
+
+  <div class="filters-card">
+
+    <div class="search-wrapper">
+
+      <i class="fas fa-search"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="recherche"
+        (input)="rechercher()"
+        placeholder="Rechercher un entretien..."
+      >
+
+    </div>
+
+
+    <div class="filter-row">
+
+      <!-- STATUT -->
+
+      <div class="filter-group">
+
+        <span>
+          Statut
+        </span>
+
+        <div class="filter-buttons">
+
+          <button
+            [class.active]="filtreStatut === 'Tous'"
+            (click)="filtrerParStatut('Tous')"
+          >
+            Tous
+          </button>
+
+          <button
+            [class.active]="filtreStatut === 'Planifié'"
+            (click)="filtrerParStatut('Planifié')"
+          >
+            Planifiés
+          </button>
+
+          <button
+            [class.active]="filtreStatut === 'Confirmé'"
+            (click)="filtrerParStatut('Confirmé')"
+          >
+            Confirmés
+          </button>
+
+          <button
+            [class.active]="filtreStatut === 'Terminé'"
+            (click)="filtrerParStatut('Terminé')"
+          >
+            Terminés
+          </button>
+
+          <button
+            [class.active]="filtreStatut === 'Annulé'"
+            (click)="filtrerParStatut('Annulé')"
+          >
+            Annulés
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- TYPE -->
+
+      <div class="filter-group">
+
+        <span>
+          Type
+        </span>
+
+        <div class="filter-buttons">
+
+          <button
+            [class.active]="filtreType === 'Tous'"
+            (click)="filtrerParType('Tous')"
+          >
+            Tous
+          </button>
+
+          <button
+            [class.active]="filtreType === 'Visio'"
+            (click)="filtrerParType('Visio')"
+          >
+            Visio
+          </button>
+
+          <button
+            [class.active]="filtreType === 'Présentiel'"
+            (click)="filtrerParType('Présentiel')"
+          >
+            Présentiel
+          </button>
+
+          <button
+            [class.active]="filtreType === 'Téléphonique'"
+            (click)="filtrerParType('Téléphonique')"
+          >
+            Téléphonique
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       CHARGEMENT
+  ======================================================= -->
+
+  <div
+    class="loading-container"
+    *ngIf="chargement"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement de vos entretiens...
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       ERREUR
+  ======================================================= -->
+
+  <div
+    class="error-message"
+    *ngIf="!chargement && erreur"
+  >
+
+    <i class="fas fa-exclamation-triangle"></i>
+
+    <span>
+      {{ erreur }}
+    </span>
+
+    <button
+      (click)="chargerEntretiens()"
+    >
+      Réessayer
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       AUCUN ENTRETIEN
+  ======================================================= -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !chargement &&
+      !erreur &&
+      entretiensFiltres.length === 0
+    "
+  >
+
+    <div class="empty-icon">
+
+      <i class="fas fa-calendar-times"></i>
+
+    </div>
+
+    <h2>
+      Aucun entretien
+    </h2>
+
+    <p>
+      Vous n'avez actuellement aucun entretien
+      correspondant à votre recherche.
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       LISTE
+  ======================================================= -->
+
+  <div
+    class="entretiens-list"
+    *ngIf="
+      !chargement &&
+      !erreur &&
+      entretiensFiltres.length > 0
+    "
+  >
+
+    <div
+      class="entretien-card"
+      *ngFor="
+        let entretien of entretiensFiltres
+      "
+    >
+
+      <!-- TYPE -->
+
+      <div class="entretien-type-icon">
+
+        <i
+          [class]="getIconeType(entretien.type)"
+        ></i>
+
+      </div>
+
+
+      <!-- CONTENU -->
+
+      <div class="entretien-main">
+
+        <div class="entretien-title-row">
+
+          <div>
+
+            <span class="type-label">
+              {{ entretien.type }}
+            </span>
+
+            <h2>
+              {{ entretien.offre.titre }}
+            </h2>
+
+            <p class="recruteur">
+
+              <i class="fas fa-user-tie"></i>
+
+              {{ getNomUtilisateur(entretien.recruteur) }}
+
+            </p>
+
+          </div>
+
+
+          <div class="badges">
+
+            <span
+              class="statut-badge"
+              [ngClass]="
+                getClasseStatut(entretien.statut)
+              "
+            >
+              {{ entretien.statut }}
+            </span>
+
+
+            <span
+              class="reponse-badge"
+              [ngClass]="
+                getClasseReponse(
+                  entretien.reponseCandidat
+                )
+              "
+            >
+              {{ entretien.reponseCandidat }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- META -->
+
+        <div class="entretien-meta">
+
+          <div>
+
+            <i class="fas fa-calendar"></i>
+
+            <span>
+              {{ formaterDateHeure(entretien.dateHeure) }}
+            </span>
+
+          </div>
+
+
+          <div
+            *ngIf="entretien.lieu"
+          >
+
+            <i class="fas fa-map-marker-alt"></i>
+
+            <span>
+              {{ entretien.lieu }}
+            </span>
+
+          </div>
+
+
+          <div
+            *ngIf="entretien.lienVisio"
+          >
+
+            <i class="fas fa-video"></i>
+
+            <span>
+              Entretien en visioconférence
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- COMMENTAIRE -->
+
+        <div
+          class="commentaire"
+          *ngIf="entretien.commentaire"
+        >
+
+          <i class="fas fa-comment-alt"></i>
+
+          <div>
+
+            <strong>
+              Informations du recruteur
+            </strong>
+
+            <p>
+              {{ entretien.commentaire }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="entretien-actions">
+
+          <button
+            class="btn-details"
+            (click)="voirDetails(entretien)"
+          >
+
+            <i class="fas fa-eye"></i>
+
+            Voir les détails
+
+          </button>
+
+
+          <button
+            class="btn-confirm"
+            *ngIf="
+              entretien.reponseCandidat ===
+              'En attente' &&
+              entretien.statut !== 'Annulé'
+            "
+            [disabled]="reponseEnCours"
+            (click)="confirmerEntretien(entretien)"
+          >
+
+            <i class="fas fa-check"></i>
+
+            Confirmer
+
+          </button>
+
+
+          <button
+            class="btn-refuse"
+            *ngIf="
+              entretien.reponseCandidat ===
+              'En attente' &&
+              entretien.statut !== 'Annulé'
+            "
+            [disabled]="reponseEnCours"
+            (click)="refuserEntretien(entretien)"
+          >
+
+            <i class="fas fa-times"></i>
+
+            Refuser
+
+          </button>
+
+
+          <a
+            *ngIf="
+              entretien.lienVisio &&
+              entretien.statut !== 'Annulé'
+            "
+            class="btn-visio"
+            [href]="entretien.lienVisio"
+            target="_blank"
+            rel="noopener"
+          >
+
+            <i class="fas fa-video"></i>
+
+            Rejoindre
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================================
+     MODAL
+======================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="
+    afficherDetails &&
+    entretienSelectionne
+  "
+  (click)="fermerDetails()"
+>
+
+  <div
+    class="details-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-label">
+          DÉTAIL DE L'ENTRETIEN
+        </span>
+
+        <h2>
+          {{ entretienSelectionne.offre.titre }}
+        </h2>
+
+        <p>
+
+          <i class="fas fa-user-tie"></i>
+
+          {{
+            getNomUtilisateur(
+              entretienSelectionne.recruteur
+            )
+          }}
+
+        </p>
+
+      </div>
+
+
+      <button
+        class="close-button"
+        (click)="fermerDetails()"
+      >
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- STATUT -->
+
+    <div class="modal-status">
+
+      <span
+        class="statut-badge"
+        [ngClass]="
+          getClasseStatut(
+            entretienSelectionne.statut
+          )
+        "
+      >
+        {{ entretienSelectionne.statut }}
+      </span>
+
+
+      <span
+        class="reponse-badge"
+        [ngClass]="
+          getClasseReponse(
+            entretienSelectionne.reponseCandidat
+          )
+        "
+      >
+        Réponse :
+        {{ entretienSelectionne.reponseCandidat }}
+      </span>
+
+    </div>
+
+
+    <!-- INFORMATIONS -->
+
+    <div class="details-section">
+
+      <h3>
+
+        <i class="fas fa-info-circle"></i>
+
+        Informations
+
+      </h3>
+
+
+      <div class="details-grid">
+
+        <div>
+
+          <span>
+            Date et heure
+          </span>
+
+          <strong>
+            {{
+              formaterDateHeure(
+                entretienSelectionne.dateHeure
+              )
+            }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Type
+          </span>
+
+          <strong>
+            {{ entretienSelectionne.type }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Recruteur
+          </span>
+
+          <strong>
+            {{
+              getNomUtilisateur(
+                entretienSelectionne.recruteur
+              )
+            }}
+          </strong>
+
+        </div>
+
+
+        <div
+          *ngIf="
+            entretienSelectionne.lieu
+          "
+        >
+
+          <span>
+            Lieu
+          </span>
+
+          <strong>
+            {{ entretienSelectionne.lieu }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- VISIO -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        entretienSelectionne.lienVisio
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-video"></i>
+
+        Visioconférence
+
+      </h3>
+
+      <a
+        class="visio-link"
+        [href]="
+          entretienSelectionne.lienVisio
+        "
+        target="_blank"
+        rel="noopener"
+      >
+
+        <i class="fas fa-external-link-alt"></i>
+
+        Rejoindre la visioconférence
+
+      </a>
+
+    </div>
+
+
+    <!-- COMMENTAIRE -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        entretienSelectionne.commentaire
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-comment"></i>
+
+        Informations du recruteur
+
+      </h3>
+
+      <div class="commentaire-detail">
+
+        {{
+          entretienSelectionne.commentaire
+        }}
+
+      </div>
+
+    </div>
+
+
+    <!-- ANNULATION -->
+
+    <div
+      class="details-section cancellation"
+      *ngIf="
+        entretienSelectionne.motifAnnulation
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-exclamation-circle"></i>
+
+        Motif d'annulation
+
+      </h3>
+
+      <div>
+
+        {{
+          entretienSelectionne.motifAnnulation
+        }}
+
+      </div>
+
+    </div>
+
+
+    <!-- RÉPONSE -->
+
+    <div
+      class="details-section"
+      *ngIf="
+        entretienSelectionne.reponseCandidat ===
+        'En attente' &&
+        entretienSelectionne.statut !==
+        'Annulé'
+      "
+    >
+
+      <h3>
+
+        <i class="fas fa-reply"></i>
+
+        Votre réponse
+
+      </h3>
+
+
+      <div class="modal-actions">
+
+        <button
+          class="btn-confirm-large"
+          [disabled]="reponseEnCours"
+          (click)="
+            confirmerEntretien(
+              entretienSelectionne
+            )
+          "
+        >
+
+          <i class="fas fa-check"></i>
+
+          Confirmer l'entretien
+
+        </button>
+
+
+        <button
+          class="btn-refuse-large"
+          [disabled]="reponseEnCours"
+          (click)="
+            refuserEntretien(
+              entretienSelectionne
+            )
+          "
+        >
+
+          <i class="fas fa-times"></i>
+
+          Refuser l'entretien
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-close"
+        (click)="fermerDetails()"
+      >
+
+        Fermer
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

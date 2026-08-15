@@ -2,23 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface Entreprise {
-  id?: number;
-  nom: string;
-  secteur: string;
-  localisation: string;
-  description: string;
-}
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EntrepriseService {
-   private apiUrl = { "entreprises" : " http://127.0.0.1:8000/api/entreprise/entreprises/ " };
 
-  constructor(private http: HttpClient) {}
+  private apiUrl =
+    environment.apiUrl + 'offres/entreprises/';
 
-  getEntreprises(): Observable<Entreprise[]> {
-    return this.http.get<Entreprise[]>(this.apiUrl.entreprises);
+  constructor(
+    private http: HttpClient
+  ) {}
+
+  getEntreprises(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      this.apiUrl
+    );
+
+  }
+
+  getEntrepriseById(id: number): Observable<any> {
+
+    return this.http.get<any>(
+      `${this.apiUrl}${id}/`
+    );
+
   }
 }

@@ -73,3 +73,71 @@
 .btn-login:hover {
   background: #2ecc71;
 }
+
+.user-menu{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  position:relative;
+}
+
+.header-icons{
+  display:flex;
+  gap:10px;
+}
+
+.icon-btn{
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-size:20px;
+}
+
+.profile-dropdown{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+}
+
+.avatar{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.username{
+  font-weight:600;
+  color:#1B365D;
+}
+
+.dropdown-menu{
+  position:absolute;
+  top:60px;
+  right:0;
+  background:white;
+  min-width:220px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+  overflow:hidden;
+  z-index:1000;
+}
+
+.dropdown-menu a,
+.dropdown-menu button{
+  width:100%;
+  padding:14px 18px;
+  text-align:left;
+  background:none;
+  border:none;
+  display:block;
+  cursor:pointer;
+  text-decoration:none;
+  color:#333;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover{
+  background:#f5f5f5;
+}

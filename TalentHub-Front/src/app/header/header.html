@@ -1,0 +1,85 @@
+<header class="main-header">
+
+  <div class="container">
+
+    <div class="header-content">
+
+      <div class="logo">
+        <span
+          routerLink="/"
+          class="logo-blue"
+        >
+          Talent
+        </span>
+
+        <span class="logo-green">
+          Hub
+        </span>
+      </div>
+
+      <nav class="main-nav">
+
+        <a routerLink="/">
+          Accueil
+        </a>
+
+        <a routerLink="/candidats">
+          Candidats
+        </a>
+
+        <a routerLink="/freelances">
+          Freelances
+        </a>
+
+        <a routerLink="/entreprises">
+          Entreprises
+        </a>
+
+        <a routerLink="/offres">
+          Offres
+        </a>
+
+      </nav>
+
+      <!-- NON CONNECTE -->
+
+      <div *ngIf="!isLoggedIn">
+
+        <button
+  *ngIf="!isLoggedIn"
+  class="btn-login"
+  routerLink="/login"
+>
+  Se Connecter
+</button>
+
+       
+
+      </div>
+
+      <!-- CONNECTE -->
+
+    <div
+  *ngIf="isLoggedIn"
+  class="user-menu"
+>
+  <img
+    src="assets/slide1.png"
+    class="avatar"
+    alt="Avatar"
+  >
+
+        <button
+          class="logout-btn"
+          (click)="logout()"
+        >
+          Déconnexion
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>

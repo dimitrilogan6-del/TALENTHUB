@@ -1,140 +1,202 @@
 .modal-container {
-  padding: 2rem;
-  min-width: 400px;
-  max-width: 500px;
   position: relative;
-  background: white;
-  border-radius: 12px;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  max-width: 650px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
+  top: 15px;
+  right: 15px;
   border: none;
+  background: #f5f5f5;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: #e9ecef;
 }
 
 .offre-title {
-  color: #1B365D;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
+  margin: 0;
+  color: #1b365d;
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
 .offre-entreprise {
-  color: #555;
-  margin-bottom: 1.5rem;
+  margin-top: 10px;
+  color: #666;
 }
 
 .divider {
-  border: 0;
-  border-top: 1px solid #e0e0e0;
-  margin-bottom: 1.5rem;
+  border: none;
+  height: 1px;
+  background: #eee;
+  margin: 20px 0;
 }
 
+/* MESSAGE ERREUR */
+
+.error-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  background: #fff5f5;
+  border: 1px solid #ffc9c9;
+
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.error-icon {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e03131;
+  color: white;
+  font-weight: bold;
+}
+
+.error-text {
+  margin: 0;
+  color: #c92a2a;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* CV */
+
 .upload-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
 .upload-label {
   display: block;
+  margin-bottom: 10px;
   font-weight: 600;
-  color: #1B365D;
-  margin-bottom: 0.8rem;
+  color: #1b365d;
 }
 
 .upload-area {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
   flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .btn-choose-file {
-  background: #E3F2FD;
-  color: #1B365D;
+  background: #1b365d;
+  color: white;
   border: none;
-  padding: 0.6rem 1.8rem;
-  border-radius: 12px;
-  font-weight: 600;
+  padding: 12px 18px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.file-name {
-  color: #888;
-  font-size: 0.9rem;
+.btn-choose-file:hover {
+  background: #132846;
 }
 
+.file-name {
+  color: #666;
+}
+
+/* LETTRE */
+
 .motivation-section {
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
 }
 
 .motivation-label {
   display: block;
+  margin-bottom: 10px;
   font-weight: 600;
-  color: #1B365D;
-  margin-bottom: 0.5rem;
+  color: #1b365d;
 }
 
 .motivation-input {
   width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  min-height: 140px;
   resize: vertical;
-  min-height: 100px;
-  font-family: inherit;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  padding: 14px;
+  box-sizing: border-box;
 }
 
+.motivation-input:focus {
+  outline: none;
+  border-color: #1b365d;
+}
+
+.character-count {
+  display: block;
+  text-align: right;
+  margin-top: 6px;
+  color: #888;
+}
+
+/* ACTION */
+
 .actions {
-  display: flex;
-  justify-content: center;
+  margin-top: 20px;
 }
 
 .btn-submit {
-  background: #2EBD6B;
-  color: white;
+  width: 100%;
+
   border: none;
-  padding: 0.8rem 2.5rem;
-  border-radius: 30px;
-  font-weight: 600;
+  border-radius: 10px;
+
+  padding: 14px;
+
+  background: #2ebd6b;
+  color: white;
+
   font-size: 1rem;
-  cursor: pointer;
-  transition: 0.3s;
-}
+  font-weight: 700;
 
-.btn-submit:hover {
-  background: #27ae60;
-  transform: scale(1.02);
-}
-
-.error-box {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.error-text {
-  color: #dc2626;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.btn-login-redirect {
-  background: #0A1E42;
-  color: white;
-  border: none;
-  padding: 0.4rem 1.5rem;
-  border-radius: 20px;
-  font-weight: 500;
   cursor: pointer;
 }
 
-.btn-login-redirect:hover {
-  background: #2EBD6B;
+.btn-submit:hover:not(:disabled) {
+  background: #28a860;
+}
+
+.btn-submit:disabled {
+  background: #9ad4b3;
+  cursor: not-allowed;
+}
+
+.btn-submit.btn-error {
+  background: #e03131;
+  cursor: default;
+  transform: none;
+}
+
+.btn-submit.btn-error:hover {
+  background: #c92a2a;
+  transform: none;
 }

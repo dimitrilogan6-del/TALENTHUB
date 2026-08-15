@@ -1,0 +1,553 @@
+<div class="messages-page">
+
+  <!-- ======================================================
+       EN-TÊTE
+  ======================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="page-badge">
+        MESSAGERIE
+      </span>
+
+      <h1>
+        Messages
+      </h1>
+
+      <p>
+        Échangez facilement avec les recruteurs et suivez vos conversations.
+      </p>
+
+    </div>
+
+
+    <!-- TOTAL NON LUS -->
+
+    <div
+      class="total-unread"
+      *ngIf="totalMessagesNonLus > 0"
+    >
+
+      <i class="fas fa-envelope"></i>
+
+      <span>
+        {{ totalMessagesNonLus }}
+      </span>
+
+      <small>
+        message{{ totalMessagesNonLus > 1 ? 's' : '' }} non lu{{ totalMessagesNonLus > 1 ? 's' : '' }}
+      </small>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       CHARGEMENT
+  ======================================================= -->
+
+  <div
+    class="loading-container"
+    *ngIf="loading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement de vos messages...
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       ERREUR
+  ======================================================= -->
+
+  <div
+    class="error-message"
+    *ngIf="!loading && erreur"
+  >
+
+    <i class="fas fa-exclamation-triangle"></i>
+
+    <span>
+      {{ erreur }}
+    </span>
+
+    <button
+      type="button"
+      (click)="chargerMessages()"
+    >
+      Réessayer
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       MESSAGERIE
+  ======================================================= -->
+
+  <div
+    class="messaging-container"
+    *ngIf="!loading && !erreur"
+  >
+
+
+    <!-- ====================================================
+         COLONNE GAUCHE : CONVERSATIONS
+    ===================================================== -->
+
+    <aside class="conversations-sidebar">
+
+
+      <!-- HEADER -->
+
+      <div class="conversations-header">
+
+        <div>
+
+          <h2>
+            Conversations
+          </h2>
+
+          <span>
+            {{ conversations.length }}
+            conversation{{ conversations.length > 1 ? 's' : '' }}
+          </span>
+
+        </div>
+
+        <div
+          class="header-message-icon"
+          *ngIf="totalMessagesNonLus > 0"
+        >
+
+          <i class="fas fa-envelope"></i>
+
+          <span>
+            {{ totalMessagesNonLus }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           LISTE DES CONVERSATIONS
+      =================================================== -->
+
+      <div class="conversations-list">
+
+
+        <!-- AUCUNE CONVERSATION -->
+
+        <div
+          class="empty-conversations"
+          *ngIf="conversations.length === 0"
+        >
+
+          <div class="empty-conversations-icon">
+
+            <i class="fas fa-comments"></i>
+
+          </div>
+
+          <h3>
+            Aucune conversation
+          </h3>
+
+          <p>
+            Vous n'avez encore aucune conversation.
+          </p>
+
+        </div>
+
+
+        <!-- CONVERSATIONS -->
+
+        <div
+          class="conversation-item"
+          *ngFor="let conversation of conversations"
+          [class.active]="
+            conversationSelectionnee?.utilisateur?.id ===
+            conversation.utilisateur?.id
+          "
+          [class.unread]="
+            conversation.messagesNonLus > 0
+          "
+          (click)="selectionnerConversation(conversation)"
+        >
+
+
+          <!-- AVATAR -->
+
+          <div class="conversation-avatar">
+
+            {{ getInitiales(conversation.utilisateur) }}
+
+          </div>
+
+
+          <!-- INFORMATIONS -->
+
+          <div class="conversation-info">
+
+            <div class="conversation-top">
+
+              <h3>
+                {{ getNomUtilisateur(conversation.utilisateur) }}
+              </h3>
+
+              <span class="conversation-date">
+
+                {{
+                  formaterDate(
+                    conversation.dernierMessage.dateEnvoi
+                  )
+                }}
+
+              </span>
+
+            </div>
+
+
+            <div class="conversation-bottom">
+
+              <p
+                [class.bold]="
+                  conversation.messagesNonLus > 0
+                "
+              >
+
+                <span
+                  *ngIf="
+                    conversation.dernierMessage.expediteur?.id ===
+                    utilisateurConnecteId
+                  "
+                  class="message-prefix"
+                >
+                  Vous :
+                </span>
+
+                {{
+                  apercuMessage(
+                    conversation.dernierMessage
+                  )
+                }}
+
+              </p>
+
+
+              <!-- NOMBRE DE NON LUS -->
+
+              <span
+                class="unread-count"
+                *ngIf="
+                  conversation.messagesNonLus > 0
+                "
+              >
+
+                {{ conversation.messagesNonLus }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- ====================================================
+         COLONNE DROITE : CONVERSATION
+    ===================================================== -->
+
+    <section class="conversation-panel">
+
+
+      <!-- ==================================================
+           AUCUNE CONVERSATION SÉLECTIONNÉE
+      =================================================== -->
+
+      <div
+        class="no-conversation"
+        *ngIf="!conversationSelectionnee"
+      >
+
+        <div class="no-conversation-icon">
+
+          <i class="fas fa-comments"></i>
+
+        </div>
+
+        <h2>
+          Vos messages
+        </h2>
+
+        <p>
+          Sélectionnez une conversation pour afficher les messages.
+        </p>
+
+      </div>
+
+
+      <!-- ==================================================
+           CONVERSATION ACTIVE
+      =================================================== -->
+
+      <ng-container
+        *ngIf="conversationSelectionnee"
+      >
+
+
+        <!-- =================================================
+             HEADER CONVERSATION
+        ================================================== -->
+
+        <div class="conversation-header">
+
+
+          <div class="conversation-user">
+
+            <div class="large-avatar">
+
+              {{
+                getInitiales(
+                  conversationSelectionnee.utilisateur
+                )
+              }}
+
+            </div>
+
+
+            <div>
+
+              <h2>
+
+                {{
+                  getNomUtilisateur(
+                    conversationSelectionnee.utilisateur
+                  )
+                }}
+
+              </h2>
+
+              <span>
+
+                <i class="fas fa-circle"></i>
+
+                Conversation
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- INFORMATIONS -->
+
+          <div class="conversation-header-info">
+
+            <span>
+              {{ messagesConversation.length }}
+              message{{ messagesConversation.length > 1 ? 's' : '' }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CORPS DES MESSAGES
+        ================================================== -->
+
+        <div
+          class="messages-body"
+          #messagesContainer
+        >
+
+
+          <!-- AUCUN MESSAGE -->
+
+          <div
+            class="empty-message-conversation"
+            *ngIf="messagesConversation.length === 0"
+          >
+
+            <div>
+
+              <i class="fas fa-comment-slash"></i>
+
+            </div>
+
+            <h3>
+              Aucun message
+            </h3>
+
+            <p>
+              Commencez la conversation en envoyant un message.
+            </p>
+
+          </div>
+
+
+          <!-- =================================================
+               MESSAGES
+          ================================================== -->
+
+          <div
+            class="message-row"
+            *ngFor="let message of messagesConversation"
+            [class.sent]="estMonMessage(message)"
+            [class.received]="!estMonMessage(message)"
+          >
+
+
+            <!-- AVATAR MESSAGE REÇU -->
+
+            <div
+              class="message-avatar"
+              *ngIf="!estMonMessage(message)"
+            >
+
+              {{
+                getInitiales(
+                  message.expediteur
+                )
+              }}
+
+            </div>
+
+
+            <!-- BULLE -->
+
+            <div class="message-content">
+
+
+              <div class="message-bubble">
+
+                <p>
+                  {{ message.contenu }}
+                </p>
+
+              </div>
+
+
+              <div class="message-meta">
+
+                <span>
+                  {{ formaterDate(message.dateEnvoi) }}
+                </span>
+
+
+                <!-- STATUT MESSAGE ENVOYÉ -->
+
+                <span
+                  class="message-status"
+                  *ngIf="estMonMessage(message)"
+                >
+
+                  <i
+                    class="fas"
+                    [class.fa-check-double]="message.lu"
+                    [class.fa-check]="!message.lu"
+                  ></i>
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FORMULAIRE ENVOI
+        ================================================== -->
+
+        <div class="message-form-container">
+
+
+          <form
+            class="message-form"
+            (ngSubmit)="envoyerMessage()"
+          >
+
+
+            <textarea
+              name="nouveauMessage"
+              [(ngModel)]="nouveauMessage"
+              rows="1"
+              placeholder="Écrivez votre message..."
+              [disabled]="envoiEnCours"
+              (keydown.enter)="gererToucheEntree($event)"
+            ></textarea>
+
+
+            <button
+              type="submit"
+              class="send-button"
+              [disabled]="
+                envoiEnCours ||
+                !nouveauMessage.trim()
+              "
+            >
+
+              <span
+                *ngIf="!envoiEnCours"
+              >
+
+                <i class="fas fa-paper-plane"></i>
+
+              </span>
+
+
+              <span
+                class="sending-spinner"
+                *ngIf="envoiEnCours"
+              ></span>
+
+            </button>
+
+          </form>
+
+
+          <div class="form-help">
+
+            <span>
+              <i class="fas fa-info-circle"></i>
+              Appuyez sur Entrée pour envoyer
+            </span>
+
+            <span>
+              Maj + Entrée pour une nouvelle ligne
+            </span>
+
+          </div>
+
+        </div>
+
+
+      </ng-container>
+
+    </section>
+
+  </div>
+
+</div>

@@ -1,42 +1,110 @@
-<section class="hero">
-  <div class="hero-content">
-    <h1>Recrutez les meilleurs talents locaux</h1>
-    <p>Qu’il s’agisse d’un besoin en CDI ou d’un renfort freelance sur un projet technique, accédez instantanément à notre vivier qualifié.</p>
-    <button class="btn-primary">Recruter Maintenant</button>
-  </div>
-
-  <div class="hero-visual">
-    <img src="/assets/image.hero-bg.jpg" >
-  </div>
-</section>
-
-<ul class="checklist">
-  <li>✔ Profils vérifiés individuellement</li>
-  <li>✔ Publication d'offres simplifiée</li>
-  <li>✔ Suivi des candidatures en temps réel</li>
-</ul>
-<section class="companies">
-
-  <h2>Nos Entreprises Collaboratrices</h2>
-  <div class="companies-grid">
-    
-    <div class="company-card" *ngFor="let entreprise of entreprises">
-      <div class="company-header">
-        <h3>{{ entreprise.nom }}</h3>
-        <span class="badge" [ngClass]="entreprise.secteur === 'Fintech' ? 'badge-fintech' : 'badge-telecom'">
-          {{ entreprise.secteur }}
-        </span>
-      </div>
-      <p class="location">
-        <svg class="pin-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-7.58 8-13a8 8 0 1 0-16 0c0 5.42 8 13 8 13z"></path>
-          <circle cx="12" cy="9" r="2.5"></circle>
-        </svg>
-        {{ entreprise.localisation }}
-      </p>
-      <p class="description">{{ entreprise.description }}</p>
-      <button class="btn-outline">Déposer une candidature spontanée</button>
+<!-- SECTION HERO -->
+<section class="hero-section">
+  <div class="container hero-grid">
+    <!-- Colonne Gauche -->
+    <div class="hero-text">
+      <h1>Recrutez les meilleurs talents locaux</h1>
+      <p>Qu'il s'agisse d'un besoin en CDI ou d'un renfort freelance sur un projet technique, accédez instantanément à notre vivier qualifié.</p>
+      <button class="btn-hero">Inscrivez-vous Maintenant</button>
+    </div>
+    <!-- Colonne Droite -->
+    <div class="hero-image">
+      <img src="assets/entreprise.png" alt="Recruteuse au travail">
     </div>
   </div>
 </section>
 
+<!-- SECTION AVANTAGES (Avec coches vertes) -->
+<section class="benefits-section">
+  <div class="container benefits-grid">
+    <div class="benefit-item">
+      <span class="check-icon">✓</span>
+      <p>Profils vérifiés individuellement</p>
+    </div>
+    <div class="benefit-item">
+      <span class="check-icon">✓</span>
+      <p>Publication d'offres simplifiée</p>
+    </div>
+    <div class="benefit-item">
+      <span class="check-icon">✓</span>
+      <p>Suivi des candidatures en temps réel</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION ENTREPRISES PARTENAIRES -->
+<section class="partners-section">
+  <div class="container">
+    <h2 class="section-title">Nos Entreprises Collaboratrices</h2>
+    
+    <div class="partners-grid">
+      <!-- Carte 1 -->
+      <div class="partner-card">
+        <div class="partner-header">
+          <h3>Sonatel</h3>
+          <span class="tag">Télécoms</span>
+        </div>
+        <p class="partner-location">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Dakar, Sénégal
+        </p>
+        <p class="partner-desc">Premier opérateur de télécommunications au Sénégal, offrant des opportunités variées en Tech, Data et Management.</p>
+        <button class="btn-partner">Déposer une candidature spontanée</button>
+      </div>
+
+      <!-- Carte 2 -->
+      <div class="partner-card">
+        <div class="partner-header">
+          <h3>Wave Mobile Money</h3>
+          <span class="tag">Fintech</span>
+        </div>
+        <p class="partner-location">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Dakar, Sénégal
+        </p>
+        <p class="partner-desc">Leader de l'inclusion financière avec un service de mobile money simple, rapide et radicalement abordable.</p>
+        <button class="btn-partner">Déposer une candidature spontanée</button>
+      </div>
+
+      <!-- Carte 3 -->
+      <div class="partner-card">
+        <div class="partner-header">
+          <h3>Sonatel</h3>
+          <span class="tag">Télécoms</span>
+        </div>
+        <p class="partner-location">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Dakar, Sénégal
+        </p>
+        <p class="partner-desc">Premier opérateur de télécommunications au Sénégal, offrant des opportunités variées en Tech, Data et Management.</p>
+        <button class="btn-partner">Déposer une candidature spontanée</button>
+      </div>
+
+      <!-- Carte 4 -->
+      <div class="partner-card">
+        <div class="partner-header">
+          <h3>Wave Mobile Money</h3>
+          <span class="tag">Fintech</span>
+        </div>
+        <p class="partner-location">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Dakar, Sénégal
+        </p>
+        <p class="partner-desc">Leader de l'inclusion financière avec un service de mobile money simple, rapide et radicalement abordable.</p>
+        <button class="btn-partner">Déposer une candidature spontanée</button>
+      </div>
+    </div>
+  </div>
+</section>
