@@ -33,6 +33,8 @@ import { NotificationsComponent } from './dashboard/candidat/notifications/notif
 import { ParametresComponent } from './dashboard/candidat/parametres/parametres';
 import { LoginComponent } from './component/login/login';
 import { AuthInterceptor } from './auth/auth-interceptor';
+import { MesCandidatures } from './dashboard/freelance/mes-candidatures/mes-candidatures';
+import { AdminDashboard } from './dashboard/admin/admin-dashboard/admin-dashboard';
 @NgModule({
   declarations: [
     App,
@@ -62,6 +64,8 @@ import { AuthInterceptor } from './auth/auth-interceptor';
     NotificationsComponent,
     ParametresComponent,
     LoginComponent,
+    MesCandidatures,
+    AdminDashboard,
   ],
   imports: [
     BrowserModule,
