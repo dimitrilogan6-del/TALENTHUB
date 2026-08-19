@@ -112,9 +112,19 @@ class InscriptionViewSet(
 # MON PROFIL
 # ============================================================
 
-class MonProfilViewSet(
-    viewsets.ModelViewSet
-):
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+
+from .models import Profil
+from .serializers import ProfilSerializer
+
+
+# ============================================================
+# MON PROFIL
+# ============================================================
+
+class MonProfilViewSet(viewsets.ModelViewSet):
 
     serializer_class = ProfilSerializer
 
@@ -122,17 +132,92 @@ class MonProfilViewSet(
         permissions.IsAuthenticated
     ]
 
+    # ========================================================
+    # PROFIL CONNECTÉ
+    # ========================================================
+
     def get_queryset(self):
 
         return Profil.objects.filter(
             user=self.request.user
         )
 
-    def get_object(self):
+    # ========================================================
+    # GET /api/profil/
+    # ========================================================
 
-        return self.request.user.profil
+    def list(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
 
+        profil = self.get_queryset().first()
 
+        if not profil:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil utilisateur introuvable."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(
+            profil
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+    # ========================================================
+    # PATCH /api/profil/modifier/
+    # ========================================================
+
+    @action(
+        detail=False,
+        methods=['patch'],
+        url_path='modifier'
+    )
+    def modifier(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        profil = self.get_queryset().first()
+
+        if not profil:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil utilisateur introuvable."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(
+            profil,
+            data=request.data,
+            partial=True
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        serializer.save()
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
 # ============================================================
 # MODIFICATION UTILISATEUR
 # ============================================================
@@ -1269,279 +1354,356 @@ class ChangerMotDePasseView(APIView):
 # ============================================================
 # DASHBOARD FREELANCE
 # ============================================================
+from django.db.models import Count, Sum
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from .models import Profil
+
+from app_missions.models import (
+    Mission,
+    CandidatureMission,
+)
+
 
 class FreelanceDashboardView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
-        user = request.user
 
         # =====================================================
         # PROFIL FREELANCE
         # =====================================================
 
         try:
-            profil = user.profil
+            profil = Profil.objects.select_related(
+                "user"
+            ).get(
+                user=request.user,
+                role="freelance"
+            )
+
         except Profil.DoesNotExist:
-            return Response(
-                {
-                    "detail": "Profil utilisateur introuvable."
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # =====================================================
-        # VÉRIFIER LE RÔLE
-        # =====================================================
-
-        if profil.role != "freelance":
 
             return Response(
                 {
-                    "detail":
-                        "Cet utilisateur n'est pas un freelance."
+                    "detail": "Profil freelance introuvable."
                 },
-                status=status.HTTP_403_FORBIDDEN
+                status=404
             )
 
-        # =====================================================
-        # NOM COMPLET
-        # =====================================================
-
-        nom_complet = (
-            f"{user.first_name} {user.last_name}"
-        ).strip()
-
-        if not nom_complet:
-            nom_complet = user.username
 
         # =====================================================
-        # PHOTO
+        # INFORMATIONS UTILISATEUR
         # =====================================================
 
-        photo_profil = None
+        utilisateur = {
 
-        if profil.photoProfil:
+            "id": request.user.id,
 
-            photo_profil = request.build_absolute_uri(
-                profil.photoProfil.url
-            )
+            "username": request.user.username,
 
-        # =====================================================
-        # STATISTIQUES PROFIL
-        # =====================================================
+            "prenom": request.user.first_name,
 
-        profile_completion = profil.profile_completion
+            "nom": request.user.last_name,
 
-        # =====================================================
-        # INFORMATIONS FREELANCE
-        # =====================================================
+            "nom_complet": (
+                f"{request.user.first_name} "
+                f"{request.user.last_name}"
+            ).strip()
+            or request.user.username,
 
-        return Response({
+            "email": request.user.email,
 
-            "utilisateur": {
+        }
 
-                "id": user.id,
-
-                "username": user.username,
-
-                "prenom": user.first_name,
-
-                "nom": user.last_name,
-
-                "nom_complet": nom_complet,
-
-                "email": user.email,
-
-            },
-
-            "profil": {
-
-                "id": profil.id,
-
-                "role": profil.role,
-
-                "titreProfessionnel":
-                    profil.titreProfessionnel,
-
-                "biographie":
-                    profil.biographie,
-
-                "anneesExperience":
-                    profil.anneesExperience,
-
-                "tarifHoraire":
-                    float(profil.tarifHoraire)
-                    if profil.tarifHoraire is not None
-                    else None,
-
-                "deviseTarif":
-                    profil.deviseTarif,
-
-                "disponibilite":
-                    profil.disponibilite,
-
-                "portfolioUrl":
-                    profil.portfolioUrl,
-
-                "linkedinUrl":
-                    profil.linkedinUrl,
-
-                "githubUrl":
-                    profil.githubUrl,
-
-                "telephone":
-                    profil.telephone,
-
-                "specialite":
-                    profil.specialite,
-
-                "photoProfil":
-                    photo_profil,
-
-                "statut_compte":
-                    profil.statut_compte,
-
-                "profile_completion":
-                    profile_completion,
-
-            },
-
-            "statistiques": {
-
-                "profile_completion":
-                    profile_completion,
-
-                "annees_experience":
-                    profil.anneesExperience,
-
-                "disponibilite":
-                    profil.disponibilite,
-
-            }
-
-        })
-# ============================================================
-# DASHBOARD RECRUTEUR
-# ============================================================
-
-class RecruteurDashboardView(APIView):
-
-    permission_classes = [
-        IsAuthenticated
-    ]
-
-    def get(self, request):
-
-        user = request.user
 
         # =====================================================
         # PROFIL
         # =====================================================
 
-        try:
-            profil = user.profil
-        except Profil.DoesNotExist:
+        photo = None
 
-            return Response(
-                {
-                    "detail":
-                        "Profil introuvable."
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
+        if profil.photoProfil:
+
+            try:
+
+                photo = request.build_absolute_uri(
+                    profil.photoProfil.url
+                )
+
+            except Exception:
+
+                photo = None
+
+
+        profil_data = {
+
+            "id": profil.id,
+
+            "role": profil.role,
+
+            "titreProfessionnel":
+                profil.titreProfessionnel,
+
+            "biographie":
+                profil.biographie,
+
+            "anneesExperience":
+                profil.anneesExperience,
+
+            "tarifHoraire":
+                profil.tarifHoraire,
+
+            "deviseTarif":
+                profil.deviseTarif,
+
+            "disponibilite":
+                profil.disponibilite,
+
+            "portfolioUrl":
+                profil.portfolioUrl,
+
+            "linkedinUrl":
+                profil.linkedinUrl,
+
+            "githubUrl":
+                profil.githubUrl,
+
+            "telephone":
+                profil.telephone,
+
+            "specialite":
+                profil.specialite,
+
+            "photoProfil":
+                photo,
+
+            "statut_compte":
+                profil.statut_compte,
+
+            "profile_completion":
+                profil.profile_completion,
+
+        }
+
 
         # =====================================================
-        # VÉRIFICATION RÔLE
+        # MISSIONS DU FREELANCE
         # =====================================================
 
-        if profil.role != "recruteur":
-
-            return Response(
-                {
-                    "detail":
-                        "Accès réservé aux recruteurs."
-                },
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        # =====================================================
-        # NOM COMPLET
-        # =====================================================
-
-        nom_complet = (
-            f"{user.first_name} {user.last_name}"
-        ).strip()
-
-        if not nom_complet:
-            nom_complet = user.username
-
-        # =====================================================
-        # ENTREPRISES DU RECRUTEUR
-        # =====================================================
-
-        associations = (
-            RecruteurEntreprise.objects
-            .filter(
-                recruteur=profil,
-                actif=True
-            )
-            .select_related(
-                "entreprise"
-            )
+        missions = Mission.objects.filter(
+            freelance=profil
+        ).order_by(
+            "-created_at"
         )
 
-        entreprises = []
 
-        for association in associations:
+        missions_total = missions.count()
 
-            entreprise = association.entreprise
 
-            entreprises.append({
+        missions_en_cours = missions.filter(
+            statut="en_cours"
+        ).count()
 
-                "id":
-                    entreprise.id,
 
-                "nom":
-                    entreprise.nom,
+        missions_terminees = missions.filter(
+            statut="terminee"
+        ).count()
+
+
+        missions_en_attente = missions.filter(
+            statut="en_attente"
+        ).count()
+
+
+        # =====================================================
+        # CANDIDATURES
+        # =====================================================
+
+        candidatures = CandidatureMission.objects.filter(
+            freelance=profil
+        ).select_related(
+            "mission",
+            "mission__entreprise"
+        ).order_by(
+            "-dateCandidature"
+        )
+
+
+        candidatures_total = candidatures.count()
+
+
+        candidatures_en_attente = candidatures.filter(
+            statut="en_attente"
+        ).count()
+
+
+        candidatures_acceptees = candidatures.filter(
+            statut="acceptee"
+        ).count()
+
+
+        candidatures_refusees = candidatures.filter(
+            statut="refusee"
+        ).count()
+
+
+        # =====================================================
+        # MISSIONS RÉCENTES
+        # =====================================================
+
+        missions_recentes = []
+
+        for mission in missions[:5]:
+
+            missions_recentes.append({
+
+                "id": mission.id,
+
+                "titre": mission.titre,
+
+                "description":
+                    mission.description,
+
+                "entreprise":
+                    mission.entreprise.nom
+                    if mission.entreprise
+                    else None,
 
                 "statut":
-                    entreprise.statut,
+                    mission.statut,
 
-                "verifiee":
-                    entreprise.verifiee,
+                "montant":
+                    mission.budgetMax,
+
+                "dateDebut":
+                    mission.dateDebut,
+
+                "dateFin":
+                    mission.dateFinPrevue,
+
+                "created_at":
+                    mission.created_at,
 
             })
 
-        # =====================================================
-        # MESSAGES NON LUS
-        # =====================================================
-
-        messages_non_lus = (
-            Message.objects
-            .filter(
-                destinataire=user,
-                lu=False
-            )
-            .count()
-        )
 
         # =====================================================
-        # NOTIFICATIONS NON LUES
+        # CANDIDATURES RÉCENTES
         # =====================================================
 
-        notifications_non_lues = (
-            Notification.objects
-            .filter(
-                destinataire=user,
-                lu=False
-            )
-            .count()
-        )
+        candidatures_recentes = []
+
+        for candidature in candidatures[:5]:
+
+            candidatures_recentes.append({
+
+                "id":
+                    candidature.id,
+
+                "offre_id":
+                    candidature.mission.id,
+
+                "offre_titre":
+                    candidature.mission.titre,
+
+                "entreprise":
+                    candidature.mission.entreprise.nom
+                    if candidature.mission.entreprise
+                    else None,
+
+                "statut":
+                    candidature.statut,
+
+                "date_candidature":
+                    candidature.dateCandidature,
+
+            })
+
+
+        # =====================================================
+        # STATISTIQUES
+        # =====================================================
+
+        statistiques = {
+
+            "profile_completion":
+                profil.profile_completion,
+
+            "annees_experience":
+                profil.anneesExperience,
+
+            "disponibilite":
+                profil.disponibilite,
+
+
+            # MISSIONS
+
+            "missions_total":
+                missions_total,
+
+            "missions_en_cours":
+                missions_en_cours,
+
+            "missions_terminees":
+                missions_terminees,
+
+            "missions_en_attente":
+                missions_en_attente,
+
+
+            # CANDIDATURES
+
+            "candidatures_total":
+                candidatures_total,
+
+            "candidatures_en_attente":
+                candidatures_en_attente,
+
+            "candidatures_acceptees":
+                candidatures_acceptees,
+
+            "candidatures_refusees":
+                candidatures_refusees,
+
+
+            # SERVICES
+
+            "services_total":
+                0,
+
+            "services_actifs":
+                0,
+
+            "services_inactifs":
+                0,
+
+
+            # REVENUS
+
+            "revenus_total":
+                0,
+
+            "revenus_mois":
+                0,
+
+            "revenus_en_attente":
+                0,
+
+
+            # COMMUNICATION
+
+            "messages_non_lus":
+                0,
+
+            "notifications_non_lues":
+                0,
+
+        }
+
 
         # =====================================================
         # RÉPONSE
@@ -1549,64 +1711,19 @@ class RecruteurDashboardView(APIView):
 
         return Response({
 
-            "utilisateur": {
+            "utilisateur":
+                utilisateur,
 
-                "id":
-                    user.id,
+            "profil":
+                profil_data,
 
-                "username":
-                    user.username,
+            "statistiques":
+                statistiques,
 
-                "prenom":
-                    user.first_name,
+            "missions_recentes":
+                missions_recentes,
 
-                "nom":
-                    user.last_name,
-
-                "nom_complet":
-                    nom_complet,
-
-                "email":
-                    user.email,
-
-            },
-
-            "profil": {
-
-                "id":
-                    profil.id,
-
-                "role":
-                    profil.role,
-
-                "telephone":
-                    profil.telephone,
-
-                "specialite":
-                    profil.specialite,
-
-                "statut_recruteur":
-                    profil.statut_recruteur,
-
-                "profile_completion":
-                    profil.profile_completion,
-
-            },
-
-            "entreprises":
-                entreprises,
-
-            "statistiques": {
-
-                "nombre_entreprises":
-                    len(entreprises),
-
-                "messages_non_lus":
-                    messages_non_lus,
-
-                "notifications_non_lues":
-                    notifications_non_lues,
-
-            }
+            "candidatures_recentes":
+                candidatures_recentes,
 
         })

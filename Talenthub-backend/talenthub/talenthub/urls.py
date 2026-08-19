@@ -1,14 +1,9 @@
 from django.contrib import admin
-
-from django.urls import (
-    path,
-    include
-)
+from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
 
-from app_users.views import CandidatDashboardView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
@@ -65,19 +60,22 @@ urlpatterns = [
 
 
     # ========================================================
-    # CANDIDATURES
+    # ENTRETIENS + CANDIDATURES
     # ========================================================
 
     path(
-        'api/candidatures/',
+        'api/',
         include('app_candidatures.urls')
     ),
+    # ========================================================
+    # MISSIONS + CANDIDATURES
+    # ========================================================
 
-     path(
-        "api/dashboard/",
-        CandidatDashboardView.as_view(),
-        name="candidat-dashboard"
+    path(
+        'api/',
+        include('app_missions.urls')
     ),
+
 ]
 
 
