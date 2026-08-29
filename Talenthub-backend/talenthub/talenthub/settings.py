@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app_users',
     "offres",
+    'app_missions',
     'app_candidatures',
     "rest_framework",
     'rest_framework_simplejwt',

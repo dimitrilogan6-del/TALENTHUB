@@ -1,22 +1,25 @@
 from django.utils import timezone as django_timezone
 from django.contrib.auth.models import User
-
-from rest_framework import ( viewsets, permissions, status)
-from rest_framework.views import APIView
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.db.models import Count, Sum
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from app_candidatures.models import Candidature, Entretien
-
 from rest_framework.views import APIView
-
 from rest_framework.response import Response
-
+from rest_framework import ( viewsets, permissions, status)
+from django.db.models import Q
+from app_candidatures.models import Candidature, Entretien
 from rest_framework.decorators import action
+from rest_framework import viewsets, permissions, status
+from app_candidatures.services.matching import calculer_matching
+from offres.models import Offre
 
 from .models import ( Entreprise, Profil, RecruteurEntreprise, Message, Notification,)
+
 from .serializers import (
     FreelanceSerializer,
+    MesEntrepriseSerializer,
     UserSerializer,
     ProfilSerializer,
     InscriptionSerializer,
@@ -104,9 +107,7 @@ class InscriptionViewSet(
 # MON PROFIL
 # ============================================================
 
-class MonProfilViewSet(
-    viewsets.ModelViewSet
-):
+class MonProfilViewSet(viewsets.ModelViewSet):
 
     serializer_class = ProfilSerializer
 
@@ -114,17 +115,92 @@ class MonProfilViewSet(
         permissions.IsAuthenticated
     ]
 
+    # ========================================================
+    # PROFIL CONNECTÉ
+    # ========================================================
+
     def get_queryset(self):
 
         return Profil.objects.filter(
             user=self.request.user
         )
 
-    def get_object(self):
+    # ========================================================
+    # GET /api/profil/
+    # ========================================================
 
-        return self.request.user.profil
+    def list(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
 
+        profil = self.get_queryset().first()
 
+        if not profil:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil utilisateur introuvable."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(
+            profil
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+    # ========================================================
+    # PATCH /api/profil/modifier/
+    # ========================================================
+
+    @action(
+        detail=False,
+        methods=['patch'],
+        url_path='modifier'
+    )
+    def modifier(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        profil = self.get_queryset().first()
+
+        if not profil:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil utilisateur introuvable."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(
+            profil,
+            data=request.data,
+            partial=True
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        serializer.save()
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
 # ============================================================
 # MODIFICATION UTILISATEUR
 # ============================================================
@@ -466,6 +542,24 @@ class RecruteurEntrepriseViewSet(
 # ============================================================
 # MESSAGES
 # ============================================================
+from django.db.models import Q
+
+from rest_framework import (
+    viewsets,
+    permissions,
+    status
+)
+
+from rest_framework.decorators import action
+
+from rest_framework.response import Response
+
+from django.contrib.auth.models import User
+
+from .models import Message
+
+from .serializers import MessageSerializer
+
 
 class MessageViewSet(
     viewsets.ModelViewSet
@@ -477,17 +571,36 @@ class MessageViewSet(
         permissions.IsAuthenticated
     ]
 
+
+    # =========================================================
+    # MESSAGES DE L'UTILISATEUR
+    # =========================================================
+
     def get_queryset(self):
 
         user = self.request.user
 
         return Message.objects.filter(
-            destinataire=user
+
+            Q(expediteur=user) |
+
+            Q(destinataire=user)
+
         ).select_related(
-            "expediteur"
+
+            "expediteur",
+            "destinataire"
+
         ).order_by(
+
             "-dateEnvoi"
+
         )
+
+
+    # =========================================================
+    # ENVOYER UN MESSAGE
+    # =========================================================
 
     def create(
         self,
@@ -504,6 +617,7 @@ class MessageViewSet(
             "contenu"
         )
 
+
         if not destinataire_id:
 
             return Response(
@@ -514,6 +628,7 @@ class MessageViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+
         if not contenu or not contenu.strip():
 
             return Response(
@@ -523,6 +638,7 @@ class MessageViewSet(
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
 
         try:
 
@@ -540,8 +656,9 @@ class MessageViewSet(
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        # Empêcher de s'envoyer un message
-        # à soi-même.
+
+        # Empêcher de s'envoyer
+        # un message à soi-même
 
         if destinataire == request.user:
 
@@ -554,18 +671,32 @@ class MessageViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+
         message = Message.objects.create(
+
             expediteur=request.user,
+
             destinataire=destinataire,
+
             contenu=contenu.strip()
+
         )
 
+
         return Response(
+
             MessageSerializer(
                 message
             ).data,
+
             status=status.HTTP_201_CREATED
+
         )
+
+
+    # =========================================================
+    # MARQUER COMME LU
+    # =========================================================
 
     @action(
         detail=True,
@@ -580,9 +711,11 @@ class MessageViewSet(
         message = self.get_object()
 
         message.lu = True
+
         message.save(
             update_fields=["lu"]
         )
+
 
         return Response(
             {
@@ -590,7 +723,6 @@ class MessageViewSet(
                 "Message marqué comme lu."
             }
         )
-
 
 # ============================================================
 # NOTIFICATIONS
@@ -813,7 +945,7 @@ class AdministrationViewSet(
         )
 
 class CandidatDashboardView(APIView):
-
+    
     permission_classes = [
         IsAuthenticated
     ]
@@ -831,6 +963,7 @@ class CandidatDashboardView(APIView):
         except Profil.DoesNotExist:
             profil = None
 
+
         nom_complet = (
             f"{user.first_name} {user.last_name}"
         ).strip()
@@ -838,10 +971,12 @@ class CandidatDashboardView(APIView):
         if not nom_complet:
             nom_complet = user.username
 
+
         profile_completion = 0
 
         if profil:
             profile_completion = profil.profile_completion
+
 
         # =====================================================
         # CANDIDATURES
@@ -861,153 +996,73 @@ class CandidatDashboardView(APIView):
             )
         )
 
-        # =====================================================
-        # STATISTIQUES
-        # =====================================================
-
-        total_candidatures = candidatures.count()
-
-        candidatures_en_attente = candidatures.filter(
-            statut="En attente"
-        ).count()
-
-        candidatures_presselectionnees = candidatures.filter(
-            statut="Présélectionnée"
-        ).count()
-
-        candidatures_entretien = candidatures.filter(
-            statut="Entretien"
-        ).count()
-
-        candidatures_acceptees = candidatures.filter(
-            statut="Acceptée"
-        ).count()
-
-        candidatures_refusees = candidatures.filter(
-            statut="Refusée"
-        ).count()
 
         # =====================================================
-        # CANDIDATURES RÉCENTES
+        # STATISTIQUES CANDIDATURES
         # =====================================================
 
-        candidatures_recentes = []
-
-        for candidature in candidatures[:5]:
-
-            entreprise_nom = "Entreprise inconnue"
-
-            if candidature.offre.entreprise:
-                entreprise_nom = (
-                    candidature.offre.entreprise.nom
-                )
-
-            candidatures_recentes.append({
-
-                "id": candidature.id,
-
-                "offre_id": candidature.offre.id,
-
-                "titre_offre":
-                    candidature.offre.titre,
-
-                "entreprise":
-                    entreprise_nom,
-
-                "statut":
-                    candidature.statut,
-
-                "date":
-                    candidature.dateSoumission,
-
-            })
-
-        # =====================================================
-        # ENTRETIENS À VENIR
-        # =====================================================
-
-        maintenant = django_timezone.now()
-
-        entretiens = (
-            Entretien.objects
-            .filter(
-                candidature__candidat=user,
-                dateHeure__gte=maintenant,
-                statut__in=[
-                    "Planifié",
-                    "Confirmé"
-                ]
-            )
-            .select_related(
-                "candidature",
-                "candidature__offre",
-                "candidature__offre__entreprise"
-            )
-            .order_by(
-                "dateHeure"
-            )
+        total_candidatures = (
+            candidatures.count()
         )
 
-        entretiens_a_venir = []
+        candidatures_en_attente = (
+            candidatures
+            .filter(statut="En attente")
+            .count()
+        )
 
-        for entretien in entretiens[:5]:
+        candidatures_presselectionnees = (
+            candidatures
+            .filter(statut="Présélectionnée")
+            .count()
+        )
 
-            entreprise_nom = "Entreprise inconnue"
+        candidatures_entretien = (
+            candidatures
+            .filter(statut="Entretien")
+            .count()
+        )
 
-            if entretien.candidature.offre.entreprise:
-                entreprise_nom = (
-                    entretien
-                    .candidature
-                    .offre
-                    .entreprise
-                    .nom
-                )
+        candidatures_acceptees = (
+            candidatures
+            .filter(statut="Acceptée")
+            .count()
+        )
 
-            entretiens_a_venir.append({
+        candidatures_refusees = (
+            candidatures
+            .filter(statut="Refusée")
+            .count()
+        )
 
-                "id":
-                    entretien.id,
-
-                "titre_offre":
-                    entretien
-                    .candidature
-                    .offre
-                    .titre,
-
-                "entreprise":
-                    entreprise_nom,
-
-                "dateHeure":
-                    entretien.dateHeure,
-
-                "type":
-                    entretien.type,
-
-                "lieu":
-                    entretien.lieu,
-
-                "lienVisio":
-                    entretien.lienVisio,
-
-                "statut":
-                    entretien.statut,
-
-                "reponseCandidat":
-                    entretien.reponseCandidat,
-
-            })
 
         # =====================================================
-        # PROCHAIN ENTRETIEN
+        # MESSAGES NON LUS
         # =====================================================
 
-        prochain_entretien = None
-
-        if entretiens_a_venir:
-
-            prochain_entretien = (
-                entretiens_a_venir[0]
+        messages_non_lus = (
+            Message.objects
+            .filter(
+                destinataire=user,
+                lu=False
             )
+            .count()
+        )
+
+
+        # =====================================================
+        # NOTIFICATIONS NON LUES
+        # =====================================================
+
+        notifications_non_lues = (
+            Notification.objects
+            .filter(
+                destinataire=user,
+                lu=False
+            )
+            .count()
+        )
+
 
         # =====================================================
         # RÉPONSE
@@ -1017,45 +1072,52 @@ class CandidatDashboardView(APIView):
 
             "utilisateur": {
 
-                "id":
-                    user.id,
+                "id": user.id,
 
-                "username":
-                    user.username,
+                "username": user.username,
 
-                "prenom":
-                    user.first_name,
+                "prenom": user.first_name,
 
-                "nom":
-                    user.last_name,
+                "nom": user.last_name,
 
-                "nom_complet":
-                    nom_complet,
+                "nom_complet": nom_complet,
 
-                "email":
-                    user.email,
+                "email": user.email,
 
             },
+
 
             "profil": {
 
                 "id":
-                    profil.id if profil else None,
+                    profil.id
+                    if profil
+                    else None,
 
                 "role":
-                    profil.role if profil else "candidat",
+                    profil.role
+                    if profil
+                    else "candidat",
 
                 "telephone":
-                    profil.telephone if profil else None,
+                    profil.telephone
+                    if profil
+                    else None,
 
                 "specialite":
-                    profil.specialite if profil else None,
+                    profil.specialite
+                    if profil
+                    else None,
 
                 "niveauEtude":
-                    profil.niveauEtude if profil else None,
+                    profil.niveauEtude
+                    if profil
+                    else None,
 
                 "dernierDiplome":
-                    profil.dernierDiplome if profil else None,
+                    profil.dernierDiplome
+                    if profil
+                    else None,
 
                 "photoProfil":
                     (
@@ -1073,6 +1135,7 @@ class CandidatDashboardView(APIView):
                     profile_completion,
 
             },
+
 
             "statistiques": {
 
@@ -1094,16 +1157,1171 @@ class CandidatDashboardView(APIView):
                 "candidatures_refusees":
                     candidatures_refusees,
 
+                "messages_non_lus":
+                    messages_non_lus,
+
+                "notifications_non_lues":
+                    notifications_non_lues,
+
             },
 
-            "prochain_entretien":
-                prochain_entretien,
+        })
+
+# ============================================================
+# CHANGEMENT DE MOT DE PASSE
+# ============================================================
+
+class ChangerMotDePasseView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request):
+
+        user = request.user
+
+        # =====================================================
+        # RÉCUPÉRER LES DONNÉES
+        # =====================================================
+
+        ancien_mot_de_passe = request.data.get(
+            "ancien_mot_de_passe"
+        )
+
+        nouveau_mot_de_passe = request.data.get(
+            "nouveau_mot_de_passe"
+        )
+
+        confirmation_mot_de_passe = request.data.get(
+            "confirmation_mot_de_passe"
+        )
+
+        # =====================================================
+        # VÉRIFICATIONS
+        # =====================================================
+
+        if not ancien_mot_de_passe:
+            return Response(
+                {
+                    "ancien_mot_de_passe":
+                        "L'ancien mot de passe est obligatoire."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not nouveau_mot_de_passe:
+            return Response(
+                {
+                    "nouveau_mot_de_passe":
+                        "Le nouveau mot de passe est obligatoire."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not confirmation_mot_de_passe:
+            return Response(
+                {
+                    "confirmation_mot_de_passe":
+                        "La confirmation du mot de passe est obligatoire."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # VÉRIFIER L'ANCIEN MOT DE PASSE
+        # =====================================================
+
+        if not user.check_password(
+            ancien_mot_de_passe
+        ):
+
+            return Response(
+                {
+                    "ancien_mot_de_passe":
+                        "L'ancien mot de passe est incorrect."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # VÉRIFIER LA CONFIRMATION
+        # =====================================================
+
+        if (
+            nouveau_mot_de_passe
+            != confirmation_mot_de_passe
+        ):
+
+            return Response(
+                {
+                    "confirmation_mot_de_passe":
+                        "Les mots de passe ne correspondent pas."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # EMPÊCHER DE RÉUTILISER L'ANCIEN
+        # =====================================================
+
+        if user.check_password(
+            nouveau_mot_de_passe
+        ):
+
+            return Response(
+                {
+                    "nouveau_mot_de_passe":
+                        "Le nouveau mot de passe doit être différent de l'ancien."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # VALIDATION DJANGO
+        # =====================================================
+
+        try:
+
+            validate_password(
+                nouveau_mot_de_passe,
+                user=user
+            )
+
+        except ValidationError as error:
+
+            return Response(
+                {
+                    "nouveau_mot_de_passe":
+                        list(error.messages)
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # =====================================================
+        # CHANGER LE MOT DE PASSE
+        # =====================================================
+
+        user.set_password(
+            nouveau_mot_de_passe
+        )
+
+        user.save(
+            update_fields=[
+                "password"
+            ]
+        )
+
+        # =====================================================
+        # CONSERVER LA SESSION
+        # =====================================================
+
+        update_session_auth_hash(
+            request,
+            user
+        )
+
+        # =====================================================
+        # RÉPONSE
+        # =====================================================
+
+        return Response(
+            {
+                "message":
+                    "Votre mot de passe a été modifié avec succès."
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+# ============================================================
+# DASHBOARD FREELANCE
+# ============================================================
+
+
+from .models import Profil
+
+from app_missions.models import (
+    Mission,
+    CandidatureMission,
+)
+
+
+class FreelanceDashboardView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        # =====================================================
+        # PROFIL FREELANCE
+        # =====================================================
+
+        try:
+            profil = Profil.objects.select_related(
+                "user"
+            ).get(
+                user=request.user,
+                role="freelance"
+            )
+
+        except Profil.DoesNotExist:
+
+            return Response(
+                {
+                    "detail": "Profil freelance introuvable."
+                },
+                status=404
+            )
+
+
+        # =====================================================
+        # INFORMATIONS UTILISATEUR
+        # =====================================================
+
+        utilisateur = {
+
+            "id": request.user.id,
+
+            "username": request.user.username,
+
+            "prenom": request.user.first_name,
+
+            "nom": request.user.last_name,
+
+            "nom_complet": (
+                f"{request.user.first_name} "
+                f"{request.user.last_name}"
+            ).strip()
+            or request.user.username,
+
+            "email": request.user.email,
+
+        }
+
+
+        # =====================================================
+        # PROFIL
+        # =====================================================
+
+        photo = None
+
+        if profil.photoProfil:
+
+            try:
+
+                photo = request.build_absolute_uri(
+                    profil.photoProfil.url
+                )
+
+            except Exception:
+
+                photo = None
+
+
+        profil_data = {
+
+            "id": profil.id,
+
+            "role": profil.role,
+
+            "titreProfessionnel":
+                profil.titreProfessionnel,
+
+            "biographie":
+                profil.biographie,
+
+            "anneesExperience":
+                profil.anneesExperience,
+
+            "tarifHoraire":
+                profil.tarifHoraire,
+
+            "deviseTarif":
+                profil.deviseTarif,
+
+            "disponibilite":
+                profil.disponibilite,
+
+            "portfolioUrl":
+                profil.portfolioUrl,
+
+            "linkedinUrl":
+                profil.linkedinUrl,
+
+            "githubUrl":
+                profil.githubUrl,
+
+            "telephone":
+                profil.telephone,
+
+            "specialite":
+                profil.specialite,
+
+            "photoProfil":
+                photo,
+
+            "statut_compte":
+                profil.statut_compte,
+
+            "profile_completion":
+                profil.profile_completion,
+
+        }
+
+
+        # =====================================================
+        # MISSIONS DU FREELANCE
+        # =====================================================
+
+        missions = Mission.objects.filter(
+            freelance=profil
+        ).order_by(
+            "-created_at"
+        )
+
+
+        missions_total = missions.count()
+
+
+        missions_en_cours = missions.filter(
+            statut="en_cours"
+        ).count()
+
+
+        missions_terminees = missions.filter(
+            statut="terminee"
+        ).count()
+
+
+        missions_en_attente = missions.filter(
+            statut="en_attente"
+        ).count()
+
+
+        # =====================================================
+        # CANDIDATURES
+        # =====================================================
+
+        candidatures = CandidatureMission.objects.filter(
+            freelance=profil
+        ).select_related(
+            "mission",
+            "mission__entreprise"
+        ).order_by(
+            "-dateCandidature"
+        )
+
+
+        candidatures_total = candidatures.count()
+
+
+        candidatures_en_attente = candidatures.filter(
+            statut="en_attente"
+        ).count()
+
+
+        candidatures_acceptees = candidatures.filter(
+            statut="acceptee"
+        ).count()
+
+
+        candidatures_refusees = candidatures.filter(
+            statut="refusee"
+        ).count()
+
+
+        # =====================================================
+        # MISSIONS RÉCENTES
+        # =====================================================
+
+        missions_recentes = []
+
+        for mission in missions[:5]:
+
+            missions_recentes.append({
+
+                "id": mission.id,
+
+                "titre": mission.titre,
+
+                "description":
+                    mission.description,
+
+                "entreprise":
+                    mission.entreprise.nom
+                    if mission.entreprise
+                    else None,
+
+                "statut":
+                    mission.statut,
+
+                "montant":
+                    mission.budgetMax,
+
+                "dateDebut":
+                    mission.dateDebut,
+
+                "dateFin":
+                    mission.dateFinPrevue,
+
+                "created_at":
+                    mission.created_at,
+
+            })
+
+
+        # =====================================================
+        # CANDIDATURES RÉCENTES
+        # =====================================================
+
+        candidatures_recentes = []
+
+        for candidature in candidatures[:5]:
+
+            candidatures_recentes.append({
+
+                "id":
+                    candidature.id,
+
+                "offre_id":
+                    candidature.mission.id,
+
+                "offre_titre":
+                    candidature.mission.titre,
+
+                "entreprise":
+                    candidature.mission.entreprise.nom
+                    if candidature.mission.entreprise
+                    else None,
+
+                "statut":
+                    candidature.statut,
+
+                "date_candidature":
+                    candidature.dateCandidature,
+
+            })
+
+
+        # =====================================================
+        # STATISTIQUES
+        # =====================================================
+
+        statistiques = {
+
+            "profile_completion":
+                profil.profile_completion,
+
+            "annees_experience":
+                profil.anneesExperience,
+
+            "disponibilite":
+                profil.disponibilite,
+
+
+            # MISSIONS
+
+            "missions_total":
+                missions_total,
+
+            "missions_en_cours":
+                missions_en_cours,
+
+            "missions_terminees":
+                missions_terminees,
+
+            "missions_en_attente":
+                missions_en_attente,
+
+
+            # CANDIDATURES
+
+            "candidatures_total":
+                candidatures_total,
+
+            "candidatures_en_attente":
+                candidatures_en_attente,
+
+            "candidatures_acceptees":
+                candidatures_acceptees,
+
+            "candidatures_refusees":
+                candidatures_refusees,
+
+
+            # SERVICES
+
+            "services_total":
+                0,
+
+            "services_actifs":
+                0,
+
+            "services_inactifs":
+                0,
+
+
+            # REVENUS
+
+            "revenus_total":
+                0,
+
+            "revenus_mois":
+                0,
+
+            "revenus_en_attente":
+                0,
+
+
+            # COMMUNICATION
+
+            "messages_non_lus":
+                0,
+
+            "notifications_non_lues":
+                0,
+
+        }
+
+
+        # =====================================================
+        # RÉPONSE
+        # =====================================================
+
+        return Response({
+
+            "utilisateur":
+                utilisateur,
+
+            "profil":
+                profil_data,
+
+            "statistiques":
+                statistiques,
+
+            "missions_recentes":
+                missions_recentes,
 
             "candidatures_recentes":
                 candidatures_recentes,
 
-            "entretiens_a_venir":
-                entretiens_a_venir,
-
         })
+
+class RecruteurDashboardView(APIView):
     
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        # ====================================================
+        # PROFIL RECRUTEUR
+        # ====================================================
+
+        try:
+
+            profil = Profil.objects.select_related(
+                "user"
+            ).get(
+                user=request.user,
+                role="recruteur"
+            )
+
+        except Profil.DoesNotExist:
+
+            return Response(
+                {
+                    "detail":
+                        "Profil recruteur introuvable."
+                },
+                status=404
+            )
+
+        # ====================================================
+        # ENTREPRISE PRINCIPALE
+        # ====================================================
+
+        association = (
+            RecruteurEntreprise.objects
+            .select_related("entreprise")
+            .filter(
+                recruteur=profil,
+                actif=True
+            )
+            .order_by(
+                "-principal",
+                "-dateAssociation"
+            )
+            .first()
+        )
+
+        entreprise = (
+            association.entreprise
+            if association
+            else None
+        )
+
+        # ====================================================
+        # OFFRES DU RECRUTEUR
+        # ====================================================
+
+        offres = (
+            Offre.objects
+            .filter(
+                recruteur=request.user
+            )
+            .select_related("entreprise")
+            .order_by("-created_at")
+        )
+
+        # ====================================================
+        # CANDIDATURES
+        # ====================================================
+
+        candidatures = (
+            Candidature.objects
+            .filter(
+                offre__recruteur=request.user
+            )
+            .select_related(
+                "candidat",
+                "candidat__profil",
+                "offre",
+                "offre__entreprise"
+            )
+            .prefetch_related(
+                "offre__niveaux_competences__competence",
+                "candidat__profil__competences"
+            )
+            .order_by(
+                "-dateSoumission"
+            )
+        )
+
+        # ====================================================
+        # ENTRETIENS
+        # ====================================================
+
+        entretiens = (
+            Entretien.objects
+            .filter(
+                recruteur=request.user
+            )
+            .select_related(
+                "candidature",
+                "candidature__candidat",
+                "candidature__offre"
+            )
+            .order_by(
+                "dateHeure"
+            )
+        )
+
+        # ====================================================
+        # STATISTIQUES
+        # ====================================================
+
+        statistiques = {
+
+            "offres_total":
+                offres.count(),
+
+            "offres_publiees":
+                offres.filter(
+                    statut="publiee"
+                ).count(),
+
+            "offres_brouillons":
+                offres.filter(
+                    statut="brouillon"
+                ).count(),
+
+            "offres_suspendues":
+                offres.filter(
+                    statut="suspendue"
+                ).count(),
+
+            "offres_fermees":
+                offres.filter(
+                    statut="fermee"
+                ).count(),
+
+            "candidatures_total":
+                candidatures.count(),
+
+            "candidatures_attente":
+                candidatures.filter(
+                    statut="En attente"
+                ).count(),
+
+            "candidatures_preselectionnees":
+                candidatures.filter(
+                    statut="Présélectionnée"
+                ).count(),
+
+            "candidatures_entretien":
+                candidatures.filter(
+                    statut="Entretien"
+                ).count(),
+
+            "candidatures_acceptees":
+                candidatures.filter(
+                    statut="Acceptée"
+                ).count(),
+
+            "candidatures_refusees":
+                candidatures.filter(
+                    statut="Refusée"
+                ).count(),
+
+            "entretiens_planifies":
+                entretiens.filter(
+                    statut="Planifié"
+                ).count(),
+
+            "entretiens_confirmes":
+                entretiens.filter(
+                    statut="Confirmé"
+                ).count(),
+
+            "entretiens_a_venir":
+                entretiens.filter(
+                    statut__in=[
+                        "Planifié",
+                        "Confirmé"
+                    ]
+                ).count(),
+
+            "messages_non_lus":
+                Message.objects.filter(
+                    destinataire=request.user,
+                    lu=False
+                ).count(),
+
+            "notifications_non_lues":
+                Notification.objects.filter(
+                    destinataire=request.user,
+                    lu=False
+                ).count(),
+        }
+
+        # ====================================================
+        # DERNIÈRES OFFRES
+        # ====================================================
+
+        offres_recentes = []
+
+        for offre in offres[:5]:
+
+            offres_recentes.append({
+
+                "id":
+                    offre.id,
+
+                "titre":
+                    offre.titre,
+
+                "typeOffre":
+                    offre.typeOffre,
+
+                "statut":
+                    offre.statut,
+
+                "localisation":
+                    offre.localisation,
+
+                "datePublication":
+                    offre.datePublication,
+
+                "dateLimite":
+                    offre.dateLimite,
+
+                "nombre_candidatures":
+                    offre.candidatures.count(),
+
+            })
+
+        # ====================================================
+        # CANDIDATURES AVEC MATCHING
+        # ====================================================
+
+        candidatures_matching = []
+
+        for candidature in candidatures:
+
+            matching = calculer_matching(
+                candidature
+            )
+
+            candidat = candidature.candidat
+
+            try:
+
+                candidat_profil = (
+                    candidat.profil
+                )
+
+            except Profil.DoesNotExist:
+
+                candidat_profil = None
+
+            candidatures_matching.append({
+
+                "id":
+                    candidature.id,
+
+                "candidat_id":
+                    candidat.id,
+
+                "nom":
+                    (
+                        candidat.get_full_name()
+                        or candidat.username
+                    ),
+
+                "email":
+                    candidat.email,
+
+                "photoProfil":
+                    (
+                        request.build_absolute_uri(
+                            candidat_profil.photoProfil.url
+                        )
+                        if (
+                            candidat_profil
+                            and candidat_profil.photoProfil
+                        )
+                        else None
+                    ),
+
+                "offre_id":
+                    candidature.offre.id,
+
+                "offre":
+                    candidature.offre.titre,
+
+                "statut":
+                    candidature.statut,
+
+                "dateSoumission":
+                    candidature.dateSoumission,
+
+                "score_matching":
+                    matching["score"],
+
+                "details_matching": {
+
+                    "competences":
+                        matching[
+                            "competences_score"
+                        ],
+
+                    "experience":
+                        matching[
+                            "experience_score"
+                        ],
+
+                    "specialite":
+                        matching[
+                            "specialite_score"
+                        ],
+
+                    "niveau_etude":
+                        matching[
+                            "etude_score"
+                        ],
+
+                    "profil":
+                        matching[
+                            "profil_score"
+                        ],
+                },
+
+                "competences_correspondantes":
+                    matching[
+                        "competences_correspondantes"
+                    ],
+
+                "competences_manquantes":
+                    matching[
+                        "competences_manquantes"
+                    ],
+
+                "specialite":
+                    (
+                        candidat_profil.specialite
+                        if candidat_profil
+                        else None
+                    ),
+
+                "experience":
+                    (
+                        candidat_profil.anneesExperience
+                        if candidat_profil
+                        else 0
+                    ),
+
+                "niveauEtude":
+                    (
+                        candidat_profil.niveauEtude
+                        if candidat_profil
+                        else None
+                    ),
+
+                "profile_completion":
+                    (
+                        candidat_profil.profile_completion
+                        if candidat_profil
+                        else 0
+                    ),
+            })
+
+        # ====================================================
+        # TRI DU MEILLEUR AU MOINS BON
+        # ====================================================
+
+        candidatures_matching.sort(
+            key=lambda candidature:
+                candidature["score_matching"],
+            reverse=True
+        )
+
+        # ====================================================
+        # TOP CANDIDATS
+        # ====================================================
+
+        top_candidats = (
+            candidatures_matching[:10]
+        )
+
+        # ====================================================
+        # CANDIDATURES RÉCENTES
+        # ====================================================
+
+        candidatures_recentes = sorted(
+            candidatures_matching,
+            key=lambda candidature:
+                candidature["dateSoumission"],
+            reverse=True
+        )[:5]
+
+        # ====================================================
+        # ENTRETIENS
+        # ====================================================
+
+        entretiens_data = []
+
+        for entretien in entretiens[:10]:
+
+            candidat = (
+                entretien
+                .candidature
+                .candidat
+            )
+
+            entretiens_data.append({
+
+                "id":
+                    entretien.id,
+
+                "candidat":
+                    (
+                        candidat.get_full_name()
+                        or candidat.username
+                    ),
+
+                "offre":
+                    entretien
+                    .candidature
+                    .offre
+                    .titre,
+
+                "dateHeure":
+                    entretien.dateHeure,
+
+                "type":
+                    entretien.type,
+
+                "statut":
+                    entretien.statut,
+
+                "reponseCandidat":
+                    entretien.reponseCandidat,
+
+                "lieu":
+                    entretien.lieu,
+
+                "lienVisio":
+                    entretien.lienVisio,
+            })
+
+        # ====================================================
+        # RÉPONSE
+        # ====================================================
+
+        return Response({
+
+            "utilisateur": {
+
+                "id":
+                    request.user.id,
+
+                "username":
+                    request.user.username,
+
+                "prenom":
+                    request.user.first_name,
+
+                "nom":
+                    request.user.last_name,
+
+                "nom_complet":
+                    (
+                        request.user.get_full_name()
+                        or request.user.username
+                    ),
+
+                "email":
+                    request.user.email,
+            },
+
+            "profil": {
+
+                "id":
+                    profil.id,
+
+                "fonction":
+                    profil.fonction,
+
+                "telephone":
+                    profil.telephone,
+
+                "statut_recruteur":
+                    profil.statut_recruteur,
+
+                "photoProfil":
+                    (
+                        request.build_absolute_uri(
+                            profil.photoProfil.url
+                        )
+                        if profil.photoProfil
+                        else None
+                    ),
+
+                "profile_completion":
+                    profil.profile_completion,
+            },
+
+            "entreprise": (
+
+                {
+
+                    "id":
+                        entreprise.id,
+
+                    "nom":
+                        entreprise.nom,
+
+                    "secteur":
+                        entreprise.secteur,
+
+                    "adresse":
+                        entreprise.adresse,
+
+                    "telephone":
+                        entreprise.telephone,
+
+                    "email":
+                        entreprise.email,
+
+                    "siteweb":
+                        entreprise.siteweb,
+
+                    "description":
+                        entreprise.description,
+
+                    "logo":
+                        (
+                            request.build_absolute_uri(
+                                entreprise.logo.url
+                            )
+                            if entreprise.logo
+                            else None
+                        ),
+
+                    "statut":
+                        entreprise.statut,
+
+                    "verifiee":
+                        entreprise.verifiee,
+
+                }
+
+                if entreprise
+
+                else None
+            ),
+
+            "statistiques":
+                statistiques,
+
+            "offres_recentes":
+                offres_recentes,
+
+            "candidatures_recentes":
+                candidatures_recentes,
+
+            "top_candidats":
+                top_candidats,
+
+            "entretiens":
+                entretiens_data,
+        })
+
+
+class MesEntreprisesView(
+    APIView
+):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(
+        self,
+        request
+    ):
+
+        try:
+
+            profil = request.user.profil
+
+        except Exception:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil introuvable."
+                },
+                status=404
+            )
+
+        entreprises = (
+            Entreprise.objects
+            .filter(
+                associations_recruteurs__recruteur=profil,
+                associations_recruteurs__actif=True
+            )
+            .distinct()
+        )
+
+        serializer = MesEntrepriseSerializer(
+            entreprises,
+            many=True
+        )
+
+        return Response(
+            serializer.data
+        )

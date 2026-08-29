@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from rest_framework import serializers
 
 from .models import (
@@ -8,19 +10,35 @@ from .models import (
 )
 
 
+# ============================================================
+# ENTREPRISE
+# ============================================================
+
 class EntrepriseSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = Entreprise
+
         fields = "__all__"
 
+
+# ============================================================
+# COMPETENCE
+# ============================================================
 
 class CompetenceSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = Competence
+
         fields = "__all__"
 
+
+# ============================================================
+# NIVEAU COMPETENCE OFFRE
+# ============================================================
 
 class NiveauCompetenceOffreSerializer(
     serializers.ModelSerializer
@@ -32,7 +50,9 @@ class NiveauCompetenceOffreSerializer(
     )
 
     class Meta:
+
         model = NiveauCompetenceOffre
+
         fields = [
             "id",
             "competence",
@@ -42,7 +62,13 @@ class NiveauCompetenceOffreSerializer(
         ]
 
 
-class OffreSerializer(serializers.ModelSerializer):
+# ============================================================
+# OFFRE
+# ============================================================
+
+class OffreSerializer(
+    serializers.ModelSerializer
+):
 
     entrepriseDetail = EntrepriseSerializer(
         source="entreprise",
@@ -58,6 +84,7 @@ class OffreSerializer(serializers.ModelSerializer):
     recruteurNom = serializers.SerializerMethodField()
 
     class Meta:
+
         model = Offre
 
         fields = [
@@ -72,11 +99,18 @@ class OffreSerializer(serializers.ModelSerializer):
             "datePublication",
             "dateLimite",
             "statut",
+
+            # ENTREPRISE
             "entreprise",
             "entrepriseDetail",
+
+            # RECRUTEUR
             "recruteur",
             "recruteurNom",
+
+            # COMPETENCES
             "competences",
+
             "created_at",
             "updated_at",
         ]
@@ -86,7 +120,14 @@ class OffreSerializer(serializers.ModelSerializer):
             "datePublication",
             "created_at",
             "updated_at",
+            "entrepriseDetail",
+            "recruteurNom",
+            "competences",
         ]
+
+    # ========================================================
+    # NOM RECRUTEUR
+    # ========================================================
 
     def get_recruteurNom(self, obj):
 
@@ -95,6 +136,10 @@ class OffreSerializer(serializers.ModelSerializer):
             or obj.recruteur.username
         )
 
+    # ========================================================
+    # VALIDATION
+    # ========================================================
+
     def validate(self, attrs):
 
         date_limite = attrs.get(
@@ -102,13 +147,15 @@ class OffreSerializer(serializers.ModelSerializer):
         )
 
         if date_limite:
-            from django.utils import timezone
 
             if date_limite < timezone.now().date():
 
                 raise serializers.ValidationError({
+
                     "dateLimite":
-                    "La date limite ne peut pas être dans le passé."
+                    "La date limite ne peut pas être "
+                    "dans le passé."
+
                 })
 
         salaire_min = attrs.get(
@@ -126,9 +173,55 @@ class OffreSerializer(serializers.ModelSerializer):
         ):
 
             raise serializers.ValidationError({
+
                 "salaire":
                 "Le salaire minimum ne peut pas dépasser "
                 "le salaire maximum."
+
             })
+
+        # ====================================================
+        # VERIFICATION ENTREPRISE
+        # ====================================================
+
+        entreprise = attrs.get(
+            "entreprise"
+        )
+
+        request = self.context.get(
+            "request"
+        )
+
+        if entreprise and request:
+
+            user = request.user
+
+            if not user.is_staff:
+
+                try:
+
+                    profil = user.profil
+
+                    association = (
+                        profil.associations_entreprises
+                        .filter(
+                            entreprise=entreprise,
+                            actif=True
+                        )
+                        .exists()
+                    )
+
+                except Exception:
+
+                    association = False
+
+                if not association:
+
+                    raise serializers.ValidationError({
+
+                        "entreprise":
+                        "Vous n'êtes pas associé à cette entreprise."
+
+                    })
 
         return attrs

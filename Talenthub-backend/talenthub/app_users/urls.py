@@ -3,12 +3,16 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .views import (
+    CandidatDashboardView,
+    ChangerMotDePasseView,
+    FreelanceDashboardView,
     InscriptionViewSet,
     MonProfilViewSet,
     FreelanceViewSet,
     MessageViewSet,
     NotificationViewSet,
     ModifierUtilisateurView,
+    RecruteurDashboardView,
 )
 
 
@@ -82,4 +86,28 @@ urlpatterns = [
         ModifierUtilisateurView.as_view(),
         name='modifier-utilisateur'
     ),
+
+      path(
+            "changer-mot-de-passe/",
+            ChangerMotDePasseView.as_view(),
+            name="changer-mot-de-passe"
+        ),
+
+        path(
+        "freelance/dashboard/",
+        FreelanceDashboardView.as_view(),
+        name="freelance-dashboard"
+    ),
+
+    path(
+        "candidat/dashboard/",
+        CandidatDashboardView.as_view(),
+        name="candidat-dashboard"
+        ),
+    
+    path(
+        'recruteur/dashboard/',
+        RecruteurDashboardView.as_view(),
+        name='recruteur-dashboard'
+),
 ]

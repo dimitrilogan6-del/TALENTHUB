@@ -662,3 +662,26 @@ class NotificationSerializer(serializers.ModelSerializer):
             "dateEnvoi",
             "destinataire",
         ]
+
+
+
+class MesEntrepriseSerializer(
+    serializers.ModelSerializer
+):
+
+    class Meta:
+
+        model = Entreprise
+
+        fields = [
+            "id",
+            "nom",
+            "secteur",
+            "adresse",
+            "telephone",
+            "email",
+            "siteweb",
+            "logo",
+            "statut",
+            "verifiee"
+        ]

@@ -8,13 +8,6 @@ from django.contrib.auth.models import User
 
 class Entreprise(models.Model):
 
-    """
-    Entreprise présente sur la plateforme.
-
-    Une entreprise peut avoir plusieurs recruteurs.
-    Un recruteur peut appartenir à plusieurs entreprises.
-    """
-
     STATUT_CHOICES = (
         ("en_attente", "En attente"),
         ("active", "Active"),
@@ -327,7 +320,8 @@ class Profil(models.Model):
         ]
 
         completed = len([
-            field for field in fields
+            field
+            for field in fields
             if field
         ])
 
@@ -342,6 +336,67 @@ class Profil(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+
+# ============================================================
+# COMPÉTENCE DU CANDIDAT
+# ============================================================
+
+class CompetenceCandidat(models.Model):
+
+    NIVEAU_CHOICES = (
+        ("debutant", "Débutant"),
+        ("intermediaire", "Intermédiaire"),
+        ("avance", "Avancé"),
+        ("expert", "Expert"),
+    )
+
+    candidat = models.ForeignKey(
+        Profil,
+        on_delete=models.CASCADE,
+        related_name="competences"
+    )
+
+    nom = models.CharField(
+        max_length=100
+    )
+
+    niveau = models.CharField(
+        max_length=30,
+        choices=NIVEAU_CHOICES,
+        default="debutant"
+    )
+
+    anneesExperience = models.PositiveIntegerField(
+        default=0
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+
+        ordering = ["nom"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["candidat", "nom"],
+                name="unique_competence_candidat"
+            )
+        ]
+
+    def __str__(self):
+
+        return (
+            f"{self.candidat.user.username} - "
+            f"{self.nom} - "
+            f"{self.niveau}"
+        )
 
 
 # ============================================================
@@ -381,6 +436,7 @@ class RecruteurEntreprise(models.Model):
     )
 
     class Meta:
+
         constraints = [
             models.UniqueConstraint(
                 fields=[
@@ -392,6 +448,7 @@ class RecruteurEntreprise(models.Model):
         ]
 
     def __str__(self):
+
         return (
             f"{self.recruteur.user.username} - "
             f"{self.entreprise.nom}"
@@ -427,6 +484,7 @@ class Message(models.Model):
     )
 
     def __str__(self):
+
         return (
             f"De {self.expediteur.username} "
             f"à {self.destinataire.username}"
@@ -456,6 +514,7 @@ class Notification(models.Model):
     )
 
     def __str__(self):
+
         return (
             f"Notification pour "
             f"{self.destinataire.username}"

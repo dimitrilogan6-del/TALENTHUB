@@ -16,6 +16,12 @@ router.register(
 )
 
 router.register(
+    r'mes-entreprises',
+    EntrepriseViewSet,
+    basename='mes-entreprises'
+)
+
+router.register(
     r'competences',
     CompetenceViewSet,
     basename='competences'

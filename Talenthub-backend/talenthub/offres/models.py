@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from app_users.models import Entreprise
 
 
+# ============================================================
+# COMPETENCE
+# ============================================================
+
 class Competence(models.Model):
 
     nom = models.CharField(
@@ -27,6 +31,10 @@ class Competence(models.Model):
     def __str__(self):
         return self.nom
 
+
+# ============================================================
+# OFFRE
+# ============================================================
 
 class Offre(models.Model):
 
@@ -96,9 +104,9 @@ class Offre(models.Model):
         default="brouillon"
     )
 
-    # ============================
-    # RELATIONS
-    # ============================
+    # ========================================================
+    # ENTREPRISE
+    # ========================================================
 
     entreprise = models.ForeignKey(
         Entreprise,
@@ -106,11 +114,19 @@ class Offre(models.Model):
         related_name="offres"
     )
 
+    # ========================================================
+    # RECRUTEUR
+    # ========================================================
+
     recruteur = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="offres_publiees"
     )
+
+    # ========================================================
+    # COMPETENCES
+    # ========================================================
 
     competences = models.ManyToManyField(
         Competence,
@@ -129,6 +145,10 @@ class Offre(models.Model):
     def __str__(self):
         return f"{self.titre} - {self.entreprise.nom}"
 
+
+# ============================================================
+# NIVEAU COMPETENCE OFFRE
+# ============================================================
 
 class NiveauCompetenceOffre(models.Model):
 
@@ -161,14 +181,19 @@ class NiveauCompetenceOffre(models.Model):
     )
 
     class Meta:
+
         constraints = [
             models.UniqueConstraint(
-                fields=["offre", "competence"],
+                fields=[
+                    "offre",
+                    "competence"
+                ],
                 name="unique_competence_offre"
             )
         ]
 
     def __str__(self):
+
         return (
             f"{self.offre.titre} - "
             f"{self.competence.nom} - "

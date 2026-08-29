@@ -73,10 +73,14 @@ urlpatterns = [
         include('app_candidatures.urls')
     ),
 
-     path(
+    path(
         "api/dashboard/",
         CandidatDashboardView.as_view(),
         name="candidat-dashboard"
+    ),
+        path(
+        'api/',
+        include('app_missions.urls')
     ),
 ]
 
