@@ -1,0 +1,1056 @@
+<div class="freelance-profile-page">
+
+  <!-- ======================================================
+       CHARGEMENT
+  ======================================================= -->
+
+  <div
+    class="profile-loading"
+    *ngIf="isLoading"
+  >
+
+    <div class="loading-spinner"></div>
+
+    <p>
+      Chargement de votre profil...
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       ERREUR
+  ======================================================= -->
+
+  <div
+    class="profile-error"
+    *ngIf="!isLoading && errorMessage"
+  >
+
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h2>
+      Impossible de charger le profil
+    </h2>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      type="button"
+      class="retry-button"
+      (click)="loadProfil()"
+    >
+
+      <i class="fas fa-sync-alt"></i>
+
+      Réessayer
+
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       CONTENU
+  ======================================================= -->
+
+  <div
+    class="profile-container"
+    *ngIf="profil && !isLoading"
+  >
+
+
+    <!-- ====================================================
+         EN-TÊTE
+    ===================================================== -->
+
+    <section class="profile-header-card">
+
+      <div class="profile-header-main">
+
+
+        <!-- PHOTO -->
+
+        <div class="profile-avatar">
+
+          <img
+            *ngIf="profil.photoProfil"
+            [src]="photoProfil"
+            alt="Photo de profil"
+          />
+
+          <span
+            *ngIf="!profil.photoProfil"
+            class="avatar-initials"
+          >
+            {{ initiales }}
+          </span>
+
+          <span
+            class="availability-dot"
+            [class.unavailable]="!disponibilite"
+          ></span>
+
+        </div>
+
+
+        <!-- IDENTITÉ -->
+
+        <div class="profile-identity">
+
+          <div class="identity-name-row">
+
+            <h1>
+              {{ nomComplet }}
+            </h1>
+
+            <span
+              class="account-status"
+              [class.pending]="statutCompte !== 'actif'"
+            >
+
+              <i
+                class="fas fa-check-circle"
+                *ngIf="statutCompte === 'actif'"
+              ></i>
+
+              {{ statutCompteLabel }}
+
+            </span>
+
+          </div>
+
+          <p class="professional-title">
+            {{ titreProfessionnel }}
+          </p>
+
+          <p
+            class="speciality"
+            *ngIf="profil.specialite"
+          >
+
+            <i class="fas fa-layer-group"></i>
+
+            {{ profil.specialite }}
+
+          </p>
+
+
+          <div class="availability">
+
+            <span
+              class="status-indicator"
+              [class.offline]="!disponibilite"
+            ></span>
+
+            <span>
+              {{
+                disponibilite
+                  ? 'Disponible pour de nouvelles missions'
+                  : 'Actuellement indisponible'
+              }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="profile-header-action">
+
+          <button
+            *ngIf="!isEditing"
+            type="button"
+            class="edit-button"
+            (click)="startEditing()"
+          >
+
+            <i class="fas fa-pen"></i>
+
+            Modifier le profil
+
+          </button>
+
+          <div
+            class="editing-actions"
+            *ngIf="isEditing"
+          >
+
+            <button
+              type="button"
+              class="cancel-button"
+              (click)="cancelEditing()"
+            >
+
+              Annuler
+
+            </button>
+
+            <button
+              type="button"
+              class="save-button"
+              [disabled]="isSaving"
+              (click)="saveProfil()"
+            >
+
+              <i
+                class="fas fa-spinner fa-spin"
+                *ngIf="isSaving"
+              ></i>
+
+              <i
+                class="fas fa-save"
+                *ngIf="!isSaving"
+              ></i>
+
+              {{
+                isSaving
+                  ? 'Enregistrement...'
+                  : 'Enregistrer'
+              }}
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- COMPLETION -->
+
+      <div class="completion-section">
+
+        <div class="completion-header">
+
+          <div>
+
+            <span>
+              Complétion du profil
+            </span>
+
+            <small>
+              Complétez votre profil pour améliorer
+              votre visibilité auprès des recruteurs.
+            </small>
+
+          </div>
+
+          <strong>
+            {{ profileCompletion }}%
+          </strong>
+
+        </div>
+
+        <div class="completion-track">
+
+          <div
+            class="completion-bar"
+            [style.width.%]="profileCompletion"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ====================================================
+         MESSAGES
+    ===================================================== -->
+
+    <div
+      class="success-message"
+      *ngIf="successMessage"
+    >
+
+      <i class="fas fa-check-circle"></i>
+
+      {{ successMessage }}
+
+    </div>
+
+
+    <div
+      class="error-message"
+      *ngIf="errorMessage"
+    >
+
+      <i class="fas fa-exclamation-circle"></i>
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- ====================================================
+         GRILLE
+    ===================================================== -->
+
+    <div class="profile-grid">
+
+
+      <!-- ==================================================
+           INFORMATIONS PROFESSIONNELLES
+      =================================================== -->
+
+      <section class="profile-card professional-card">
+
+        <div class="card-header">
+
+          <div class="card-icon blue">
+            <i class="fas fa-briefcase"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Informations professionnelles
+            </h2>
+
+            <p>
+              Présentez votre expertise
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- TITRE -->
+
+          <div class="form-group full">
+
+            <label>
+              Titre professionnel
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.titreProfessionnel || 'Non renseigné' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              [(ngModel)]="formData.titreProfessionnel"
+              placeholder="Ex : Développeur Full Stack"
+            />
+
+          </div>
+
+
+          <!-- SPECIALITÉ -->
+
+          <div class="form-group">
+
+            <label>
+              Spécialité
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.specialite || 'Non renseignée' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              [(ngModel)]="formData.specialite"
+              placeholder="Ex : Développement web"
+            />
+
+          </div>
+
+
+          <!-- EXPÉRIENCE -->
+
+          <div class="form-group">
+
+            <label>
+              Expérience
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.anneesExperience }} année(s)
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="number"
+              min="0"
+              [(ngModel)]="formData.anneesExperience"
+            />
+
+          </div>
+
+
+          <!-- TARIF -->
+
+          <div class="form-group">
+
+            <label>
+              Tarif horaire
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ tarifFormate }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="number"
+              min="0"
+              [(ngModel)]="formData.tarifHoraire"
+            />
+
+          </div>
+
+
+          <!-- DEVISE -->
+
+          <div class="form-group">
+
+            <label>
+              Devise
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.deviseTarif }}
+            </div>
+
+            <select
+              *ngIf="isEditing"
+              [(ngModel)]="formData.deviseTarif"
+            >
+
+              <option value="FCFA">
+                FCFA
+              </option>
+
+              <option value="EUR">
+                EUR
+              </option>
+
+              <option value="USD">
+                USD
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- DISPONIBILITÉ -->
+
+          <div class="form-group full">
+
+            <label>
+              Disponibilité
+            </label>
+
+            <label
+              class="availability-toggle"
+              *ngIf="isEditing"
+            >
+
+              <input
+                type="checkbox"
+                [(ngModel)]="formData.disponibilite"
+              />
+
+              <span class="toggle-slider"></span>
+
+              <span>
+
+                {{
+                  formData.disponibilite
+                    ? 'Disponible'
+                    : 'Indisponible'
+                }}
+
+              </span>
+
+            </label>
+
+            <div
+              class="field-display availability-display"
+              *ngIf="!isEditing"
+            >
+
+              <span
+                class="status-indicator"
+                [class.offline]="!profil.disponibilite"
+              ></span>
+
+              {{
+                profil.disponibilite
+                  ? 'Disponible'
+                  : 'Indisponible'
+              }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           INFORMATIONS PERSONNELLES
+      =================================================== -->
+
+      <section class="profile-card">
+
+        <div class="card-header">
+
+          <div class="card-icon purple">
+            <i class="fas fa-user"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Informations personnelles
+            </h2>
+
+            <p>
+              Vos informations de contact
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group full">
+
+            <label>
+              Adresse e-mail
+            </label>
+
+            <div class="readonly-field">
+
+              <i class="fas fa-envelope"></i>
+
+              {{ profil.user.email }}
+
+            </div>
+
+            <small>
+              L'adresse e-mail est gérée par votre compte.
+            </small>
+
+          </div>
+
+
+          <!-- TÉLÉPHONE -->
+
+          <div class="form-group">
+
+            <label>
+              Téléphone
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.telephone || 'Non renseigné' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="tel"
+              [(ngModel)]="formData.telephone"
+              placeholder="+221 XX XXX XX XX"
+            />
+
+          </div>
+
+
+          <!-- NATIONALITÉ -->
+
+          <div class="form-group">
+
+            <label>
+              Nationalité
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.nationalite || 'Non renseignée' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              [(ngModel)]="formData.nationalite"
+            />
+
+          </div>
+
+
+          <!-- DATE NAISSANCE -->
+
+          <div class="form-group">
+
+            <label>
+              Date de naissance
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.dateNaissance || 'Non renseignée' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="date"
+              [(ngModel)]="formData.dateNaissance"
+            />
+
+          </div>
+
+
+          <!-- LIEU -->
+
+          <div class="form-group">
+
+            <label>
+              Lieu de naissance
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.lieuNaissance || 'Non renseigné' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              [(ngModel)]="formData.lieuNaissance"
+            />
+
+          </div>
+
+
+          <!-- SEXE -->
+
+          <div class="form-group">
+
+            <label>
+              Sexe
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.sexe || 'Non renseigné' }}
+            </div>
+
+            <select
+              *ngIf="isEditing"
+              [(ngModel)]="formData.sexe"
+            >
+
+              <option [ngValue]="null">
+                Non renseigné
+              </option>
+
+              <option value="M">
+                Masculin
+              </option>
+
+              <option value="F">
+                Féminin
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           BIOGRAPHIE
+      =================================================== -->
+
+      <section class="profile-card full-width">
+
+        <div class="card-header">
+
+          <div class="card-icon green">
+            <i class="fas fa-align-left"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Présentation
+            </h2>
+
+            <p>
+              Présentez votre parcours et votre expertise
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="biography-display"
+          *ngIf="!isEditing"
+        >
+
+          {{
+            profil.biographie
+              || 'Aucune biographie renseignée.'
+          }}
+
+        </div>
+
+
+        <textarea
+          *ngIf="isEditing"
+          class="biography-input"
+          [(ngModel)]="formData.biographie"
+          rows="7"
+          placeholder="Présentez votre parcours, vos compétences, vos domaines d'expertise..."
+        ></textarea>
+
+      </section>
+
+
+      <!-- ==================================================
+           FORMATION
+      =================================================== -->
+
+      <section class="profile-card">
+
+        <div class="card-header">
+
+          <div class="card-icon orange">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Formation
+            </h2>
+
+            <p>
+              Votre parcours académique
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <div class="form-group full">
+
+            <label>
+              Niveau d'étude
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.niveauEtude || 'Non renseigné' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              [(ngModel)]="formData.niveauEtude"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Dernier diplôme
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.dernierDiplome || 'Non renseigné' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              [(ngModel)]="formData.dernierDiplome"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Date d'obtention
+            </label>
+
+            <div
+              class="field-display"
+              *ngIf="!isEditing"
+            >
+              {{ profil.dateObtentionDiplome || 'Non renseignée' }}
+            </div>
+
+            <input
+              *ngIf="isEditing"
+              type="date"
+              [(ngModel)]="formData.dateObtentionDiplome"
+            />
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================
+           LIENS PROFESSIONNELS
+      =================================================== -->
+
+      <section class="profile-card">
+
+        <div class="card-header">
+
+          <div class="card-icon cyan">
+            <i class="fas fa-link"></i>
+          </div>
+
+          <div>
+
+            <h2>
+              Présence professionnelle
+            </h2>
+
+            <p>
+              Vos liens professionnels
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="links-list">
+
+
+          <!-- PORTFOLIO -->
+
+          <div class="professional-link">
+
+            <div class="link-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+
+            <div class="link-content">
+
+              <strong>
+                Portfolio
+              </strong>
+
+              <a
+                *ngIf="profil.portfolioUrl"
+                [href]="profil.portfolioUrl"
+                target="_blank"
+              >
+                {{ profil.portfolioUrl }}
+              </a>
+
+              <span
+                *ngIf="!profil.portfolioUrl"
+              >
+                Aucun portfolio
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- LINKEDIN -->
+
+          <div class="professional-link">
+
+            <div class="link-icon linkedin">
+              <i class="fab fa-linkedin-in"></i>
+            </div>
+
+            <div class="link-content">
+
+              <strong>
+                LinkedIn
+              </strong>
+
+              <a
+                *ngIf="profil.linkedinUrl"
+                [href]="profil.linkedinUrl"
+                target="_blank"
+              >
+                {{ profil.linkedinUrl }}
+              </a>
+
+              <span
+                *ngIf="!profil.linkedinUrl"
+              >
+                Aucun profil LinkedIn
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- GITHUB -->
+
+          <div class="professional-link">
+
+            <div class="link-icon github">
+              <i class="fab fa-github"></i>
+            </div>
+
+            <div class="link-content">
+
+              <strong>
+                GitHub
+              </strong>
+
+              <a
+                *ngIf="profil.githubUrl"
+                [href]="profil.githubUrl"
+                target="_blank"
+              >
+                {{ profil.githubUrl }}
+              </a>
+
+              <span
+                *ngIf="!profil.githubUrl"
+              >
+                Aucun profil GitHub
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- MODIFICATION DES LIENS -->
+
+        <div
+          class="links-edit"
+          *ngIf="isEditing"
+        >
+
+          <div class="form-group">
+
+            <label>
+              Portfolio
+            </label>
+
+            <input
+              type="url"
+              [(ngModel)]="formData.portfolioUrl"
+              placeholder="https://monsite.com"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              LinkedIn
+            </label>
+
+            <input
+              type="url"
+              [(ngModel)]="formData.linkedinUrl"
+              placeholder="https://linkedin.com/in/..."
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              GitHub
+            </label>
+
+            <input
+              type="url"
+              [(ngModel)]="formData.githubUrl"
+              placeholder="https://github.com/..."
+            />
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </div>
+
+</div>

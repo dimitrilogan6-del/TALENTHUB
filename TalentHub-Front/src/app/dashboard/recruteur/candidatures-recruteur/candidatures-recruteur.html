@@ -1,0 +1,1164 @@
+<div class="candidatures-page">
+
+  <!-- ==========================================================
+       HEADER
+  =========================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-title">
+
+        <div class="title-icon">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+
+        <div>
+          <h1>Candidatures</h1>
+
+          <p>
+            Gérez les candidatures reçues pour vos offres.
+          </p>
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="btn-refresh"
+        (click)="actualiser()"
+        [disabled]="isLoading"
+      >
+
+        <i class="fa-solid fa-rotate"></i>
+
+        Actualiser
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       MESSAGES
+  =========================================================== -->
+
+  <div
+    class="message success-message"
+    *ngIf="successMessage"
+  >
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    <span>
+      {{ successMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="successMessage = ''"
+    >
+
+      <i class="fa-solid fa-xmark"></i>
+
+    </button>
+
+  </div>
+
+
+  <div
+    class="message error-message"
+    *ngIf="errorMessage"
+  >
+
+    <i class="fa-solid fa-circle-exclamation"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="errorMessage = ''"
+    >
+
+      <i class="fa-solid fa-xmark"></i>
+
+    </button>
+
+  </div>
+
+
+  <!-- ==========================================================
+       STATISTIQUES
+  =========================================================== -->
+
+  <div
+    class="statistics"
+    *ngIf="!isLoading"
+  >
+
+    <div class="stat-card">
+
+      <div class="stat-icon total">
+        <i class="fa-solid fa-file-lines"></i>
+      </div>
+
+      <div>
+
+        <span>Total</span>
+
+        <strong>
+          {{ candidatures.length }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon waiting">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+
+      <div>
+
+        <span>En attente</span>
+
+        <strong>
+          {{ getNombreParStatut('En attente') }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon selection">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+
+      <div>
+
+        <span>Présélectionnées</span>
+
+        <strong>
+          {{ getNombreParStatut('Présélectionnée') }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon interview">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+
+      <div>
+
+        <span>Entretiens</span>
+
+        <strong>
+          {{ getNombreParStatut('Entretien') }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon accepted">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+
+      <div>
+
+        <span>Acceptées</span>
+
+        <strong>
+          {{ getNombreParStatut('Acceptée') }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       CHARGEMENT
+  =========================================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement des candidatures...
+    </p>
+
+  </div>
+
+
+  <!-- ==========================================================
+       CONTENU
+  =========================================================== -->
+
+  <div
+    class="content-container"
+    *ngIf="!isLoading"
+  >
+
+    <!-- ========================================================
+         FILTRES
+    ========================================================= -->
+
+    <div class="filters-card">
+
+      <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="rechercher()"
+          placeholder="Rechercher un candidat, une offre..."
+        />
+
+      </div>
+
+
+      <div class="filter-select">
+
+        <i class="fa-solid fa-filter"></i>
+
+        <select
+          [(ngModel)]="filtreStatut"
+          (change)="appliquerFiltres()"
+        >
+
+          <option value="">
+            Tous les statuts
+          </option>
+
+          <option value="En attente">
+            En attente
+          </option>
+
+          <option value="Présélectionnée">
+            Présélectionnée
+          </option>
+
+          <option value="Entretien">
+            Entretien
+          </option>
+
+          <option value="Acceptée">
+            Acceptée
+          </option>
+
+          <option value="Refusée">
+            Refusée
+          </option>
+
+          <option value="Retirée">
+            Retirée
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="btn-reset"
+        (click)="reinitialiserFiltres()"
+      >
+
+        <i class="fa-solid fa-filter-circle-xmark"></i>
+
+        Réinitialiser
+
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         AUCUNE CANDIDATURE
+    ========================================================= -->
+
+    <div
+      class="empty-state"
+      *ngIf="candidaturesFiltrees.length === 0"
+    >
+
+      <div class="empty-icon">
+
+        <i class="fa-solid fa-file-circle-xmark"></i>
+
+      </div>
+
+      <h2>
+        Aucune candidature
+      </h2>
+
+      <p>
+        Aucune candidature ne correspond à vos critères.
+      </p>
+
+    </div>
+
+
+    <!-- ========================================================
+         TABLEAU
+    ========================================================= -->
+
+    <div
+      class="table-card"
+      *ngIf="candidaturesFiltrees.length > 0"
+    >
+
+      <div class="table-header">
+
+        <div>
+
+          <h2>
+            Liste des candidatures
+          </h2>
+
+          <span>
+            {{ candidaturesFiltrees.length }}
+            candidature(s)
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Candidat</th>
+
+              <th>Offre</th>
+
+              <th>Entreprise</th>
+
+              <th>Date</th>
+
+              <th>Matching</th>
+
+              <th>Statut</th>
+
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let candidature
+                of candidaturesFiltrees
+              "
+            >
+
+              <!-- CANDIDAT -->
+
+              <td>
+
+                <div class="candidate-cell">
+
+                  <div class="candidate-avatar">
+
+                    {{ getInitiales(candidature) }}
+
+                  </div>
+
+                  <div class="candidate-info">
+
+                    <strong>
+                      {{ getNomCandidat(candidature) }}
+                    </strong>
+
+                    <span>
+                      {{ candidature.candidat.email }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- OFFRE -->
+
+              <td>
+
+                <div class="offer-cell">
+
+                  <i class="fa-solid fa-briefcase"></i>
+
+                  <span>
+                    {{ candidature.offre_detail.titre }}
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- ENTREPRISE -->
+
+              <td>
+
+                <div class="company-cell">
+
+                  <i class="fa-solid fa-building"></i>
+
+                  <span>
+                    {{ candidature.offre_detail.entreprise }}
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- DATE -->
+
+              <td>
+
+                <span class="date-cell">
+
+                  <i class="fa-regular fa-calendar"></i>
+
+                  {{ formatDate(candidature.dateSoumission) }}
+
+                </span>
+
+              </td>
+
+
+              <!-- MATCHING -->
+
+              <td>
+
+                <ng-container
+                  *ngIf="
+                    getMatchingScore(candidature) !== null;
+                    else noMatching
+                  "
+                >
+
+                  <div
+                    class="matching-score"
+                    [ngClass]="
+                      getMatchingClass(
+                        getMatchingScore(candidature)!
+                      )
+                    "
+                  >
+
+                    <strong>
+                      {{ getMatchingScore(candidature) }}%
+                    </strong>
+
+                  </div>
+
+                </ng-container>
+
+
+                <ng-template #noMatching>
+
+                  <span class="no-data">
+                    -
+                  </span>
+
+                </ng-template>
+
+              </td>
+
+
+              <!-- STATUT -->
+
+              <td>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="
+                    getStatutClass(
+                      candidature.statut
+                    )
+                  "
+                >
+
+                  {{ getStatutLabel(candidature.statut) }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACTIONS -->
+
+              <td>
+
+                <div class="actions">
+
+                  <button
+                    type="button"
+                    class="action-button view"
+                    title="Voir la candidature"
+                    (click)="voirDetail(candidature)"
+                  >
+
+                    <i class="fa-solid fa-eye"></i>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="action-button edit"
+                    title="Modifier le statut"
+                    (click)="
+                      ouvrirModificationStatut(
+                        candidature
+                      )
+                    "
+                  >
+
+                    <i class="fa-solid fa-pen"></i>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL DETAIL
+============================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showDetailModal"
+  (click)="fermerDetail()"
+>
+
+  <div
+    class="modal-container detail-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+
+          <i class="fa-solid fa-user"></i>
+
+          Détails de la candidature
+
+        </h2>
+
+        <p>
+          Consultez les informations du candidat.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="fermerDetail()"
+      >
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div
+      class="modal-body"
+      *ngIf="selectedCandidature"
+    >
+
+      <!-- CANDIDAT -->
+
+      <div class="candidate-profile">
+
+        <div class="large-avatar">
+
+          {{ getInitiales(selectedCandidature) }}
+
+        </div>
+
+        <div>
+
+          <h3>
+            {{ getNomCandidat(selectedCandidature) }}
+          </h3>
+
+          <p>
+            {{ selectedCandidature.candidat.email }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- OFFRE -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-briefcase"></i>
+
+          Offre concernée
+
+        </h3>
+
+
+        <div class="detail-grid">
+
+          <div>
+
+            <span>Poste</span>
+
+            <strong>
+              {{ selectedCandidature.offre_detail.titre }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>Entreprise</span>
+
+            <strong>
+              {{ selectedCandidature.offre_detail.entreprise }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- STATUT -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-chart-line"></i>
+
+          État de la candidature
+
+        </h3>
+
+
+        <span
+          class="status-badge large"
+          [ngClass]="
+            getStatutClass(
+              selectedCandidature.statut
+            )
+          "
+        >
+
+          {{ selectedCandidature.statut }}
+
+        </span>
+
+      </div>
+
+
+      <!-- LETTRE -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-envelope-open-text"></i>
+
+          Lettre de motivation
+
+        </h3>
+
+
+        <div
+          class="motivation"
+          *ngIf="
+            selectedCandidature.lettreMotivation;
+            else noLetter
+          "
+        >
+
+          {{ selectedCandidature.lettreMotivation }}
+
+        </div>
+
+
+        <ng-template #noLetter>
+
+          <div class="no-data-box">
+
+            Aucune lettre de motivation fournie.
+
+          </div>
+
+        </ng-template>
+
+      </div>
+
+
+      <!-- DOCUMENTS -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-paperclip"></i>
+
+          Documents
+
+        </h3>
+
+
+        <div
+          class="documents-list"
+          *ngIf="
+            selectedCandidature.documents?.length;
+            else noDocuments
+          "
+        >
+
+          <div
+            class="document-item"
+            *ngFor="
+              let document
+              of selectedCandidature.documents
+            "
+          >
+
+            <div class="document-icon">
+
+              <i class="fa-solid fa-file"></i>
+
+            </div>
+
+            <div class="document-info">
+
+              <strong>
+                {{ document.nomFichier }}
+              </strong>
+
+              <span>
+                {{ document.typeFichier }}
+              </span>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="document-button"
+              (click)="ouvrirDocument(document)"
+            >
+
+              <i class="fa-solid fa-eye"></i>
+
+              Consulter
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <ng-template #noDocuments>
+
+          <div class="no-data-box">
+
+            Aucun document fourni.
+
+          </div>
+
+        </ng-template>
+
+      </div>
+
+
+      <!-- ENTRETIENS -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-calendar-check"></i>
+
+          Entretiens
+
+        </h3>
+
+
+        <div
+          class="interview-item"
+          *ngFor="
+            let entretien
+            of selectedCandidature.entretiens
+          "
+        >
+
+          <div>
+
+            <strong>
+              {{ entretien.type }}
+            </strong>
+
+            <span>
+              {{ entretien.dateHeure | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+
+          </div>
+
+          <span class="interview-status">
+            {{ entretien.statut }}
+          </span>
+
+        </div>
+
+
+        <div
+          class="no-data-box"
+          *ngIf="
+            !selectedCandidature.entretiens ||
+            selectedCandidature.entretiens.length === 0
+          "
+        >
+
+          Aucun entretien planifié.
+
+        </div>
+
+      </div>
+
+
+      <!-- COMMENTAIRE -->
+
+      <div
+        class="detail-section"
+        *ngIf="
+          selectedCandidature.commentaireRecruteur
+        "
+      >
+
+        <h3>
+
+          <i class="fa-solid fa-comment"></i>
+
+          Commentaire du recruteur
+
+        </h3>
+
+        <div class="comment-box">
+
+          {{ selectedCandidature.commentaireRecruteur }}
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="fermerDetail()"
+        >
+
+          Fermer
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="
+            fermerDetail();
+            ouvrirModificationStatut(
+              selectedCandidature
+            )
+          "
+        >
+
+          <i class="fa-solid fa-pen"></i>
+
+          Modifier le statut
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL STATUT
+============================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showStatusModal"
+  (click)="fermerModificationStatut()"
+>
+
+  <div
+    class="modal-container status-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+
+          <i class="fa-solid fa-pen-to-square"></i>
+
+          Modifier la candidature
+
+        </h2>
+
+        <p>
+          Mettez à jour le statut du candidat.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="fermerModificationStatut()"
+        [disabled]="isSaving"
+      >
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div
+        class="candidate-summary"
+        *ngIf="candidatureStatut"
+      >
+
+        <div class="candidate-avatar">
+
+          {{ getInitiales(candidatureStatut) }}
+
+        </div>
+
+        <div>
+
+          <strong>
+            {{ getNomCandidat(candidatureStatut) }}
+          </strong>
+
+          <span>
+            {{ candidatureStatut.offre_detail.titre }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="statutCandidature">
+
+          Statut
+
+          <span class="required">
+            *
+          </span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-chart-line input-icon"></i>
+
+          <select
+            id="statutCandidature"
+            [(ngModel)]="nouveauStatut"
+            [disabled]="isSaving"
+          >
+
+            <option value="En attente">
+              En attente
+            </option>
+
+            <option value="Présélectionnée">
+              Présélectionnée
+            </option>
+
+            <option value="Entretien">
+              Entretien
+            </option>
+
+            <option value="Acceptée">
+              Acceptée
+            </option>
+
+            <option value="Refusée">
+              Refusée
+            </option>
+
+            <option value="Retirée">
+              Retirée
+            </option>
+
+          </select>
+
+          <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="commentaire">
+
+          Commentaire du recruteur
+
+        </label>
+
+
+        <textarea
+          id="commentaire"
+          [(ngModel)]="commentaireRecruteur"
+          rows="5"
+          placeholder="Ajoutez un commentaire concernant votre décision..."
+          [disabled]="isSaving"
+        ></textarea>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="fermerModificationStatut()"
+          [disabled]="isSaving"
+        >
+
+          Annuler
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-save"
+          (click)="enregistrerStatut()"
+          [disabled]="isSaving"
+        >
+
+          <span
+            class="button-spinner"
+            *ngIf="isSaving"
+          ></span>
+
+          <i
+            class="fa-solid fa-floppy-disk"
+            *ngIf="!isSaving"
+          ></i>
+
+          {{ isSaving
+              ? 'Enregistrement...'
+              : 'Enregistrer'
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

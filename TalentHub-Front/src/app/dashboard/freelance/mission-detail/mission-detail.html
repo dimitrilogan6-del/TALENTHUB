@@ -1,0 +1,667 @@
+<div class="mission-detail-page">
+
+  <!-- CHARGEMENT -->
+
+  <div
+    class="loading-container"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <h3>
+      Chargement de la mission...
+    </h3>
+
+    <p>
+      Nous récupérons les informations de la mission.
+    </p>
+
+  </div>
+
+
+  <!-- ERREUR -->
+
+  <div
+    class="error-container"
+    *ngIf="!isLoading && errorMessage"
+  >
+
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h3>
+      Mission introuvable
+    </h3>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      type="button"
+      (click)="retourMissions()"
+    >
+
+      <i class="fas fa-arrow-left"></i>
+
+      Retour aux missions
+
+    </button>
+
+  </div>
+
+
+  <!-- CONTENU -->
+
+  <section
+    class="mission-content"
+    *ngIf="!isLoading && !errorMessage && mission"
+  >
+
+    <!-- RETOUR -->
+
+    <button
+      type="button"
+      class="back-button"
+      (click)="retourMissions()"
+    >
+
+      <i class="fas fa-arrow-left"></i>
+
+      Retour aux missions
+
+    </button>
+
+
+    <!-- HEADER -->
+
+    <div class="mission-header">
+
+      <div class="company-avatar">
+
+        <img
+          *ngIf="mission.entreprise.logo"
+          [src]="mission.entreprise.logo"
+          [alt]="mission.entreprise.nom"
+        />
+
+        <span
+          *ngIf="!mission.entreprise.logo"
+        >
+
+          {{
+            mission.entreprise.nom
+              .charAt(0)
+              .toUpperCase()
+          }}
+
+        </span>
+
+      </div>
+
+
+      <div class="header-info">
+
+        <span class="mission-type">
+
+          {{
+            getTypeMissionLabel(
+              mission.typeMission
+            )
+          }}
+
+        </span>
+
+        <h1>
+          {{ mission.titre }}
+        </h1>
+
+        <div class="company">
+
+          <i class="fas fa-building"></i>
+
+          {{ mission.entreprise.nom }}
+
+        </div>
+
+      </div>
+
+
+      <span
+        class="status"
+        *ngIf="mission.est_active"
+      >
+
+        <span></span>
+
+        Mission disponible
+
+      </span>
+
+    </div>
+
+
+    <!-- INFORMATIONS RAPIDES -->
+
+    <div class="quick-info">
+
+      <div class="info-card">
+
+        <i class="fas fa-wallet"></i>
+
+        <div>
+
+          <span>
+            Budget
+          </span>
+
+          <strong>
+            {{ formatBudget(mission) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <i class="fas fa-laptop-house"></i>
+
+        <div>
+
+          <span>
+            Mode de travail
+          </span>
+
+          <strong>
+            {{
+              getModeTravailLabel(
+                mission.modeTravail
+              )
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <i class="fas fa-map-marker-alt"></i>
+
+        <div>
+
+          <span>
+            Localisation
+          </span>
+
+          <strong>
+            {{ mission.localisation || 'Non précisée' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <i class="fas fa-users"></i>
+
+        <div>
+
+          <span>
+            Candidats
+          </span>
+
+          <strong>
+            {{ mission.nombreCandidats }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CORPS -->
+
+    <div class="mission-layout">
+
+
+      <!-- GAUCHE -->
+
+      <main class="mission-main">
+
+
+        <!-- DESCRIPTION -->
+
+        <section class="detail-section">
+
+          <h2>
+
+            <i class="fas fa-align-left"></i>
+
+            Description de la mission
+
+          </h2>
+
+          <p class="description">
+
+            {{ mission.description }}
+
+          </p>
+
+        </section>
+
+
+        <!-- COMPÉTENCES -->
+
+        <section
+          class="detail-section"
+          *ngIf="mission.competences?.length"
+        >
+
+          <h2>
+
+            <i class="fas fa-tools"></i>
+
+            Compétences recherchées
+
+          </h2>
+
+
+          <div class="skills-list">
+
+            <div
+              class="skill-item"
+              *ngFor="
+                let competence
+                of mission.competences
+              "
+            >
+
+              <div>
+
+                <strong>
+                  {{ competence.nom }}
+                </strong>
+
+                <span
+                  *ngIf="competence.estObligatoire"
+                >
+                  Obligatoire
+                </span>
+
+              </div>
+
+
+              <small>
+
+                {{ competence.niveauRequis }}
+
+              </small>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- DATES -->
+
+        <section class="detail-section">
+
+          <h2>
+
+            <i class="fas fa-calendar-alt"></i>
+
+            Planning
+
+          </h2>
+
+
+          <div class="dates-grid">
+
+            <div>
+
+              <span>
+                Publication
+              </span>
+
+              <strong>
+                {{
+                  formatDate(
+                    mission.datePublication
+                  )
+                }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Date limite
+              </span>
+
+              <strong>
+                {{
+                  formatDate(
+                    mission.dateLimite
+                  )
+                }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Début prévu
+              </span>
+
+              <strong>
+                {{
+                  formatDate(
+                    mission.dateDebut
+                  )
+                }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Fin prévue
+              </span>
+
+              <strong>
+                {{
+                  formatDate(
+                    mission.dateFinPrevue
+                  )
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+
+      <!-- DROITE -->
+
+      <aside class="mission-sidebar">
+
+        <div class="apply-card">
+
+          <h3>
+            Cette mission vous intéresse ?
+          </h3>
+
+          <p>
+            Proposez vos compétences et présentez
+            votre candidature au recruteur.
+          </p>
+
+
+       <button
+            type="button"
+            class="apply-button"
+            *ngIf="mission.est_active && !candidatureExiste && !showFormulaire"
+            (click)="ouvrirFormulaire()"
+            >
+            <i class="fas fa-paper-plane"></i>
+            Postuler à cette mission
+        </button>
+
+        <div
+        class="already-applied"
+        *ngIf="candidatureExiste">
+        <i class="fas fa-check-circle"></i>
+
+        <strong>Vous avez déjà postulé</strong>
+
+        <span>
+            Votre candidature a déjà été envoyée pour cette mission.
+        </span>
+        </div>
+<div
+  class="application-form"
+  *ngIf="showFormulaire && !candidatureExiste"
+>
+
+  <div class="form-header">
+
+    <div>
+      <span class="form-eyebrow">
+        CANDIDATURE
+      </span>
+
+      <h3>
+        Postuler à cette mission
+      </h3>
+
+      <p>
+        Présentez votre profil et votre proposition au recruteur.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="close-form"
+      (click)="fermerFormulaire()"
+      [disabled]="isSubmitting"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+
+  </div>
+
+
+  <!-- SUCCÈS -->
+
+  <div
+    class="success-message"
+    *ngIf="candidatureSuccess"
+  >
+
+    <i class="fas fa-check-circle"></i>
+
+    {{ candidatureSuccess }}
+
+  </div>
+
+
+  <!-- ERREUR -->
+
+  <div
+    class="form-error"
+    *ngIf="candidatureError"
+  >
+
+    <i class="fas fa-exclamation-circle"></i>
+
+    {{ candidatureError }}
+
+  </div>
+
+
+  <!-- PROPOSITION -->
+
+  <div class="form-group">
+
+    <label for="proposition">
+      Votre proposition
+    </label>
+
+    <textarea
+      id="proposition"
+      rows="6"
+      [(ngModel)]="proposition"
+      placeholder="Présentez votre expérience, vos compétences et expliquez pourquoi vous êtes la personne idéale pour cette mission..."
+      [disabled]="isSubmitting"
+    ></textarea>
+
+  </div>
+
+
+  <!-- MONTANT -->
+
+  <div class="form-row">
+
+    <div class="form-group">
+
+      <label for="montantPropose">
+        Montant proposé
+      </label>
+
+      <div class="input-with-suffix">
+
+        <input
+          id="montantPropose"
+          type="number"
+          [(ngModel)]="montantPropose"
+          [disabled]="isSubmitting"
+          min="0"
+        />
+
+        <span>
+          {{ mission.deviseBudget }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- DÉLAI -->
+
+    <div class="form-group">
+
+      <label for="delaiPropose">
+        Délai proposé
+      </label>
+
+      <div class="input-with-suffix">
+
+        <input
+          id="delaiPropose"
+          type="number"
+          [(ngModel)]="delaiPropose"
+          [disabled]="isSubmitting"
+          min="1"
+          placeholder="Ex : 15"
+        />
+
+        <span>
+          jours
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACTIONS -->
+
+  <div class="form-actions">
+
+    <button
+      type="button"
+      class="cancel-button"
+      (click)="fermerFormulaire()"
+      [disabled]="isSubmitting"
+    >
+      Annuler
+    </button>
+
+    <button
+      type="button"
+      class="submit-button"
+      (click)="envoyerCandidature()"
+      [disabled]="isSubmitting"
+    >
+
+      <span
+        *ngIf="isSubmitting"
+        class="button-spinner"
+      ></span>
+
+      <i
+        class="fas fa-paper-plane"
+        *ngIf="!isSubmitting"
+      ></i>
+
+      {{
+        isSubmitting
+          ? 'Envoi en cours...'
+          : 'Envoyer ma candidature'
+      }}
+
+    </button>
+
+  </div>
+
+</div>
+          <div
+            class="closed-message"
+            *ngIf="!mission.est_active"
+          >
+
+            <i class="fas fa-lock"></i>
+
+            Cette mission n'est plus disponible.
+
+          </div>
+
+        </div>
+
+
+        <!-- ENTREPRISE -->
+
+        <div class="company-card">
+
+          <h3>
+            À propos de l'entreprise
+          </h3>
+
+          <h4>
+            {{ mission.entreprise.nom }}
+          </h4>
+
+          <p
+            *ngIf="mission.entreprise.secteur"
+          >
+
+            <i class="fas fa-industry"></i>
+
+            {{ mission.entreprise.secteur }}
+
+          </p>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </section>
+
+</div>

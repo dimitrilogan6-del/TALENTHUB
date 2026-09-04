@@ -22,7 +22,6 @@ import { PublicLayout } from './layouts/public-layout/public-layout';
 import { AdminLayout } from './layouts/admin-layout/admin-layout';
 import { CandidatLayoutComponent } from './layouts/candidat-layout/candidat-layout';
 import { FreelanceLayout } from './layouts/freelance-layout/freelance-layout';
-import { RecruteurLayout } from './layouts/recruteur-layout/recruteur-layout';
 import { SuccessModalComponent } from './component/success-modal/success-modal';
 import { ConnexionRequiredModalComponent } from './component/connexion-required-modal/connexion-required-modal';
 import { CandidatDashboardComponent } from './dashboard/candidat/candidat-dashboard/candidat-dashboard';
@@ -33,7 +32,6 @@ import { NotificationsComponent } from './dashboard/candidat/notifications/notif
 import { ParametresComponent } from './dashboard/candidat/parametres/parametres';
 import { LoginComponent } from './component/login/login';
 import { AuthInterceptor } from './auth/auth-interceptor';
-import { MesCandidatures } from './dashboard/freelance/mes-candidatures/mes-candidatures';
 import { AdminDashboard } from './dashboard/admin/admin-dashboard/admin-dashboard';
 @NgModule({
   declarations: [
@@ -54,7 +52,6 @@ import { AdminDashboard } from './dashboard/admin/admin-dashboard/admin-dashboar
     AdminLayout,
     CandidatLayoutComponent,
     FreelanceLayout,
-    RecruteurLayout,
     SuccessModalComponent,
     ConnexionRequiredModalComponent,
     CandidatDashboardComponent,
@@ -64,7 +61,6 @@ import { AdminDashboard } from './dashboard/admin/admin-dashboard/admin-dashboar
     NotificationsComponent,
     ParametresComponent,
     LoginComponent,
-    MesCandidatures,
     AdminDashboard,
   ],
   imports: [

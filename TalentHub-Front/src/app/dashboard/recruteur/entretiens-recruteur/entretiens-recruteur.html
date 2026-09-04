@@ -1,0 +1,1238 @@
+<div class="entretiens-page">
+
+  <!-- ==========================================================
+       HEADER
+  =========================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-title">
+
+        <div class="title-icon">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+
+        <div>
+          <h1>Entretiens</h1>
+
+          <p>
+            Gérez les entretiens liés aux candidatures de vos offres.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="header-actions">
+
+        <button
+          type="button"
+          class="btn-refresh"
+          (click)="actualiser()"
+          [disabled]="isLoading"
+        >
+          <i class="fa-solid fa-rotate"></i>
+          Actualiser
+        </button>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="ouvrirCreation()"
+        >
+          <i class="fa-solid fa-plus"></i>
+          Planifier un entretien
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       MESSAGES
+  =========================================================== -->
+
+  <div
+    class="message success-message"
+    *ngIf="successMessage"
+  >
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    <span>
+      {{ successMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="successMessage = ''"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+  </div>
+
+
+  <div
+    class="message error-message"
+    *ngIf="errorMessage"
+  >
+
+    <i class="fa-solid fa-circle-exclamation"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="errorMessage = ''"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+  </div>
+
+
+  <!-- ==========================================================
+       STATISTIQUES
+  =========================================================== -->
+
+  <div
+    class="statistics"
+    *ngIf="!isLoading"
+  >
+
+    <div class="stat-card">
+
+      <div class="stat-icon total">
+        <i class="fa-solid fa-calendar-days"></i>
+      </div>
+
+      <div>
+        <span>Total</span>
+        <strong>{{ entretiens.length }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon planned">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+
+      <div>
+        <span>Planifiés</span>
+        <strong>{{ getNombreParStatut('Planifié') }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon confirmed">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+
+      <div>
+        <span>Confirmés</span>
+        <strong>{{ getNombreParStatut('Confirmé') }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon finished">
+        <i class="fa-solid fa-check-double"></i>
+      </div>
+
+      <div>
+        <span>Terminés</span>
+        <strong>{{ getNombreParStatut('Terminé') }}</strong>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon upcoming">
+        <i class="fa-solid fa-calendar-day"></i>
+      </div>
+
+      <div>
+        <span>À venir</span>
+        <strong>{{ getNombreEntretiensAVenir() }}</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       CHARGEMENT
+  =========================================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement des entretiens...
+    </p>
+
+  </div>
+
+
+  <!-- ==========================================================
+       CONTENU
+  =========================================================== -->
+
+  <div
+    class="content-container"
+    *ngIf="!isLoading"
+  >
+
+    <!-- ========================================================
+         FILTRES
+    ========================================================= -->
+
+    <div class="filters-card">
+
+      <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="appliquerFiltres()"
+          placeholder="Rechercher un candidat, une offre..."
+        />
+
+      </div>
+
+
+      <div class="filter-select">
+
+        <i class="fa-solid fa-filter"></i>
+
+        <select
+          [(ngModel)]="filtreStatut"
+          (change)="appliquerFiltres()"
+        >
+
+          <option value="">
+            Tous les statuts
+          </option>
+
+          <option value="Planifié">
+            Planifié
+          </option>
+
+          <option value="Confirmé">
+            Confirmé
+          </option>
+
+          <option value="Terminé">
+            Terminé
+          </option>
+
+          <option value="Annulé">
+            Annulé
+          </option>
+
+          <option value="Reporté">
+            Reporté
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="btn-reset"
+        (click)="reinitialiserFiltres()"
+      >
+
+        <i class="fa-solid fa-filter-circle-xmark"></i>
+
+        Réinitialiser
+
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         AUCUN ENTRETIEN
+    ========================================================= -->
+
+    <div
+      class="empty-state"
+      *ngIf="entretiensFiltres.length === 0"
+    >
+
+      <div class="empty-icon">
+
+        <i class="fa-solid fa-calendar-xmark"></i>
+
+      </div>
+
+      <h2>
+        Aucun entretien
+      </h2>
+
+      <p>
+        Aucun entretien ne correspond à vos critères.
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary empty-button"
+        (click)="ouvrirCreation()"
+      >
+
+        <i class="fa-solid fa-plus"></i>
+
+        Planifier un entretien
+
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         TABLEAU
+    ========================================================= -->
+
+    <div
+      class="table-card"
+      *ngIf="entretiensFiltres.length > 0"
+    >
+
+      <div class="table-header">
+
+        <div>
+
+          <h2>
+            Liste des entretiens
+          </h2>
+
+          <span>
+            {{ entretiensFiltres.length }}
+            entretien(s)
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Candidat</th>
+
+              <th>Offre</th>
+
+              <th>Date & heure</th>
+
+              <th>Type</th>
+
+              <th>Statut</th>
+
+              <th>Réponse</th>
+
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="let entretien of entretiensFiltres"
+            >
+
+              <!-- CANDIDAT -->
+
+              <td>
+
+                <div class="candidate-cell">
+
+                  <div class="candidate-avatar">
+                    {{ getInitiales(entretien) }}
+                  </div>
+
+                  <div class="candidate-info">
+
+                    <strong>
+                      {{ getNomCandidat(entretien) }}
+                    </strong>
+
+                    <span>
+                      {{ entretien.candidat.email }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- OFFRE -->
+
+              <td>
+
+                <div class="offer-cell">
+
+                  <i class="fa-solid fa-briefcase"></i>
+
+                  <span>
+                    {{ entretien.offre.titre }}
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- DATE -->
+
+              <td>
+
+                <div class="date-cell">
+
+                  <i class="fa-regular fa-calendar"></i>
+
+                  <span>
+                    {{ entretien.dateHeure | date:'dd/MM/yyyy' }}
+                  </span>
+
+                  <strong>
+                    {{ entretien.dateHeure | date:'HH:mm' }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <!-- TYPE -->
+
+              <td>
+
+                <span
+                  class="type-badge"
+                  [ngClass]="getTypeClass(entretien.type)"
+                >
+
+                  <i
+                    class="fa-solid"
+                    [ngClass]="getTypeIcon(entretien.type)"
+                  ></i>
+
+                  {{ entretien.type }}
+
+                </span>
+
+              </td>
+
+
+              <!-- STATUT -->
+
+              <td>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="getStatutClass(entretien.statut)"
+                >
+
+                  {{ entretien.statut }}
+
+                </span>
+
+              </td>
+
+
+              <!-- REPONSE -->
+
+              <td>
+
+                <span
+                  class="response-badge"
+                  [ngClass]="getReponseClass(entretien.reponseCandidat)"
+                >
+
+                  {{ entretien.reponseCandidat }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACTIONS -->
+
+              <td>
+
+                <div class="actions">
+
+                  <button
+                    type="button"
+                    class="action-button view"
+                    title="Voir l'entretien"
+                    (click)="voirDetail(entretien)"
+                  >
+
+                    <i class="fa-solid fa-eye"></i>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="action-button edit"
+                    title="Modifier l'entretien"
+                    (click)="ouvrirModification(entretien)"
+                  >
+
+                    <i class="fa-solid fa-pen"></i>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="action-button delete"
+                    title="Supprimer l'entretien"
+                    (click)="supprimer(entretien)"
+                  >
+
+                    <i class="fa-solid fa-trash"></i>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL DETAIL
+============================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showDetailModal"
+  (click)="fermerDetail()"
+>
+
+  <div
+    class="modal-container detail-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+
+          <i class="fa-solid fa-calendar-check"></i>
+
+          Détails de l'entretien
+
+        </h2>
+
+        <p>
+          Consultez les informations de l'entretien.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="fermerDetail()"
+      >
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div
+      class="modal-body"
+      *ngIf="selectedEntretien"
+    >
+
+      <!-- CANDIDAT -->
+
+      <div class="candidate-profile">
+
+        <div class="large-avatar">
+          {{ getInitiales(selectedEntretien) }}
+        </div>
+
+        <div>
+
+          <h3>
+            {{ getNomCandidat(selectedEntretien) }}
+          </h3>
+
+          <p>
+            {{ selectedEntretien.candidat.email }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- OFFRE -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-briefcase"></i>
+
+          Offre concernée
+
+        </h3>
+
+
+        <div class="detail-grid">
+
+          <div>
+
+            <span>Poste</span>
+
+            <strong>
+              {{ selectedEntretien.offre.titre }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>Date</span>
+
+            <strong>
+              {{ selectedEntretien.dateHeure | date:'dd/MM/yyyy' }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>Heure</span>
+
+            <strong>
+              {{ selectedEntretien.dateHeure | date:'HH:mm' }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>Type</span>
+
+            <strong>
+              {{ selectedEntretien.type }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- LIEU / VISIO -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i
+            class="fa-solid"
+            [ngClass]="getTypeIcon(selectedEntretien.type)"
+          ></i>
+
+          Modalité
+
+        </h3>
+
+
+        <div
+          class="location-box"
+          *ngIf="selectedEntretien.type === 'Présentiel'"
+        >
+
+          <i class="fa-solid fa-location-dot"></i>
+
+          <span>
+            {{ selectedEntretien.lieu || 'Lieu non renseigné' }}
+          </span>
+
+        </div>
+
+
+        <div
+          class="location-box"
+          *ngIf="selectedEntretien.type === 'Visio'"
+        >
+
+          <i class="fa-solid fa-video"></i>
+
+          <a
+            *ngIf="selectedEntretien.lienVisio"
+            [href]="selectedEntretien.lienVisio"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Rejoindre la visioconférence
+          </a>
+
+          <span *ngIf="!selectedEntretien.lienVisio">
+            Aucun lien renseigné.
+          </span>
+
+        </div>
+
+
+        <div
+          class="location-box"
+          *ngIf="selectedEntretien.type === 'Téléphonique'"
+        >
+
+          <i class="fa-solid fa-phone"></i>
+
+          <span>
+            Entretien téléphonique
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- STATUT -->
+
+      <div class="detail-section">
+
+        <h3>
+
+          <i class="fa-solid fa-chart-line"></i>
+
+          État
+
+        </h3>
+
+
+        <div class="status-row">
+
+          <span
+            class="status-badge large"
+            [ngClass]="getStatutClass(selectedEntretien.statut)"
+          >
+            {{ selectedEntretien.statut }}
+          </span>
+
+          <span
+            class="response-badge large"
+            [ngClass]="getReponseClass(selectedEntretien.reponseCandidat)"
+          >
+            Candidat :
+            {{ selectedEntretien.reponseCandidat }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- COMMENTAIRE -->
+
+      <div
+        class="detail-section"
+        *ngIf="selectedEntretien.commentaire"
+      >
+
+        <h3>
+
+          <i class="fa-solid fa-comment"></i>
+
+          Commentaire
+
+        </h3>
+
+        <div class="comment-box">
+
+          {{ selectedEntretien.commentaire }}
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="fermerDetail()"
+        >
+          Fermer
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="
+            fermerDetail();
+            ouvrirModification(selectedEntretien!)
+          "
+        >
+
+          <i class="fa-solid fa-pen"></i>
+
+          Modifier
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL CREATION / MODIFICATION
+============================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showFormModal"
+  (click)="fermerFormulaire()"
+>
+
+  <div
+    class="modal-container form-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+
+          <i
+            class="fa-solid"
+            [ngClass]="
+              modeModification
+                ? 'fa-pen-to-square'
+                : 'fa-calendar-plus'
+            "
+          ></i>
+
+          {{
+            modeModification
+              ? 'Modifier l’entretien'
+              : 'Planifier un entretien'
+          }}
+
+        </h2>
+
+        <p>
+
+          {{
+            modeModification
+              ? 'Modifiez les informations de l’entretien.'
+              : 'Organisez un entretien avec un candidat.'
+          }}
+
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="fermerFormulaire()"
+        [disabled]="isSaving"
+      >
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <!-- CANDIDATURE -->
+
+      <div
+        class="form-group"
+        *ngIf="!modeModification"
+      >
+
+        <label for="candidature">
+
+          Candidature
+
+          <span class="required">*</span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-user input-icon"></i>
+
+          <select
+            id="candidature"
+            [(ngModel)]="formData.candidature"
+            [disabled]="isSaving"
+          >
+
+            <option [ngValue]="null">
+              Sélectionner une candidature
+            </option>
+
+            <option
+              *ngFor="let candidature of candidaturesDisponibles"
+              [ngValue]="candidature.id"
+            >
+
+              {{ getNomCandidature(candidature) }}
+              —
+              {{ candidature.offre_detail.titre }}
+
+            </option>
+
+          </select>
+
+          <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+        </div>
+
+      </div>
+
+
+      <!-- DATE -->
+
+      <div class="form-group">
+
+        <label for="dateHeure">
+
+          Date et heure
+
+          <span class="required">*</span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-calendar-days input-icon"></i>
+
+          <input
+            id="dateHeure"
+            type="datetime-local"
+            [(ngModel)]="formData.dateHeure"
+            [disabled]="isSaving"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- TYPE -->
+
+      <div class="form-group">
+
+        <label for="typeEntretien">
+
+          Type
+
+          <span class="required">*</span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-video input-icon"></i>
+
+          <select
+            id="typeEntretien"
+            [(ngModel)]="formData.type"
+            [disabled]="isSaving"
+          >
+
+            <option value="Visio">
+              Visio
+            </option>
+
+            <option value="Présentiel">
+              Présentiel
+            </option>
+
+            <option value="Téléphonique">
+              Téléphonique
+            </option>
+
+          </select>
+
+          <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+        </div>
+
+      </div>
+
+
+      <!-- LIEU -->
+
+      <div
+        class="form-group"
+        *ngIf="formData.type === 'Présentiel'"
+      >
+
+        <label for="lieu">
+
+          Lieu
+
+          <span class="required">*</span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-location-dot input-icon"></i>
+
+          <input
+            id="lieu"
+            type="text"
+            [(ngModel)]="formData.lieu"
+            placeholder="Ex. Dakar, Plateau"
+            [disabled]="isSaving"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- VISIO -->
+
+      <div
+        class="form-group"
+        *ngIf="formData.type === 'Visio'"
+      >
+
+        <label for="lienVisio">
+
+          Lien de visioconférence
+
+          <span class="required">*</span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-video input-icon"></i>
+
+          <input
+            id="lienVisio"
+            type="url"
+            [(ngModel)]="formData.lienVisio"
+            placeholder="https://meet.google.com/..."
+            [disabled]="isSaving"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- STATUT -->
+
+      <div
+        class="form-group"
+        *ngIf="modeModification"
+      >
+
+        <label for="statut">
+
+          Statut
+
+          <span class="required">*</span>
+
+        </label>
+
+
+        <div class="input-wrapper">
+
+          <i class="fa-solid fa-chart-line input-icon"></i>
+
+          <select
+            id="statut"
+            [(ngModel)]="formData.statut"
+            [disabled]="isSaving"
+          >
+
+            <option value="Planifié">
+              Planifié
+            </option>
+
+            <option value="Confirmé">
+              Confirmé
+            </option>
+
+            <option value="Terminé">
+              Terminé
+            </option>
+
+            <option value="Annulé">
+              Annulé
+            </option>
+
+            <option value="Reporté">
+              Reporté
+            </option>
+
+          </select>
+
+          <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+        </div>
+
+      </div>
+
+
+      <!-- COMMENTAIRE -->
+
+      <div class="form-group">
+
+        <label for="commentaire">
+
+          Commentaire
+
+        </label>
+
+
+        <textarea
+          id="commentaire"
+          rows="4"
+          [(ngModel)]="formData.commentaire"
+          placeholder="Ajoutez une information concernant l'entretien..."
+          [disabled]="isSaving"
+        ></textarea>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="fermerFormulaire()"
+          [disabled]="isSaving"
+        >
+          Annuler
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-save"
+          (click)="enregistrerEntretien()"
+          [disabled]="isSaving"
+        >
+
+          <span
+            class="button-spinner"
+            *ngIf="isSaving"
+          ></span>
+
+          <i
+            class="fa-solid fa-floppy-disk"
+            *ngIf="!isSaving"
+          ></i>
+
+          {{
+            isSaving
+              ? 'Enregistrement...'
+              : (
+                  modeModification
+                    ? 'Enregistrer'
+                    : 'Planifier'
+                )
+          }}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

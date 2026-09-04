@@ -1,0 +1,1966 @@
+/* ============================================================
+   PAGE DÉTAIL MISSION
+============================================================ */
+
+.mission-detail-page {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 30px;
+  color: #1f2937;
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   CONTENEUR PRINCIPAL
+============================================================ */
+
+.mission-content {
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+
+/* ============================================================
+   BOUTON RETOUR
+============================================================ */
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  border: none;
+  background: transparent;
+
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  padding: 8px 0;
+  margin-bottom: 20px;
+
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  color: #1d4ed8;
+  transform: translateX(-3px);
+}
+
+.back-button i {
+  font-size: 13px;
+}
+
+
+/* ============================================================
+   HEADER MISSION
+============================================================ */
+
+.mission-header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  padding: 30px;
+
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+
+  margin-bottom: 20px;
+}
+
+
+/* ============================================================
+   AVATAR ENTREPRISE
+============================================================ */
+
+.company-avatar {
+  width: 82px;
+  height: 82px;
+
+  min-width: 82px;
+
+  border-radius: 16px;
+
+  background: #eff6ff;
+
+  border: 1px solid #dbeafe;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  color: #2563eb;
+
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.company-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* ============================================================
+   INFORMATIONS HEADER
+============================================================ */
+
+.header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mission-type {
+  display: inline-flex;
+  align-items: center;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  border-radius: 20px;
+
+  padding: 6px 12px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  margin-bottom: 9px;
+}
+
+.header-info h1 {
+  margin: 0 0 10px;
+
+  color: #111827;
+
+  font-size: 30px;
+  line-height: 1.25;
+
+  font-weight: 750;
+
+  word-break: break-word;
+}
+
+.company {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.company i {
+  color: #2563eb;
+}
+
+
+/* ============================================================
+   STATUT
+============================================================ */
+
+.status {
+  position: absolute;
+
+  top: 28px;
+  right: 28px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 7px 12px;
+
+  background: #ecfdf5;
+  color: #059669;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status span {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #10b981;
+}
+
+
+/* ============================================================
+   INFORMATIONS RAPIDES
+============================================================ */
+
+.quick-info {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 15px;
+
+  margin-bottom: 22px;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 14px;
+
+  padding: 18px;
+
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+
+  min-width: 0;
+}
+
+.info-card > i {
+  width: 42px;
+  height: 42px;
+
+  min-width: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  font-size: 17px;
+}
+
+.info-card div {
+  min-width: 0;
+}
+
+.info-card span {
+  display: block;
+
+  color: #6b7280;
+
+  font-size: 12px;
+
+  margin-bottom: 4px;
+}
+
+.info-card strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+============================================================ */
+
+.mission-layout {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 340px;
+
+  gap: 22px;
+
+  align-items: start;
+}
+
+
+/* ============================================================
+   CONTENU GAUCHE
+============================================================ */
+
+.mission-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-section {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  padding: 26px;
+
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.detail-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 0 20px;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.detail-section h2 i {
+  color: #2563eb;
+
+  font-size: 16px;
+}
+
+
+/* ============================================================
+   DESCRIPTION
+============================================================ */
+
+.description {
+  margin: 0;
+
+  color: #4b5563;
+
+  font-size: 15px;
+
+  line-height: 1.8;
+
+  white-space: pre-line;
+}
+
+
+/* ============================================================
+   COMPÉTENCES
+============================================================ */
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 14px 16px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+}
+
+.skill-item > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 9px;
+}
+
+.skill-item strong {
+  color: #1f2937;
+
+  font-size: 14px;
+}
+
+.skill-item span {
+  display: inline-flex;
+
+  padding: 4px 8px;
+
+  border-radius: 5px;
+
+  background: #fff7ed;
+  color: #ea580c;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.skill-item small {
+  color: #2563eb;
+
+  background: #eff6ff;
+
+  border-radius: 20px;
+
+  padding: 5px 10px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   DATES
+============================================================ */
+
+.dates-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 14px;
+}
+
+.dates-grid > div {
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+  padding: 15px;
+}
+
+.dates-grid span {
+  display: block;
+
+  color: #6b7280;
+
+  font-size: 12px;
+
+  margin-bottom: 6px;
+}
+
+.dates-grid strong {
+  display: block;
+
+  color: #1f2937;
+
+  font-size: 14px;
+}
+
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+
+.mission-sidebar {
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+
+  position: sticky;
+  top: 20px;
+}
+
+
+/* ============================================================
+   CARTE POSTULER
+============================================================ */
+
+.apply-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  padding: 24px;
+
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+}
+
+.apply-card h3 {
+  margin: 0 0 10px;
+
+  color: #111827;
+
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.apply-card p {
+  margin: 0 0 20px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   BOUTON POSTULER
+============================================================ */
+
+.apply-button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  padding: 13px 18px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.apply-button:hover {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 7px 16px rgba(37, 99, 235, 0.25);
+}
+
+.apply-button i {
+  font-size: 13px;
+}
+
+
+/* ============================================================
+   MISSION FERMÉE
+============================================================ */
+
+.closed-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  background: #f3f4f6;
+
+  color: #6b7280;
+
+  border-radius: 10px;
+
+  padding: 13px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+.closed-message i {
+  color: #9ca3af;
+}
+
+
+/* ============================================================
+   CARTE ENTREPRISE
+============================================================ */
+
+.company-card {
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 16px;
+
+  padding: 23px;
+
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.company-card h3 {
+  margin: 0 0 16px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+.company-card h4 {
+  margin: 0 0 12px;
+
+  color: #111827;
+
+  font-size: 17px;
+}
+
+.company-card p {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.company-card p i {
+  color: #2563eb;
+}
+
+
+/* ============================================================
+   CHARGEMENT
+============================================================ */
+
+.loading-container {
+  min-height: 500px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+
+  margin-bottom: 20px;
+}
+
+.loading-container h3 {
+  margin: 0 0 7px;
+
+  color: #1f2937;
+
+  font-size: 17px;
+}
+
+.loading-container p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   ERREUR
+============================================================ */
+
+.error-container {
+  max-width: 550px;
+
+  margin: 100px auto;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 18px;
+
+  padding: 40px;
+
+  text-align: center;
+
+  box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+}
+
+.error-icon {
+  width: 60px;
+  height: 60px;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fef2f2;
+
+  color: #dc2626;
+
+  font-size: 24px;
+}
+
+.error-container h3 {
+  margin: 0 0 10px;
+
+  color: #111827;
+
+  font-size: 20px;
+}
+
+.error-container p {
+  margin: 0 0 24px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.error-container button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  padding: 12px 18px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.error-container button:hover {
+  background: #1d4ed8;
+}
+
+
+/* ============================================================
+   TABLETTE
+============================================================ */
+
+@media (max-width: 1050px) {
+
+  .mission-detail-page {
+    padding: 22px;
+  }
+
+  .quick-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mission-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+
+  .header-info h1 {
+    font-size: 26px;
+  }
+
+}
+
+
+/* ============================================================
+   PETITE TABLETTE
+============================================================ */
+
+@media (max-width: 800px) {
+
+  .mission-detail-page {
+    padding: 18px;
+  }
+
+  .mission-header {
+    align-items: flex-start;
+
+    padding: 24px;
+  }
+
+  .status {
+    position: static;
+
+    margin-left: auto;
+
+    white-space: nowrap;
+  }
+
+  .mission-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-sidebar {
+    position: static;
+  }
+
+  .apply-card {
+    order: 0;
+  }
+
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 600px) {
+
+  .mission-detail-page {
+    padding: 12px;
+  }
+
+  .back-button {
+    margin-bottom: 14px;
+  }
+
+  .mission-header {
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    border-radius: 14px;
+  }
+
+  .company-avatar {
+    width: 62px;
+    height: 62px;
+
+    min-width: 62px;
+
+    border-radius: 12px;
+
+    font-size: 23px;
+  }
+
+  .header-info {
+    flex: 1;
+  }
+
+  .header-info h1 {
+    font-size: 21px;
+  }
+
+  .mission-type {
+    font-size: 10px;
+
+    padding: 5px 9px;
+  }
+
+  .company {
+    font-size: 12px;
+  }
+
+  .status {
+    width: 100%;
+
+    justify-content: center;
+
+    margin-left: 0;
+  }
+
+  .quick-info {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+  .info-card {
+    padding: 15px;
+  }
+
+  .detail-section {
+    padding: 19px;
+
+    border-radius: 13px;
+  }
+
+  .detail-section h2 {
+    font-size: 16px;
+  }
+
+  .description {
+    font-size: 14px;
+
+    line-height: 1.7;
+  }
+
+  .dates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-item {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .mission-layout {
+    gap: 15px;
+  }
+
+  .apply-card,
+  .company-card {
+    padding: 19px;
+  }
+
+}
+
+
+/* ============================================================
+   TRÈS PETIT MOBILE
+============================================================ */
+
+@media (max-width: 400px) {
+
+  .mission-detail-page {
+    padding: 9px;
+  }
+
+  .mission-header {
+    padding: 16px;
+  }
+
+  .header-info h1 {
+    font-size: 19px;
+  }
+
+  .info-card > i {
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+  }
+
+  .detail-section {
+    padding: 16px;
+  }
+
+}
+
+/* ============================================================
+   FORMULAIRE DE CANDIDATURE
+============================================================ */
+
+.application-form {
+  margin-top: 24px;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+  animation: formAppear 0.25s ease;
+}
+
+
+/* ============================================================
+   ANIMATION
+============================================================ */
+
+@keyframes formAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ============================================================
+   EN-TÊTE DU FORMULAIRE
+============================================================ */
+
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eef0f3;
+}
+
+.form-header > div {
+  flex: 1;
+}
+
+.form-eyebrow {
+  display: inline-block;
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #2563eb;
+}
+
+.form-header h3 {
+  margin: 0 0 7px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.form-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   BOUTON FERMER
+============================================================ */
+
+.close-form {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #f3f4f6;
+  color: #6b7280;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-form:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.close-form:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   GROUPE DE CHAMP
+============================================================ */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+
+/* ============================================================
+   TEXTAREA
+============================================================ */
+
+.form-group textarea {
+  width: 100%;
+  min-height: 145px;
+
+  padding: 14px 15px;
+
+  box-sizing: border-box;
+
+  resize: vertical;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.form-group textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* ============================================================
+   LIGNE MONTANT + DÉLAI
+============================================================ */
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+
+/* ============================================================
+   INPUT
+============================================================ */
+
+.form-group input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  height: 46px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* ============================================================
+   INPUT AVEC SUFFIXE
+============================================================ */
+
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-suffix input {
+  padding-right: 75px;
+}
+
+.input-with-suffix span {
+  position: absolute;
+
+  right: 14px;
+
+  color: #6b7280;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   MESSAGE DE SUCCÈS
+============================================================ */
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 20px;
+  padding: 13px 15px;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+
+  background: #f0fdf4;
+
+  color: #15803d;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.success-message i {
+  font-size: 18px;
+}
+
+
+/* ============================================================
+   MESSAGE D'ERREUR
+============================================================ */
+
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 20px;
+  padding: 13px 15px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  background: #fef2f2;
+
+  color: #dc2626;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.form-error i {
+  font-size: 18px;
+}
+
+
+/* ============================================================
+   ACTIONS
+============================================================ */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 8px;
+  padding-top: 20px;
+
+  border-top: 1px solid #eef0f3;
+}
+
+
+/* ============================================================
+   BOUTON ANNULER
+============================================================ */
+
+.cancel-button {
+  height: 44px;
+
+  padding: 0 20px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #4b5563;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   BOUTON ENVOYER
+============================================================ */
+
+.submit-button {
+  min-width: 190px;
+  height: 44px;
+
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 14px rgba(37, 99, 235, 0.22);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   SPINNER DU BOUTON
+============================================================ */
+
+.button-spinner {
+  width: 15px;
+  height: 15px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: buttonSpin 0.7s linear infinite;
+}
+
+@keyframes buttonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ============================================================
+   MESSAGE "DÉJÀ POSTULÉ"
+============================================================ */
+
+.already-applied {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 5px;
+
+  margin-top: 16px;
+  padding: 16px;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+
+  background: #f0fdf4;
+
+  color: #166534;
+}
+
+.already-applied i {
+  margin-bottom: 3px;
+  font-size: 20px;
+}
+
+.already-applied strong {
+  font-size: 14px;
+}
+
+.already-applied span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b7a5a;
+}
+
+
+/* ============================================================
+   RESPONSIVE TABLETTE
+============================================================ */
+
+@media (max-width: 768px) {
+
+  .application-form {
+    padding: 22px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .form-header h3 {
+    font-size: 19px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+  }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE MOBILE
+============================================================ */
+
+@media (max-width: 480px) {
+
+  .application-form {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .form-header {
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .form-header h3 {
+    font-size: 18px;
+  }
+
+  .form-header p {
+    font-size: 13px;
+  }
+
+  .close-form {
+    width: 32px;
+    height: 32px;
+  }
+
+  .form-group textarea {
+    min-height: 130px;
+  }
+
+}
+
+/* ==========================================================
+   STRUCTURE PRINCIPALE
+========================================================== */
+
+.mission-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
+  align-items: start;
+}
+
+
+/* ==========================================================
+   COLONNE GAUCHE
+========================================================== */
+
+.mission-main {
+  min-width: 0;
+}
+
+
+/* ==========================================================
+   SECTIONS DESCRIPTION / COMPÉTENCES / PLANNING
+========================================================== */
+
+.detail-section {
+  background: #ffffff;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+
+  padding: 22px 24px;
+  margin-bottom: 20px;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.04);
+}
+
+
+/* TITRES DES SECTIONS */
+
+.detail-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 0 15px;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #1f2937;
+}
+
+.detail-section h2 i {
+  font-size: 17px;
+  color: #2563eb;
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+========================================================== */
+
+.description {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.65;
+
+  color: #596273;
+
+  /* évite une description trop haute */
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+
+/* Barre de défilement discrète */
+
+.description::-webkit-scrollbar {
+  width: 5px;
+}
+
+.description::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+
+/* ==========================================================
+   COMPÉTENCES
+========================================================== */
+
+.skills-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #edf0f4;
+  border-radius: 10px;
+
+  background: #f9fafb;
+}
+
+.skill-item strong {
+  display: block;
+
+  font-size: 13px;
+  color: #374151;
+}
+
+.skill-item span {
+  display: inline-block;
+
+  margin-top: 4px;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  color: #2563eb;
+}
+
+.skill-item small {
+  white-space: nowrap;
+
+  font-size: 11px;
+
+  color: #6b7280;
+}
+
+
+/* ==========================================================
+   PLANNING
+========================================================== */
+
+.dates-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.dates-grid > div {
+  padding: 13px 14px;
+
+  background: #f8fafc;
+
+  border: 1px solid #edf0f4;
+  border-radius: 10px;
+}
+
+.dates-grid span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 11px;
+  color: #8a93a3;
+}
+
+.dates-grid strong {
+  display: block;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #374151;
+}
+
+
+/* ==========================================================
+   COLONNE DROITE
+========================================================== */
+
+.mission-sidebar {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  align-self: start;
+}
+
+
+/* ==========================================================
+   CARTE POSTULER
+========================================================== */
+
+.apply-card {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.04);
+}
+
+.apply-card h3 {
+  margin: 0 0 10px;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  color: #1f2937;
+}
+
+.apply-card > p {
+  margin: 0 0 20px;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+
+/* ==========================================================
+   BOUTON POSTULER
+========================================================== */
+
+.apply-button {
+  width: 100%;
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 13px 18px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.apply-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================
+   FORMULAIRE
+========================================================== */
+
+.application-form {
+  width: 100%;
+  box-sizing: border-box;
+
+  margin-top: 20px;
+
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 15px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ==========================================================
+   À PROPOS DE L'ENTREPRISE
+========================================================== */
+
+.company-card {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 22px 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.04);
+}
+
+.company-card h3 {
+  margin: 0 0 16px;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  color: #1f2937;
+}
+
+.company-card h4 {
+  margin: 0 0 10px;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #374151;
+}
+
+.company-card p {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+.company-card p i {
+  color: #2563eb;
+}
+
+
+/* ==========================================================
+   DÉJÀ POSTULÉ
+========================================================== */
+
+.already-applied {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  padding: 16px;
+
+  border-radius: 10px;
+
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+
+  color: #047857;
+}
+
+.already-applied i {
+  font-size: 22px;
+}
+
+.already-applied strong {
+  font-size: 14px;
+}
+
+.already-applied span {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 1100px) {
+
+  .mission-layout {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 20px;
+  }
+
+  .dates-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .mission-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-sidebar {
+    width: 100%;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .detail-section {
+    padding: 18px;
+  }
+
+  .skills-list {
+    grid-template-columns: 1fr;
+  }
+
+  .dates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-card,
+  .company-card,
+  .application-form {
+    padding: 18px;
+  }
+
+}

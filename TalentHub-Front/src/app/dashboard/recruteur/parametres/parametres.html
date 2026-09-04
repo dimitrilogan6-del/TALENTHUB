@@ -1,0 +1,805 @@
+<div class="settings-page">
+
+  <!-- ======================================================
+       EN-TÊTE
+  ======================================================= -->
+
+  <div class="settings-header">
+
+    <div>
+
+      <span class="settings-label">
+        MON COMPTE
+      </span>
+
+      <h1>
+        Paramètres
+      </h1>
+
+      <p>
+        Gérez vos préférences et la sécurité de votre compte.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       MESSAGE SUCCÈS
+  ======================================================= -->
+
+  <div
+    class="alert success"
+    *ngIf="saveSuccess"
+  >
+
+    <span class="alert-icon">
+      <i class="fa-solid fa-check"></i>
+    </span>
+
+    <span>
+      Vos paramètres ont été enregistrés avec succès.
+    </span>
+
+  </div>
+
+
+  <!-- ======================================================
+       MESSAGE ERREUR
+  ======================================================= -->
+
+  <div
+    class="alert error"
+    *ngIf="saveError"
+  >
+
+    <span class="alert-icon">
+      <i class="fa-solid fa-exclamation"></i>
+    </span>
+
+    <span>
+      {{ saveError }}
+    </span>
+
+  </div>
+
+
+  <!-- ======================================================
+       CONTENU
+  ======================================================= -->
+
+  <div class="settings-container">
+
+
+    <!-- ====================================================
+         NOTIFICATIONS
+    ===================================================== -->
+
+    <section class="settings-card">
+
+      <div class="card-header">
+
+        <div class="card-icon blue">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+
+        <div>
+
+          <h2>
+            Notifications
+          </h2>
+
+          <p>
+            Choisissez les notifications que vous souhaitez recevoir.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-options">
+
+
+        <!-- Notifications générales -->
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Notifications
+            </strong>
+
+            <span>
+              Recevoir les notifications de TalentHub.
+            </span>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="settings.notifications"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Messages -->
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Nouveaux messages
+            </strong>
+
+            <span>
+              Être informé lorsqu'un recruteur vous envoie un message.
+            </span>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="settings.messages"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Candidatures -->
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Candidatures
+            </strong>
+
+            <span>
+              Recevoir les mises à jour concernant vos candidatures.
+            </span>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="settings.candidatures"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Entretiens -->
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Entretiens
+            </strong>
+
+            <span>
+              Recevoir des rappels concernant vos entretiens.
+            </span>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="settings.entretiens"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Notifications par email
+            </strong>
+
+            <span>
+              Recevoir les notifications importantes par email.
+            </span>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="settings.emailNotifications"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         APPARENCE
+    ===================================================== -->
+
+    <section class="settings-card">
+
+      <div class="card-header">
+
+        <div class="card-icon purple">
+          <i class="fa-solid fa-palette"></i>
+        </div>
+
+        <div>
+
+          <h2>
+            Apparence
+          </h2>
+
+          <p>
+            Personnalisez l'apparence de votre espace candidat.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-options">
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Mode sombre
+            </strong>
+
+            <span>
+              Utiliser une interface sombre pour votre espace candidat.
+            </span>
+
+          </div>
+
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [checked]="settings.darkMode"
+              (change)="toggleDarkMode()"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         CONFIDENTIALITÉ
+    ===================================================== -->
+
+    <section class="settings-card">
+
+      <div class="card-header">
+
+        <div class="card-icon green">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+
+        <div>
+
+          <h2>
+            Confidentialité
+          </h2>
+
+          <p>
+            Contrôlez la visibilité de votre profil.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="settings-options">
+
+        <div class="setting-row">
+
+          <div class="setting-info">
+
+            <strong>
+              Profil visible aux recruteurs
+            </strong>
+
+            <span>
+              Permettre aux recruteurs de consulter votre profil.
+            </span>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              [(ngModel)]="settings.profileVisible"
+            />
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         SÉCURITÉ
+    ===================================================== -->
+
+    <section class="settings-section password-section">
+
+
+      <!-- ==================================================
+           EN-TÊTE SÉCURITÉ
+      =================================================== -->
+
+      <div class="settings-section-header">
+
+        <div class="settings-section-icon">
+
+          <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+        <div class="settings-section-title">
+
+          <span class="section-label">
+            SÉCURITÉ
+          </span>
+
+          <h2>
+            Changer mon mot de passe
+          </h2>
+
+          <p>
+            Modifiez votre mot de passe pour protéger
+            votre compte TalentHub.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           FORMULAIRE
+      =================================================== -->
+
+      <form
+        class="password-form"
+        (ngSubmit)="changePassword()"
+        autocomplete="off"
+      >
+
+
+        <!-- =================================================
+             ANCIEN MOT DE PASSE
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label for="ancienMotDePasse">
+            Ancien mot de passe
+          </label>
+
+          <div class="password-input-wrapper">
+
+            <input
+              id="ancienMotDePasse"
+
+              [type]="
+                showOldPassword
+                  ? 'text'
+                  : 'password'
+              "
+
+              [(ngModel)]="password.ancien"
+
+              name="ancienMotDePasse"
+
+              placeholder="Entrez votre ancien mot de passe"
+
+              autocomplete="current-password"
+
+              required
+            />
+
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleOldPassword()"
+
+              [attr.aria-label]="
+                showOldPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
+              "
+            >
+
+              <i
+                *ngIf="!showOldPassword"
+                class="fa-solid fa-eye"
+              ></i>
+
+              <i
+                *ngIf="showOldPassword"
+                class="fa-solid fa-eye-slash"
+              ></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             NOUVEAU MOT DE PASSE
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label for="nouveauMotDePasse">
+            Nouveau mot de passe
+          </label>
+
+          <div class="password-input-wrapper">
+
+            <input
+              id="nouveauMotDePasse"
+
+              [type]="
+                showNewPassword
+                  ? 'text'
+                  : 'password'
+              "
+
+              [(ngModel)]="password.nouveau"
+
+              name="nouveauMotDePasse"
+
+              placeholder="Entrez votre nouveau mot de passe"
+
+              autocomplete="new-password"
+
+              minlength="8"
+
+              required
+            />
+
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleNewPassword()"
+
+              [attr.aria-label]="
+                showNewPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
+              "
+            >
+
+              <i
+                *ngIf="!showNewPassword"
+                class="fa-solid fa-eye"
+              ></i>
+
+              <i
+                *ngIf="showNewPassword"
+                class="fa-solid fa-eye-slash"
+              ></i>
+
+            </button>
+
+          </div>
+
+
+          <small class="password-help">
+
+            Le mot de passe doit contenir au moins
+            8 caractères.
+
+          </small>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CONFIRMATION
+        ================================================== -->
+
+        <div class="form-group">
+
+          <label for="confirmationMotDePasse">
+            Confirmer le nouveau mot de passe
+          </label>
+
+          <div class="password-input-wrapper">
+
+            <input
+              id="confirmationMotDePasse"
+
+              [type]="
+                showConfirmPassword
+                  ? 'text'
+                  : 'password'
+              "
+
+              [(ngModel)]="password.confirmation"
+
+              name="confirmationMotDePasse"
+
+              placeholder="Confirmez votre nouveau mot de passe"
+
+              autocomplete="new-password"
+
+              required
+            />
+
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleConfirmPassword()"
+
+              [attr.aria-label]="
+                showConfirmPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
+              "
+            >
+
+              <i
+                *ngIf="!showConfirmPassword"
+                class="fa-solid fa-eye"
+              ></i>
+
+              <i
+                *ngIf="showConfirmPassword"
+                class="fa-solid fa-eye-slash"
+              ></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             MESSAGE ERREUR
+        ================================================== -->
+
+        <div
+          class="password-message password-error"
+          *ngIf="passwordError"
+        >
+
+          <span class="message-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+          </span>
+
+          <span>
+            {{ passwordError }}
+          </span>
+
+        </div>
+
+
+
+        <!-- =================================================
+             MESSAGE SUCCÈS
+        ================================================== -->
+
+        <div
+          class="password-message password-success"
+          *ngIf="passwordSuccess"
+        >
+
+          <span class="message-icon">
+
+            <i class="fa-solid fa-check"></i>
+
+          </span>
+
+          <span>
+            {{ passwordSuccess }}
+          </span>
+
+        </div>
+
+
+
+        <!-- =================================================
+             BOUTON
+        ================================================= -->
+
+        <div class="password-form-footer">
+
+          <button
+            type="submit"
+            class="change-password-button"
+
+            [disabled]="isChangingPassword"
+          >
+
+            <ng-container
+              *ngIf="!isChangingPassword"
+            >
+
+              <i class="fa-solid fa-key"></i>
+
+              <span>
+                Modifier le mot de passe
+              </span>
+
+            </ng-container>
+
+
+            <ng-container
+              *ngIf="isChangingPassword"
+            >
+
+              <i class="fa-solid fa-spinner fa-spin"></i>
+
+              <span>
+                Modification...
+              </span>
+
+            </ng-container>
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         ENREGISTRER
+    ===================================================== -->
+
+    <div class="settings-actions">
+
+      <button
+        type="button"
+        class="save-button"
+
+        [disabled]="isSaving"
+
+        (click)="saveSettings()"
+      >
+
+        <i
+          *ngIf="!isSaving"
+          class="fa-solid fa-floppy-disk"
+        ></i>
+
+        <i
+          *ngIf="isSaving"
+          class="fa-solid fa-spinner fa-spin"
+        ></i>
+
+        <span>
+          {{ isSaving
+            ? 'Enregistrement...'
+            : 'Enregistrer les paramètres'
+          }}
+        </span>
+
+      </button>
+
+    </div>
+
+
+
+    <!-- ====================================================
+         DANGER / DÉCONNEXION
+    ===================================================== -->
+
+    <section class="danger-card">
+
+      <div>
+
+        <h2>
+          Déconnexion
+        </h2>
+
+        <p>
+          Vous souhaitez quitter votre espace candidat ?
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()"
+      >
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+        <span>
+          Déconnexion
+        </span>
+
+      </button>
+
+    </section>
+
+
+  </div>
+
+</div>

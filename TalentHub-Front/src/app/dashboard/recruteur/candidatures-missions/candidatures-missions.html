@@ -1,0 +1,667 @@
+<div class="candidatures-page">
+
+  <!-- ======================================================
+       HEADER
+  ======================================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="page-eyebrow">
+        ESPACE RECRUTEUR
+      </span>
+
+      <h1>
+        Candidatures reçues
+      </h1>
+
+      <p>
+        Consultez les freelances qui ont postulé
+        à vos missions.
+      </p>
+
+    </div>
+
+    <div class="total-badge">
+
+      {{ candidatures.length }}
+
+      candidature{{
+        candidatures.length > 1
+          ? 's'
+          : ''
+      }}
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       ALERTES
+  ======================================================= -->
+
+  <div
+    class="alert success"
+    *ngIf="successMessage"
+  >
+
+    <span>✓</span>
+
+    {{ successMessage }}
+
+  </div>
+
+
+  <div
+    class="alert error"
+    *ngIf="errorMessage"
+  >
+
+    <span>!</span>
+
+    {{ errorMessage }}
+
+    <button
+      type="button"
+      (click)="errorMessage = ''"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       LOADING
+  ======================================================= -->
+
+  <div
+    class="loading-state"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement des candidatures...
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       EMPTY
+  ======================================================= -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !isLoading &&
+      candidatures.length === 0
+    "
+  >
+
+    <div class="empty-icon">
+      ◇
+    </div>
+
+    <h2>
+      Aucune candidature
+    </h2>
+
+    <p>
+      Les candidatures à vos missions
+      apparaîtront ici.
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       TABLEAU
+  ======================================================= -->
+
+  <div
+    class="table-container"
+    *ngIf="
+      !isLoading &&
+      candidatures.length > 0
+    "
+  >
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Freelance
+          </th>
+
+          <th>
+            Mission
+          </th>
+
+          <th>
+            Proposition
+          </th>
+
+          <th>
+            Montant
+          </th>
+
+          <th>
+            Délai
+          </th>
+
+          <th>
+            Statut
+          </th>
+
+          <th>
+            Actions
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        <tr
+          *ngFor="
+            let candidature of candidatures;
+            trackBy: trackByCandidature
+          "
+        >
+
+          <!-- FREELANCE -->
+
+          <td>
+
+            <div class="freelance-cell">
+
+              <div class="avatar">
+
+                {{
+                  candidature.freelance_nom
+                    ?.charAt(0)
+                    ?.toUpperCase()
+                }}
+
+              </div>
+
+              <div>
+
+                <strong>
+                  {{ candidature.freelance_nom }}
+                </strong>
+
+                <small>
+                  Candidat freelance
+                </small>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <!-- MISSION -->
+
+          <td>
+
+            <span class="mission-title">
+
+              {{
+                candidature.mission?.titre
+              }}
+
+            </span>
+
+          </td>
+
+
+          <!-- PROPOSITION -->
+
+          <td>
+
+            <span class="proposal">
+
+              {{
+                candidature.proposition
+                  ? (
+                    candidature.proposition
+                    | slice:0:70
+                  ) + (
+                    candidature.proposition.length > 70
+                      ? '...'
+                      : ''
+                  )
+                  : 'Aucune proposition'
+              }}
+
+            </span>
+
+          </td>
+
+
+          <!-- MONTANT -->
+
+          <td>
+
+            <strong>
+
+              {{
+                candidature.montantPropose
+                  || 0
+              }}
+
+              {{ candidature.devise }}
+
+            </strong>
+
+          </td>
+
+
+          <!-- DÉLAI -->
+
+          <td>
+
+            <span>
+
+              {{
+                candidature.delaiPropose
+                  || '-'
+              }}
+
+              {{
+                candidature.delaiPropose
+                  ? 'jours'
+                  : ''
+              }}
+
+            </span>
+
+          </td>
+
+
+          <!-- STATUT -->
+
+          <td>
+
+            <span
+              class="status-badge"
+              [ngClass]="
+                candidature.statut
+              "
+            >
+
+              {{
+                getStatutLabel(
+                  candidature.statut
+                )
+              }}
+
+            </span>
+
+          </td>
+
+
+          <!-- ACTIONS -->
+
+          <td>
+
+            <div class="actions">
+
+              <button
+                class="btn-view"
+                type="button"
+                (click)="
+                  voirCandidature(
+                    candidature
+                  )
+                "
+              >
+                Voir
+              </button>
+
+              <button
+                class="btn-accept"
+                type="button"
+                *ngIf="
+                  candidature.statut !==
+                    'acceptee' &&
+                  candidature.statut !==
+                    'refusee'
+                "
+                (click)="
+                  accepter(
+                    candidature
+                  )
+                "
+              >
+                ✓
+              </button>
+
+              <button
+                class="btn-refuse"
+                type="button"
+                *ngIf="
+                  candidature.statut !==
+                    'acceptee' &&
+                  candidature.statut !==
+                    'refusee'
+                "
+                (click)="
+                  refuser(
+                    candidature
+                  )
+                "
+              >
+                ×
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL DÉTAIL CANDIDATURE
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="
+    showDetailModal &&
+    candidatureSelectionnee
+  "
+  (click)="fermerDetail()"
+>
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          CANDIDATURE
+        </span>
+
+        <h2>
+          Profil du freelance
+        </h2>
+
+      </div>
+
+      <button
+        class="modal-close"
+        type="button"
+        (click)="fermerDetail()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <!-- FREELANCE -->
+
+      <div class="profile-header">
+
+        <div class="large-avatar">
+
+          {{
+            candidatureSelectionnee
+              .freelance_nom
+              ?.charAt(0)
+              ?.toUpperCase()
+          }}
+
+        </div>
+
+        <div>
+
+          <h3>
+
+            {{
+              candidatureSelectionnee
+                .freelance_nom
+            }}
+
+          </h3>
+
+          <span>
+            Freelance
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- MISSION -->
+
+      <div class="detail-section">
+
+        <span class="detail-label">
+          Mission
+        </span>
+
+        <strong>
+
+          {{
+            candidatureSelectionnee
+              .mission?.titre
+          }}
+
+        </strong>
+
+      </div>
+
+
+      <!-- STATUT -->
+
+      <div class="detail-section">
+
+        <span class="detail-label">
+          Statut
+        </span>
+
+        <span
+          class="status-badge"
+          [ngClass]="
+            candidatureSelectionnee.statut
+          "
+        >
+
+          {{
+            getStatutLabel(
+              candidatureSelectionnee.statut
+            )
+          }}
+
+        </span>
+
+      </div>
+
+
+      <!-- PROPOSITION -->
+
+      <div class="detail-section">
+
+        <span class="detail-label">
+          Proposition
+        </span>
+
+        <p class="proposal-full">
+
+          {{
+            candidatureSelectionnee
+              .proposition ||
+              'Aucune proposition.'
+          }}
+
+        </p>
+
+      </div>
+
+
+      <!-- INFOS -->
+
+      <div class="detail-grid">
+
+        <div>
+
+          <span>
+            Montant proposé
+          </span>
+
+          <strong>
+
+            {{
+              candidatureSelectionnee
+                .montantPropose ||
+                0
+            }}
+
+            {{
+              candidatureSelectionnee
+                .devise
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Délai proposé
+          </span>
+
+          <strong>
+
+            {{
+              candidatureSelectionnee
+                .delaiPropose ||
+                '-'
+            }}
+
+            {{
+              candidatureSelectionnee
+                .delaiPropose
+                ? 'jours'
+                : ''
+            }}
+
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Date de candidature
+          </span>
+
+          <strong>
+
+            {{
+              candidatureSelectionnee
+                .dateCandidature
+                | date:'dd/MM/yyyy'
+            }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="fermerDetail()"
+      >
+        Fermer
+      </button>
+
+      <button
+        class="btn-refuse-large"
+        type="button"
+        *ngIf="
+          candidatureSelectionnee.statut !==
+            'refusee' &&
+          candidatureSelectionnee.statut !==
+            'acceptee'
+        "
+        [disabled]="isProcessing"
+        (click)="
+          refuser(
+            candidatureSelectionnee
+          )
+        "
+      >
+        Refuser
+      </button>
+
+      <button
+        class="btn-accept-large"
+        type="button"
+        *ngIf="
+          candidatureSelectionnee.statut !==
+            'refusee' &&
+          candidatureSelectionnee.statut !==
+            'acceptee'
+        "
+        [disabled]="isProcessing"
+        (click)="
+          accepter(
+            candidatureSelectionnee
+          )
+        "
+      >
+        Accepter
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

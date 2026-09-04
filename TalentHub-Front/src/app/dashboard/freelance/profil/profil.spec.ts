@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecruteurLayout } from './recruteur-layout';
+import { Profil } from './profil';
 
-describe('RecruteurLayout', () => {
-  let component: RecruteurLayout;
-  let fixture: ComponentFixture<RecruteurLayout>;
+describe('Profil', () => {
+  let component: Profil;
+  let fixture: ComponentFixture<Profil>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RecruteurLayout],
+      declarations: [Profil],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RecruteurLayout);
+    fixture = TestBed.createComponent(Profil);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
