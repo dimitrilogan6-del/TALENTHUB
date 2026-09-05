@@ -1,0 +1,1347 @@
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:host {
+  --sidebar-width: 285px;
+  --sidebar-collapsed-width: 82px;
+  --topbar-height: 76px;
+
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #eff6ff;
+
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e5e7eb;
+
+  --text-dark: #111827;
+  --text-medium: #4b5563;
+  --text-light: #6b7280;
+
+  --background: #f5f7fb;
+
+  --danger: #dc2626;
+
+  display: block;
+}
+
+
+/* =========================================================
+   RESET LOCAL
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+
+/* =========================================================
+   LAYOUT PRINCIPAL
+========================================================= */
+
+.freelance-layout {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--background);
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.freelance-sidebar {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: var(--sidebar-width);
+
+  background: var(--sidebar-bg);
+
+  border-right: 1px solid var(--sidebar-border);
+
+  display: flex;
+  flex-direction: column;
+
+  z-index: 1000;
+
+  transition:
+    width 0.25s ease,
+    transform 0.25s ease;
+
+  overflow: hidden;
+
+  box-shadow:
+    2px 0 10px rgba(15, 23, 42, 0.04);
+}
+
+
+/* =========================================================
+   SIDEBAR COLLAPSED
+========================================================= */
+
+.freelance-sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+
+/* =========================================================
+   HEADER SIDEBAR
+========================================================= */
+
+.sidebar-header {
+  min-height: 82px;
+
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #f0f1f3;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.brand-logo {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--primary),
+      #4f46e5
+    );
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+
+  box-shadow:
+    0 5px 12px rgba(37, 99, 235, 0.22);
+}
+
+
+/* =========================================================
+   BRAND INFORMATION
+========================================================= */
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.brand-info h2 {
+  margin: 0;
+
+  color: var(--text-dark);
+
+  font-size: 18px;
+  font-weight: 750;
+
+  line-height: 1.2;
+}
+
+.brand-info span {
+  margin-top: 3px;
+
+  color: var(--text-light);
+
+  font-size: 11px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR COLLAPSED - BRAND
+========================================================= */
+
+.freelance-sidebar.collapsed .sidebar-header {
+  padding: 0;
+
+  justify-content: center;
+}
+
+.freelance-sidebar.collapsed .brand {
+  justify-content: center;
+}
+
+.freelance-sidebar.collapsed .brand-info {
+  width: 0;
+
+  opacity: 0;
+  visibility: hidden;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.sidebar-menu {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 22px 14px 20px;
+}
+
+
+/* =========================================================
+   SCROLLBAR SIDEBAR
+========================================================= */
+
+.sidebar-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+
+  border-radius: 10px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+
+/* Firefox */
+
+.sidebar-menu {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+
+/* =========================================================
+   MENU ITEM
+========================================================= */
+
+.menu-item {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 52px;
+
+  margin-bottom: 6px;
+
+  padding: 0 17px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  border-radius: 11px;
+
+  text-decoration: none;
+
+  color: var(--text-medium);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================================
+   ICÔNES
+========================================================= */
+
+.menu-item i {
+  width: 21px;
+
+  flex-shrink: 0;
+
+  text-align: center;
+
+  font-size: 16px;
+
+  color: #6b7280;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.menu-item:hover {
+  background: #f3f6fb;
+
+  color: var(--primary);
+
+  transform: translateX(2px);
+}
+
+.menu-item:hover i {
+  color: var(--primary);
+
+  transform: scale(1.05);
+}
+
+
+/* =========================================================
+   ACTIVE
+========================================================= */
+
+.menu-item.active {
+  background: var(--primary-light);
+
+  color: var(--primary);
+
+  font-weight: 650;
+}
+
+.menu-item.active i {
+  color: var(--primary);
+}
+
+
+/* Petit indicateur à gauche */
+
+.menu-item.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 9px;
+  bottom: 9px;
+
+  width: 3px;
+
+  background: var(--primary);
+
+  border-radius: 0 4px 4px 0;
+}
+
+
+/* =========================================================
+   MENU COLLAPSED
+========================================================= */
+
+.freelance-sidebar.collapsed .sidebar-menu {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.freelance-sidebar.collapsed .menu-item {
+  justify-content: center;
+
+  padding: 0;
+
+  gap: 0;
+}
+
+.freelance-sidebar.collapsed .menu-item span {
+  display: none;
+}
+
+.freelance-sidebar.collapsed .menu-item i {
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   FOOTER SIDEBAR
+========================================================= */
+
+.sidebar-footer {
+  flex-shrink: 0;
+
+  padding: 16px 18px;
+
+  border-top: 1px solid #eef0f3;
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   PROGRESSION PROFIL
+========================================================= */
+
+.progress-section {
+  padding: 13px 14px;
+
+  background: #f8fafc;
+
+  border: 1px solid #edf0f4;
+
+  border-radius: 10px;
+}
+
+.progress-info {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 9px;
+
+  color: var(--text-medium);
+
+  font-size: 12px;
+}
+
+.progress-info strong {
+  color: var(--primary);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
+
+.progress {
+  width: 100%;
+
+  height: 6px;
+
+  background: #e5e7eb;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--primary),
+      #4f46e5
+    );
+
+  border-radius: inherit;
+
+  transition: width 0.4s ease;
+}
+
+
+/* =========================================================
+   FOOTER COLLAPSED
+========================================================= */
+
+.freelance-sidebar.collapsed .sidebar-footer {
+  padding: 12px 10px;
+}
+
+.freelance-sidebar.collapsed .progress-section {
+  padding: 10px 5px;
+}
+
+.freelance-sidebar.collapsed .progress-info {
+  justify-content: center;
+}
+
+.freelance-sidebar.collapsed .progress-info span {
+  display: none;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main-content {
+  margin-left: var(--sidebar-width);
+
+  min-height: 100vh;
+
+  transition:
+    margin-left 0.25s ease;
+}
+
+.main-content.expanded {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+
+  left: var(--sidebar-width);
+
+  height: var(--topbar-height);
+
+  z-index: 900;
+
+  background: rgba(255, 255, 255, 0.97);
+
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 30px;
+
+  backdrop-filter: blur(10px);
+
+  transition:
+    left 0.25s ease;
+}
+
+
+/* =========================================================
+   TOPBAR QUAND SIDEBAR REDUIT
+========================================================= */
+
+.main-content.expanded .topbar {
+  left: var(--sidebar-collapsed-width);
+}
+
+
+/* =========================================================
+   TOPBAR LEFT
+========================================================= */
+
+.topbar-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  min-width: 0;
+}
+
+.topbar-left h1 {
+  margin: 0;
+
+  color: var(--text-dark);
+
+  font-size: 20px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
+.toggle-btn {
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 9px;
+
+  background: white;
+
+  color: #4b5563;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 15px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background: var(--primary-light);
+
+  color: var(--primary);
+
+  border-color: #bfdbfe;
+}
+
+
+/* =========================================================
+   TOPBAR RIGHT
+========================================================= */
+
+.topbar-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+.notification-btn {
+  position: relative;
+
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid #e5e7eb;
+
+  background: #ffffff;
+
+  border-radius: 9px;
+
+  color: #4b5563;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 15px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.notification-btn:hover {
+  background: var(--primary-light);
+
+  color: var(--primary);
+}
+
+
+/* =========================================================
+   PROFIL TOPBAR
+========================================================= */
+
+.profile-dropdown {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  cursor: pointer;
+}
+
+.profile-dropdown img {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 2px solid #e5e7eb;
+}
+
+.profile-dropdown > div {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.profile-dropdown strong {
+  color: var(--text-dark);
+
+  font-size: 13px;
+
+  font-weight: 650;
+
+  white-space: nowrap;
+}
+
+.profile-dropdown span {
+  margin-top: 2px;
+
+  color: var(--text-light);
+
+  font-size: 11px;
+
+  max-width: 180px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   CONTENU
+========================================================= */
+
+.content {
+  min-height: 100vh;
+
+  padding: calc(var(--topbar-height) + 28px) 30px 35px;
+
+  background: var(--background);
+}
+
+
+/* =========================================================
+   ROUTER OUTLET / PAGES
+========================================================= */
+
+.content > * {
+  width: 100%;
+}
+
+
+/* =========================================================
+   RESPONSIVE TABLETTE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  :host {
+    --sidebar-width: 255px;
+  }
+
+  .topbar {
+    padding: 0 22px;
+  }
+
+  .content {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .profile-dropdown > div {
+    display: none;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .freelance-sidebar {
+    width: 285px;
+
+    transform: translateX(0);
+
+    box-shadow:
+      4px 0 20px rgba(15, 23, 42, 0.12);
+  }
+
+
+  /*
+   * Sur mobile, quand collapsed :
+   * le sidebar sort complètement de l'écran.
+   */
+
+  .freelance-sidebar.collapsed {
+    width: 285px;
+
+    transform: translateX(-100%);
+  }
+
+
+  .main-content,
+  .main-content.expanded {
+    margin-left: 0;
+  }
+
+
+  .topbar,
+  .main-content.expanded .topbar {
+    left: 0;
+
+    padding: 0 15px;
+  }
+
+
+  .topbar-left h1 {
+    font-size: 17px;
+  }
+
+
+  .topbar-right {
+    gap: 8px;
+  }
+
+
+  .notification-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+
+  .profile-dropdown img {
+    width: 38px;
+    height: 38px;
+  }
+
+
+  .content {
+    padding:
+      calc(var(--topbar-height) + 20px)
+      15px
+      25px;
+  }
+
+}
+
+
+/* =========================================================
+   PETIT MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .topbar {
+    height: 68px;
+  }
+
+  :host {
+    --topbar-height: 68px;
+  }
+
+
+  .topbar-left {
+    gap: 10px;
+  }
+
+
+  .topbar-left h1 {
+    font-size: 15px;
+  }
+
+
+  .toggle-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .notification-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .profile-dropdown img {
+    width: 36px;
+    height: 36px;
+  }
+
+
+  .content {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITÉ
+========================================================= */
+
+.menu-item:focus-visible,
+.toggle-btn:focus-visible,
+.notification-btn:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .freelance-sidebar,
+  .main-content,
+  .topbar,
+  .menu-item,
+  .menu-item i,
+  .progress-bar {
+    transition: none;
+  }
+
+}
+
+.sidebar-bottom {
+  flex-shrink: 0;
+  padding: 15px 18px;
+  border-top: 1px solid #eef0f3;
+  background: #ffffff;
+}
+
+.logout-button {
+  width: 100%;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 0 15px;
+
+  border: 1px solid #fee2e2;
+  border-radius: 10px;
+
+  background: #fff7f7;
+  color: #dc2626;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.logout-button .nav-icon {
+  width: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+}
+
+.logout-button:hover {
+  background: #fee2e2;
+  border-color: #fecaca;
+
+  color: #b91c1c;
+
+  transform: translateY(-1px);
+}
+
+
+/* SIDEBAR RÉDUIT */
+
+.freelance-sidebar.collapsed .sidebar-bottom {
+  padding: 12px 10px;
+}
+
+.freelance-sidebar.collapsed .logout-button {
+  justify-content: center;
+  padding: 0;
+}
+
+.freelance-sidebar.collapsed .logout-button > span:last-child {
+  display: none;
+}
+
+/* =========================================================
+   BOUTON MODE SOMBRE
+========================================================= */
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #4b5563;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  border-color: #bfdbfe;
+
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   MODE SOMBRE
+========================================================= */
+
+.freelance-layout.dark-mode {
+  background: #0f172a;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.freelance-layout.dark-mode .freelance-sidebar {
+  background: #111827;
+
+  border-right-color: #1f2937;
+
+  box-shadow:
+    2px 0 12px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   HEADER SIDEBAR
+========================================================= */
+
+.freelance-layout.dark-mode .sidebar-header {
+  border-bottom-color: #1f2937;
+}
+
+
+/* =========================================================
+   LOGO / BRAND
+========================================================= */
+
+.freelance-layout.dark-mode .brand-info h2 {
+  color: #f9fafb;
+}
+
+.freelance-layout.dark-mode .brand-info span {
+  color: #9ca3af;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.freelance-layout.dark-mode .menu-item {
+  color: #9ca3af;
+}
+
+.freelance-layout.dark-mode .menu-item i {
+  color: #9ca3af;
+}
+
+.freelance-layout.dark-mode .menu-item:hover {
+  background: #1f2937;
+
+  color: #60a5fa;
+}
+
+.freelance-layout.dark-mode .menu-item:hover i {
+  color: #60a5fa;
+}
+
+
+/* =========================================================
+   MENU ACTIVE
+========================================================= */
+
+.freelance-layout.dark-mode .menu-item.active {
+  background: rgba(37, 99, 235, 0.16);
+
+  color: #60a5fa;
+}
+
+.freelance-layout.dark-mode .menu-item.active i {
+  color: #60a5fa;
+}
+
+
+/* =========================================================
+   FOOTER SIDEBAR
+========================================================= */
+
+.freelance-layout.dark-mode .sidebar-footer,
+.freelance-layout.dark-mode .sidebar-bottom {
+  background: #111827;
+
+  border-top-color: #1f2937;
+}
+
+
+/* =========================================================
+   PROGRESSION PROFIL
+========================================================= */
+
+.freelance-layout.dark-mode .progress-section {
+  background: #1a2332;
+
+  border-color: #273449;
+}
+
+.freelance-layout.dark-mode .progress-info {
+  color: #9ca3af;
+}
+
+.freelance-layout.dark-mode .progress-info strong {
+  color: #60a5fa;
+}
+
+.freelance-layout.dark-mode .progress {
+  background: #374151;
+}
+
+
+/* =========================================================
+   DÉCONNEXION
+========================================================= */
+
+.freelance-layout.dark-mode .logout-button {
+  background: rgba(220, 38, 38, 0.08);
+
+  border-color: rgba(248, 113, 113, 0.2);
+
+  color: #f87171;
+}
+
+.freelance-layout.dark-mode .logout-button:hover {
+  background: rgba(220, 38, 38, 0.16);
+
+  border-color: rgba(248, 113, 113, 0.35);
+
+  color: #fca5a5;
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.freelance-layout.dark-mode .topbar {
+  background: rgba(17, 24, 39, 0.96);
+
+  border-bottom-color: #1f2937;
+}
+
+
+/* =========================================================
+   TITRE TOPBAR
+========================================================= */
+
+.freelance-layout.dark-mode .topbar-left h1 {
+  color: #f9fafb;
+}
+
+
+/* =========================================================
+   BOUTON MENU
+========================================================= */
+
+.freelance-layout.dark-mode .toggle-btn {
+  background: #111827;
+
+  border-color: #374151;
+
+  color: #d1d5db;
+}
+
+.freelance-layout.dark-mode .toggle-btn:hover {
+  background: #1f2937;
+
+  border-color: #4b5563;
+
+  color: #60a5fa;
+}
+
+
+/* =========================================================
+   BOUTON THÈME
+========================================================= */
+
+.freelance-layout.dark-mode .theme-toggle {
+  background: #1f2937;
+
+  border-color: #374151;
+
+  color: #facc15;
+}
+
+.freelance-layout.dark-mode .theme-toggle:hover {
+  background: #273449;
+
+  border-color: #4b5563;
+
+  color: #fde047;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+.freelance-layout.dark-mode .notification-btn {
+  background: #111827;
+
+  border-color: #374151;
+
+  color: #d1d5db;
+}
+
+.freelance-layout.dark-mode .notification-btn:hover {
+  background: #1f2937;
+
+  color: #60a5fa;
+}
+
+
+/* =========================================================
+   PROFIL TOPBAR
+========================================================= */
+
+.freelance-layout.dark-mode .profile-dropdown strong {
+  color: #f9fafb;
+}
+
+.freelance-layout.dark-mode .profile-dropdown span {
+  color: #9ca3af;
+}
+
+.freelance-layout.dark-mode .profile-dropdown img {
+  border-color: #374151;
+}
+
+
+/* =========================================================
+   CONTENU PRINCIPAL
+========================================================= */
+
+.freelance-layout.dark-mode .content {
+  background: #0f172a;
+
+  color: #e5e7eb;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.freelance-layout.dark-mode .sidebar-menu::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
+.freelance-layout.dark-mode .sidebar-menu::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+
+/* =========================================================
+   TRANSITION
+========================================================= */
+
+.freelance-layout,
+.freelance-sidebar,
+.sidebar-header,
+.sidebar-footer,
+.sidebar-bottom,
+.menu-item,
+.topbar,
+.toggle-btn,
+.theme-toggle,
+.notification-btn,
+.content,
+.progress-section {
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}

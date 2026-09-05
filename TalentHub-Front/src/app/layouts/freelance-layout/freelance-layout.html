@@ -1,1 +1,240 @@
-<p>freelance-layout works!</p>
+<div
+  class="freelance-layout"
+  [class.dark-mode]="darkMode"
+>
+  <!-- SIDEBAR -->
+  <aside
+    class="freelance-sidebar"
+    [class.collapsed]="!sidebarOpen">
+
+    <div class="sidebar-header">
+
+      <div class="brand">
+
+        <div class="brand-logo">
+          TH
+        </div>
+
+        <div class="brand-info">
+
+          <h2>TalentHub</h2>
+
+          <span>Espace Freelance</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- MENU -->
+
+    <nav class="sidebar-menu">
+
+      <a
+        routerLink="/freelance/dashboard"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-chart-line"></i>
+
+        <span>Tableau de bord</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/profil"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-user"></i>
+
+        <span>Mon profil</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/services"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-tools"></i>
+
+        <span>Services</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/missions"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-briefcase"></i>
+
+        <span>Missions</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/candidatures"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-file-alt"></i>
+
+        <span>Candidatures</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/messages"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-comments"></i>
+
+        <span>Messages</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/revenus"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-wallet"></i>
+
+        <span>Revenus</span>
+
+      </a>
+
+      <a
+        routerLink="/freelance/parametres"
+        routerLinkActive="active"
+        class="menu-item">
+
+        <i class="fas fa-cog"></i>
+
+        <span>Paramètres</span>
+
+      </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <div class="progress-section">
+
+        <div class="progress-info">
+
+          <span>Profil</span>
+
+          <strong>{{ profileCompletion }}%</strong>
+
+        </div>
+
+        <div class="progress">
+
+          <div
+            class="progress-bar"
+            [style.width.%]="profileCompletion">
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="sidebar-bottom">
+
+  <button
+    type="button"
+    class="logout-button"
+    (click)="logout()"
+  >
+
+    <span class="nav-icon">
+      <i class="fas fa-right-from-bracket"></i>
+    </span>
+
+    <span>
+      Déconnexion
+    </span>
+
+  </button>
+
+</div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div
+    class="main-content"
+    [class.expanded]="!sidebarOpen">
+
+    <!-- HEADER -->
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <button
+          class="toggle-btn"
+          (click)="toggleSidebar()">
+
+          <i class="fas fa-bars"></i>
+
+        </button>
+
+        <h1>Espace Freelance</h1>
+
+      </div>
+
+      <div class="topbar-right">
+        <!-- MODE SOMBRE -->
+            <button
+            type="button"
+            class="theme-toggle"
+            (click)="toggleDarkMode()"
+            [attr.aria-label]="darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'">
+            <i class="fas"
+                [class.fa-sun]="darkMode"
+                [class.fa-moon]="!darkMode"></i>
+            </button>
+
+        <button class="notification-btn">
+
+          <i class="fas fa-bell"></i>
+
+        </button>
+
+        <div class="profile-dropdown">
+
+          <img
+            [src]="photoProfil"
+            alt="Profil">
+
+          <div>
+
+            <strong>{{ nomComplet }}</strong>
+
+            <span>{{ titreProfessionnel }}</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+    <!-- CONTENU -->
+    <main class="content">
+
+      <router-outlet></router-outlet>
+
+    </main>
+
+  </div>
+
+</div>

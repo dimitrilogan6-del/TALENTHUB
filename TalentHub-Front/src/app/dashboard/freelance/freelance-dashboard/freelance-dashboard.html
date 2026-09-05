@@ -1,0 +1,1064 @@
+<div
+  class="freelance-dashboard"
+  [class.dark-mode]="darkMode"
+>
+
+
+  <!-- ======================================================
+       MODE CHARGEMENT
+  ======================================================= -->
+
+  <div
+    class="dashboard-loading"
+    *ngIf="isLoading"
+  >
+
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+    </div>
+
+    <h3>
+      Chargement de votre espace
+    </h3>
+
+    <p>
+      Nous préparons votre tableau de bord...
+    </p>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       ERREUR
+  ======================================================= -->
+
+  <div
+    class="dashboard-error"
+    *ngIf="!isLoading && errorMessage"
+  >
+
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <h2>
+      Impossible de charger votre dashboard
+    </h2>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      type="button"
+      class="retry-button"
+      (click)="loadDashboard()"
+    >
+
+      <i class="fas fa-redo"></i>
+
+      Réessayer
+
+    </button>
+
+  </div>
+
+
+
+  <!-- ======================================================
+       DASHBOARD
+  ======================================================= -->
+
+  <div
+    class="dashboard-container"
+    *ngIf="dashboard && !isLoading && !errorMessage"
+  >
+
+
+    <!-- ====================================================
+         HEADER
+    ===================================================== -->
+
+    <section class="dashboard-header">
+
+      <div class="welcome-section">
+
+        <span class="welcome-label">
+          TABLEAU DE BORD
+        </span>
+
+        <h1>
+          Bonjour {{ prenom }}
+        </h1>
+
+        <p>
+          Voici un aperçu de votre activité professionnelle
+          sur TalentHub.
+        </p>
+
+      </div>
+
+
+      <div class="header-actions">
+
+        <button
+          type="button"
+          class="dark-mode-button"
+          (click)="toggleDarkMode()"
+          [title]="
+            darkMode
+              ? 'Activer le mode clair'
+              : 'Activer le mode sombre'
+          "
+        >
+
+          <i
+            class="fas"
+            [class.fa-sun]="darkMode"
+            [class.fa-moon]="!darkMode"
+          ></i>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          routerLink="/freelance/profil"
+        >
+
+          <i class="fas fa-user-edit"></i>
+
+          Modifier mon profil
+
+        </button>
+
+
+        <button
+          type="button"
+          class="primary-button"
+          routerLink="/freelance/missions"
+        >
+
+          <i class="fas fa-plus"></i>
+
+          Nouvelle mission
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         STATUT
+    ===================================================== -->
+
+    <section class="status-banner">
+
+      <div class="status-left">
+
+        <div
+          class="status-indicator"
+          [class.unavailable]="!disponibilite"
+        >
+
+          <span></span>
+
+        </div>
+
+        <div>
+
+          <strong>
+            {{
+              disponibilite
+                ? 'Vous êtes disponible'
+                : 'Vous êtes actuellement indisponible'
+            }}
+          </strong>
+
+          <p>
+            {{
+              disponibilite
+                ? 'Les recruteurs peuvent vous contacter pour de nouvelles missions.'
+                : 'Pensez à mettre à jour votre disponibilité lorsque vous êtes prêt.'
+            }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <a
+        routerLink="/freelance/profil"
+        class="status-link"
+      >
+
+        Modifier
+
+        <i class="fas fa-arrow-right"></i>
+
+      </a>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         STATISTIQUES PRINCIPALES
+    ===================================================== -->
+
+    <section class="stats-grid">
+
+
+      <!-- MISSIONS -->
+
+      <article class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon blue">
+            <i class="fas fa-briefcase"></i>
+          </div>
+
+          <span class="stat-trend">
+            Activité
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ missionsTotal }}
+        </div>
+
+        <div class="stat-label">
+          Missions
+        </div>
+
+        <div class="stat-footer">
+
+          <span>
+            {{ missionsEnCours }} en cours
+          </span>
+
+          <a
+            routerLink="/freelance/missions"
+          >
+            Voir
+            <i class="fas fa-arrow-right"></i>
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- CANDIDATURES -->
+
+      <article class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon purple">
+            <i class="fas fa-file-alt"></i>
+          </div>
+
+          <span class="stat-trend">
+            Suivi
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ candidaturesTotal }}
+        </div>
+
+        <div class="stat-label">
+          Candidatures
+        </div>
+
+        <div class="stat-footer">
+
+          <span>
+            {{ candidaturesEnAttente }} en attente
+          </span>
+
+          <a
+            routerLink="/freelance/candidatures"
+          >
+            Voir
+            <i class="fas fa-arrow-right"></i>
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- SERVICES -->
+
+      <article class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon orange">
+            <i class="fas fa-layer-group"></i>
+          </div>
+
+          <span class="stat-trend">
+            Catalogue
+          </span>
+
+        </div>
+
+        <div class="stat-value">
+          {{ servicesTotal }}
+        </div>
+
+        <div class="stat-label">
+          Services
+        </div>
+
+        <div class="stat-footer">
+
+          <span>
+            Services publiés
+          </span>
+
+          <a
+            routerLink="/freelance/services"
+          >
+            Gérer
+            <i class="fas fa-arrow-right"></i>
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- REVENUS -->
+
+      <article class="stat-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon green">
+            <i class="fas fa-wallet"></i>
+          </div>
+
+          <span class="stat-trend positive">
+            Revenus
+          </span>
+
+        </div>
+
+        <div class="stat-value money">
+
+          {{ formatMoney(revenusTotal) }}
+
+        </div>
+
+        <div class="stat-label">
+          Revenus générés
+        </div>
+
+        <div class="stat-footer">
+
+          <span>
+            {{ devise }}
+          </span>
+
+          <a
+            routerLink="/freelance/revenus"
+          >
+            Détails
+            <i class="fas fa-arrow-right"></i>
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- MESSAGES -->
+
+      <article class="stat-card compact-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon cyan">
+            <i class="fas fa-comments"></i>
+          </div>
+
+        </div>
+
+        <div class="stat-value">
+          {{ messagesNonLus }}
+        </div>
+
+        <div class="stat-label">
+          Messages non lus
+        </div>
+
+        <div class="stat-footer">
+
+          <span>
+            Communication
+          </span>
+
+          <a
+            routerLink="/freelance/messages"
+          >
+            Ouvrir
+            <i class="fas fa-arrow-right"></i>
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- MISSIONS TERMINÉES -->
+
+      <article class="stat-card compact-card">
+
+        <div class="stat-top">
+
+          <div class="stat-icon dark-blue">
+            <i class="fas fa-check-circle"></i>
+          </div>
+
+        </div>
+
+        <div class="stat-value">
+          {{ missionsTerminees }}
+        </div>
+
+        <div class="stat-label">
+          Missions terminées
+        </div>
+
+        <div class="stat-footer">
+
+          <span>
+            Expérience réalisée
+          </span>
+
+        </div>
+
+      </article>
+
+
+    </section>
+
+
+
+    <!-- ====================================================
+         CONTENU PRINCIPAL
+    ===================================================== -->
+
+    <section class="dashboard-columns">
+
+
+      <!-- ==================================================
+           COLONNE GAUCHE
+      =================================================== -->
+
+      <div class="main-column">
+
+
+        <!-- ACTIVITÉ -->
+
+        <div class="dashboard-card activity-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <span class="card-kicker">
+                ACTIVITÉ
+              </span>
+
+              <h2>
+                Votre activité récente
+              </h2>
+
+            </div>
+
+            <button
+              type="button"
+              class="card-action"
+              routerLink="/freelance/missions"
+            >
+
+              Tout afficher
+
+              <i class="fas fa-arrow-right"></i>
+
+            </button>
+
+          </div>
+
+
+          <div class="activity-list">
+
+
+            <div class="activity-item">
+
+              <div class="activity-icon success">
+                <i class="fas fa-check"></i>
+              </div>
+
+              <div class="activity-content">
+
+                <strong>
+                  Missions terminées
+                </strong>
+
+                <p>
+                  {{ missionsTerminees }}
+                  mission(s) terminée(s)
+                </p>
+
+              </div>
+
+              <span class="activity-date">
+                Activité
+              </span>
+
+            </div>
+
+
+
+            <div class="activity-item">
+
+              <div class="activity-icon primary">
+                <i class="fas fa-file-signature"></i>
+              </div>
+
+              <div class="activity-content">
+
+                <strong>
+                  Candidatures
+                </strong>
+
+                <p>
+                  {{ candidaturesEnAttente }}
+                  candidature(s) en attente
+                </p>
+
+              </div>
+
+              <span class="activity-date">
+                Suivi
+              </span>
+
+            </div>
+
+
+
+            <div class="activity-item">
+
+              <div class="activity-icon message">
+                <i class="fas fa-envelope"></i>
+              </div>
+
+              <div class="activity-content">
+
+                <strong>
+                  Messages
+                </strong>
+
+                <p>
+                  {{ messagesNonLus }}
+                  message(s) non lu(s)
+                </p>
+
+              </div>
+
+              <span class="activity-date">
+                Communication
+              </span>
+
+            </div>
+
+
+
+            <div
+              class="activity-item"
+              *ngIf="notificationsNonLues > 0"
+            >
+
+              <div class="activity-icon warning">
+                <i class="fas fa-bell"></i>
+              </div>
+
+              <div class="activity-content">
+
+                <strong>
+                  Notifications
+                </strong>
+
+                <p>
+                  {{ notificationsNonLues }}
+                  notification(s) non lue(s)
+                </p>
+
+              </div>
+
+              <span class="activity-date">
+                À consulter
+              </span>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- INFORMATIONS PROFESSIONNELLES -->
+
+        <div class="dashboard-card professional-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <span class="card-kicker">
+                PROFIL PROFESSIONNEL
+              </span>
+
+              <h2>
+                Votre expertise
+              </h2>
+
+            </div>
+
+            <a
+              routerLink="/freelance/profil"
+              class="card-action"
+            >
+
+              Modifier
+
+              <i class="fas fa-edit"></i>
+
+            </a>
+
+          </div>
+
+
+          <div class="professional-content">
+
+            <div class="professional-row">
+
+              <div class="professional-icon">
+                <i class="fas fa-user-tie"></i>
+              </div>
+
+              <div>
+
+                <span>
+                  Titre professionnel
+                </span>
+
+                <strong>
+                  {{ titreProfessionnel }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="professional-row">
+
+              <div class="professional-icon">
+                <i class="fas fa-code"></i>
+              </div>
+
+              <div>
+
+                <span>
+                  Spécialité
+                </span>
+
+                <strong>
+                  {{ specialite }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="professional-row">
+
+              <div class="professional-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+
+              <div>
+
+                <span>
+                  Expérience
+                </span>
+
+                <strong>
+                  {{ experience }} année(s)
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <div class="professional-row">
+
+              <div class="professional-icon">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+
+              <div>
+
+                <span>
+                  Tarif horaire
+                </span>
+
+                <strong>
+                  {{ formatMoney(tarifHoraire) }}
+                  {{ devise }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ==================================================
+           COLONNE DROITE
+      =================================================== -->
+
+      <aside class="side-column">
+
+
+        <!-- PROFIL -->
+
+        <div class="dashboard-card profile-card">
+
+          <div class="profile-card-header">
+
+            <div class="profile-avatar">
+
+              <img
+                [src]="photoProfil"
+                alt="Photo de profil"
+              />
+
+            </div>
+
+            <div>
+
+              <h3>
+                {{ nomComplet }}
+              </h3>
+
+              <span>
+                {{ titreProfessionnel }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="profile-progress-section">
+
+            <div class="progress-header">
+
+              <span>
+                Profil complété
+              </span>
+
+              <strong>
+                {{ profileCompletion }}%
+              </strong>
+
+            </div>
+
+
+            <div class="progress-track">
+
+              <div
+                class="progress-bar"
+                [style.width.%]="profileCompletion"
+              ></div>
+
+            </div>
+
+
+            <p
+              *ngIf="profileCompletion < 100"
+            >
+
+              Complétez votre profil pour améliorer
+              votre visibilité auprès des recruteurs.
+
+            </p>
+
+
+            <p
+              class="profile-complete"
+              *ngIf="profileCompletion === 100"
+            >
+
+              <i class="fas fa-check-circle"></i>
+
+              Votre profil est complet.
+
+            </p>
+
+
+            <button
+              type="button"
+              class="profile-button"
+              routerLink="/freelance/profil"
+            >
+
+              <i class="fas fa-user-edit"></i>
+
+              {{ profileCompletion === 100
+                ? 'Modifier mon profil'
+                : 'Compléter mon profil'
+              }}
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- ACTIONS RAPIDES -->
+
+        <div class="dashboard-card quick-actions-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <span class="card-kicker">
+                RACCOURCIS
+              </span>
+
+              <h2>
+                Actions rapides
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <div class="quick-actions">
+
+
+            <a
+              routerLink="/freelance/missions"
+              class="quick-action"
+            >
+
+              <span class="quick-action-icon blue">
+                <i class="fas fa-briefcase"></i>
+              </span>
+
+              <span>
+                <strong>
+                  Mes missions
+                </strong>
+
+                <small>
+                  Gérer mes missions
+                </small>
+              </span>
+
+              <i class="fas fa-chevron-right"></i>
+
+            </a>
+
+
+
+            <a
+              routerLink="/freelance/candidatures"
+              class="quick-action"
+            >
+
+              <span class="quick-action-icon purple">
+                <i class="fas fa-file-alt"></i>
+              </span>
+
+              <span>
+                <strong>
+                  Candidatures
+                </strong>
+
+                <small>
+                  Suivre mes candidatures
+                </small>
+              </span>
+
+              <i class="fas fa-chevron-right"></i>
+
+            </a>
+
+
+
+            <a
+              routerLink="/freelance/services"
+              class="quick-action"
+            >
+
+              <span class="quick-action-icon orange">
+                <i class="fas fa-layer-group"></i>
+              </span>
+
+              <span>
+                <strong>
+                  Mes services
+                </strong>
+
+                <small>
+                  Gérer mes services
+                </small>
+              </span>
+
+              <i class="fas fa-chevron-right"></i>
+
+            </a>
+
+
+
+            <a
+              routerLink="/freelance/messages"
+              class="quick-action"
+            >
+
+              <span class="quick-action-icon green">
+                <i class="fas fa-comments"></i>
+              </span>
+
+              <span>
+                <strong>
+                  Messages
+                </strong>
+
+                <small>
+                  {{ messagesNonLus }} non lu(s)
+                </small>
+              </span>
+
+              <i class="fas fa-chevron-right"></i>
+
+            </a>
+
+
+
+            <a
+              routerLink="/freelance/revenus"
+              class="quick-action"
+            >
+
+              <span class="quick-action-icon cyan">
+                <i class="fas fa-wallet"></i>
+              </span>
+
+              <span>
+                <strong>
+                  Revenus
+                </strong>
+
+                <small>
+                  Consulter mes revenus
+                </small>
+              </span>
+
+              <i class="fas fa-chevron-right"></i>
+
+            </a>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- BIOGRAPHIE -->
+
+        <div class="dashboard-card biography-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <span class="card-kicker">
+                À PROPOS
+              </span>
+
+              <h2>
+                Ma présentation
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <p>
+            {{ biographie }}
+          </p>
+
+
+          <a
+            routerLink="/freelance/profil"
+            class="text-link"
+          >
+
+            Voir mon profil
+
+            <i class="fas fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+
+      </aside>
+
+    </section>
+
+
+  </div>
+
+</div>

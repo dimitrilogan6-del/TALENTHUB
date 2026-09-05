@@ -1,3 +1,4 @@
+import { FreelanceProfil } from './services/freelance-dashboard.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -21,7 +22,7 @@ import { Freelances } from './component/freelances/freelances';
 import { PublicLayout } from './layouts/public-layout/public-layout';
 import { AdminLayout } from './layouts/admin-layout/admin-layout';
 import { CandidatLayoutComponent } from './layouts/candidat-layout/candidat-layout';
-import { FreelanceLayout } from './layouts/freelance-layout/freelance-layout';
+import { FreelanceLayoutComponent } from './layouts/freelance-layout/freelance-layout';
 import { RecruteurLayout } from './layouts/recruteur-layout/recruteur-layout';
 import { SuccessModalComponent } from './component/success-modal/success-modal';
 import { ConnexionRequiredModalComponent } from './component/connexion-required-modal/connexion-required-modal';
@@ -41,6 +42,25 @@ import { EntretiensRecruteur } from './dashboard/recruteur/entretiens-recruteur/
 import { MissionsRecruteur } from './dashboard/recruteur/missions-recruteur/missions-recruteur';
 import { OffresRecruteur } from './dashboard/recruteur/offres/offres';
 import { CandidaturesRecruteur } from './dashboard/recruteur/candidatures-recruteur/candidatures-recruteur';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FreelanceDashboardComponent } from './dashboard/freelance/freelance-dashboard/freelance-dashboard';
+import { MissionsComponent } from './dashboard/freelance/missions/missions';
+import { MissionDetailComponent } from './dashboard/freelance/mission-detail/mission-detail';
+import { FreelanceProfilComponent } from './dashboard/freelance/profil/profil';
+import { Services } from './dashboard/freelance/services/services';
+import { MesServices } from './dashboard/freelance/mes-services/mes-services';
+import { CommandesRecues } from './dashboard/freelance/commandes-recues/commandes-recues';
+import { CandidaturesFreelance } from './dashboard/freelance/candidatures/candidatures';
 @NgModule({
   declarations: [
     App,
@@ -59,7 +79,7 @@ import { CandidaturesRecruteur } from './dashboard/recruteur/candidatures-recrut
     PublicLayout,
     AdminLayout,
     CandidatLayoutComponent,
-    FreelanceLayout,
+    FreelanceLayoutComponent,
     RecruteurLayout,
     SuccessModalComponent,
     ConnexionRequiredModalComponent,
@@ -78,14 +98,34 @@ import { CandidaturesRecruteur } from './dashboard/recruteur/candidatures-recrut
     MissionsRecruteur,
     OffresRecruteur,
     CandidaturesRecruteur,
+    FreelanceDashboardComponent,
+    MissionsComponent,
+    MissionDetailComponent,
+    FreelanceProfilComponent,
+    Services,
+    MesServices,
+    CommandesRecues,
+    CandidaturesFreelance,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
-    Entreprise,
+    AppRoutingModule,
+
+    // Material Modules
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatIconModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [App],

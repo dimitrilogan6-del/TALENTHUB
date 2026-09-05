@@ -27,6 +27,13 @@ import { RecruteurLayout } from './layouts/recruteur-layout/recruteur-layout';
 import { EntretiensRecruteur } from './dashboard/recruteur/entretiens-recruteur/entretiens-recruteur';
 import { MissionsRecruteur } from './dashboard/recruteur/missions-recruteur/missions-recruteur';
 import { OffresRecruteur } from './dashboard/recruteur/offres/offres';
+import { CandidaturesFreelance } from './dashboard/freelance/candidatures/candidatures';
+import { MissionDetailComponent } from './dashboard/freelance/mission-detail/mission-detail';
+import { MissionsComponent } from './dashboard/freelance/missions/missions';
+import { MesServices } from './dashboard/freelance/mes-services/mes-services';
+import { FreelanceDashboardComponent } from './dashboard/freelance/freelance-dashboard/freelance-dashboard';
+import { FreelanceLayoutComponent } from './layouts/freelance-layout/freelance-layout';
+import { FreelanceProfilComponent } from './dashboard/freelance/profil/profil';
 
 const routes: Routes =[
   // {path: 'dashboard', component: Dashboard},
@@ -197,6 +204,75 @@ const routes: Routes =[
   ]
 },
  
+  // =====================================================
+  // FREELANCE_DASHBOARD
+  // =====================================================
+
+{
+  path: 'freelance',
+
+  component: FreelanceLayoutComponent,
+
+  children: [
+
+    {
+      path: 'dashboard',
+      component: FreelanceDashboardComponent
+    },
+
+    {
+      path: 'profil',
+      component: FreelanceProfilComponent
+    },
+
+    {
+      path: 'services',
+      component: MesServices
+    },
+
+    {
+      path: 'missions',
+      component: MissionsComponent
+    },
+    {
+      path: 'missions/:id',
+      component: MissionDetailComponent
+    },
+    {
+      path: 'candidatures',
+      component: CandidaturesFreelance
+    },
+
+
+
+    // {
+    //   path: 'revenus',
+    //   component: RevenusFreelanceComponent
+    // },
+   {
+      path: 'messages',
+      component: MessagesComponent
+    },
+
+    {
+      path: 'notifications',
+      component: NotificationsComponent
+    },
+
+
+    {
+      path: 'parametres',
+      component: ParametresComponent
+    },
+
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    }
+
+  ]
+},
 
   // =====================================================
   // LOGIN
