@@ -177,7 +177,7 @@ this.profilService
         case 'candidat':
 
           this.router.navigate([
-            '/dashboard/candidat'
+            '/candidat'
           ]);
 
           break;
@@ -186,7 +186,7 @@ this.profilService
         case 'freelance':
 
           this.router.navigate([
-            '/dashboard/freelance'
+            '/freelance'
           ]);
 
           break;
@@ -195,17 +195,17 @@ this.profilService
         case 'recruteur':
 
           this.router.navigate([
-            '/dashboard/recruteur'
+            '/recruteur'
           ]);
 
           break;
 
 
-        default:
+        // default:
 
-          this.router.navigate([
-            '/offres'
-          ]);
+        //   this.router.navigate([
+        //     '/offres'
+        //   ]);
 
       }
 
@@ -242,13 +242,13 @@ this.profilService
         // REDIRECTION
         // ================================================
 
-        setTimeout(() => {
+        // setTimeout(() => {
 
-          this.router.navigate([
-            '/offres'
-          ]);
+        //   this.router.navigate([
+        //     '/offres'
+        //   ]);
 
-        }, 1000);
+        // }, 1000);
 
       },
 

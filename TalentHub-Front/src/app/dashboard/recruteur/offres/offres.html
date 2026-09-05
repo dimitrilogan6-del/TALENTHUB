@@ -1,0 +1,1339 @@
+<!-- ============================================================
+     PAGE GESTION DES OFFRES - RECRUTEUR
+============================================================ -->
+
+<div class="offres-page">
+
+  <!-- ==========================================================
+       EN-TÊTE
+  =========================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-title">
+
+        <div class="title-icon">
+          <i class="fa-solid fa-briefcase"></i>
+        </div>
+
+        <div>
+          <h1>Mes offres</h1>
+
+          <p>
+            Gérez les offres d'emploi de vos entreprises.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="header-actions">
+
+        <button
+          type="button"
+          class="btn-refresh"
+          (click)="actualiser()"
+          [disabled]="isLoading"
+        >
+
+          <i class="fa-solid fa-rotate"></i>
+
+          <span>Actualiser</span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="ouvrirCreation()"
+        >
+
+          <i class="fa-solid fa-plus"></i>
+
+          <span>Nouvelle offre</span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       MESSAGES
+  =========================================================== -->
+
+  <div
+    class="message success-message"
+    *ngIf="successMessage"
+  >
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    <span>
+      {{ successMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="successMessage = ''"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+  </div>
+
+
+  <div
+    class="message error-message"
+    *ngIf="errorMessage"
+  >
+
+    <i class="fa-solid fa-circle-exclamation"></i>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+    <button
+      type="button"
+      (click)="errorMessage = ''"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+  </div>
+
+
+  <!-- ==========================================================
+       CHARGEMENT
+  =========================================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement de vos offres...
+    </p>
+
+  </div>
+
+
+  <!-- ==========================================================
+       CONTENU
+  =========================================================== -->
+
+  <div
+    class="offers-container"
+    *ngIf="!isLoading"
+  >
+
+    <!-- ========================================================
+         AUCUNE OFFRE
+    ========================================================= -->
+
+    <div
+      class="empty-state"
+      *ngIf="offres.length === 0"
+    >
+
+      <div class="empty-icon">
+
+        <i class="fa-solid fa-briefcase"></i>
+
+      </div>
+
+      <h2>Aucune offre disponible</h2>
+
+      <p>
+        Vous n'avez pas encore créé d'offre d'emploi.
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="ouvrirCreation()"
+      >
+
+        <i class="fa-solid fa-plus"></i>
+
+        Créer une offre
+
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         LISTE DES OFFRES
+    ========================================================= -->
+
+
+<div
+  class="offers-table-container"
+  *ngIf="offres.length > 0"
+>
+
+  <div class="table-header">
+
+    <div>
+      <h2>
+        <i class="fa-solid fa-list"></i>
+        Liste des offres
+      </h2>
+
+      <p>
+        {{ offres.length }}
+        {{ offres.length > 1 ? 'offres enregistrées' : 'offre enregistrée' }}
+      </p>
+    </div>
+
+  </div>
+
+
+  <div class="table-responsive">
+
+    <table class="offers-table">
+
+      <thead>
+
+        <tr>
+
+          <th>Offre</th>
+
+          <th>Entreprise</th>
+
+          <th>Type</th>
+
+          <th>Localisation</th>
+
+          <th>Salaire</th>
+
+          <th>Date limite</th>
+
+          <th>Statut</th>
+
+          <th class="actions-column">
+            Actions
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        <tr
+          *ngFor="let offre of offres"
+          class="offer-row"
+        >
+
+          <!-- ==========================================
+               OFFRE
+          =========================================== -->
+
+          <td>
+
+            <div class="offer-title-cell">
+
+              <div class="table-offer-icon">
+
+                <i class="fa-solid fa-briefcase"></i>
+
+              </div>
+
+              <div class="offer-title-content">
+
+                <strong>
+                  {{ offre.titre }}
+                </strong>
+
+                <span class="offer-description-preview">
+                  {{ offre.description }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <!-- ==========================================
+               ENTREPRISE
+          =========================================== -->
+
+          <td>
+
+            <div
+              class="company-cell"
+              *ngIf="offre.entrepriseDetail"
+            >
+
+              <div class="company-icon">
+
+                <i class="fa-solid fa-building"></i>
+
+              </div>
+
+              <span>
+                {{ offre.entrepriseDetail.nom }}
+              </span>
+
+            </div>
+
+            <span
+              class="no-value"
+              *ngIf="!offre.entrepriseDetail"
+            >
+              —
+            </span>
+
+          </td>
+
+
+          <!-- ==========================================
+               TYPE
+          =========================================== -->
+
+          <td>
+
+            <span class="type-badge">
+
+              <i class="fa-solid fa-file-contract"></i>
+
+              {{ offre.typeOffre }}
+
+            </span>
+
+          </td>
+
+
+          <!-- ==========================================
+               LOCALISATION
+          =========================================== -->
+
+          <td>
+
+            <div
+              class="location-cell"
+              *ngIf="offre.localisation"
+            >
+
+              <i class="fa-solid fa-location-dot"></i>
+
+              <span>
+                {{ offre.localisation }}
+              </span>
+
+            </div>
+
+            <span
+              class="no-value"
+              *ngIf="!offre.localisation"
+            >
+              Non précisée
+            </span>
+
+          </td>
+
+
+          <!-- ==========================================
+               SALAIRE
+          =========================================== -->
+
+          <td>
+
+            <div
+              class="salary-cell"
+              *ngIf="offre.salaireMin || offre.salaireMax"
+            >
+
+              <i class="fa-solid fa-money-bill-wave"></i>
+
+              <div>
+
+                <ng-container
+                  *ngIf="offre.salaireMin && offre.salaireMax"
+                >
+
+                  <strong>
+                    {{ offre.salaireMin | number:'1.0-0' }}
+                    -
+                    {{ offre.salaireMax | number:'1.0-0' }}
+                  </strong>
+
+                </ng-container>
+
+
+                <ng-container
+                  *ngIf="offre.salaireMin && !offre.salaireMax"
+                >
+
+                  <strong>
+                    {{ offre.salaireMin | number:'1.0-0' }}
+                  </strong>
+
+                  <small>
+                    À partir de
+                  </small>
+
+                </ng-container>
+
+
+                <ng-container
+                  *ngIf="!offre.salaireMin && offre.salaireMax"
+                >
+
+                  <strong>
+                    {{ offre.salaireMax | number:'1.0-0' }}
+                  </strong>
+
+                  <small>
+                    Jusqu'à
+                  </small>
+
+                </ng-container>
+
+                <small>
+                  {{ offre.deviseSalaire }}
+                </small>
+
+              </div>
+
+            </div>
+
+            <span
+              class="no-value"
+              *ngIf="!offre.salaireMin && !offre.salaireMax"
+            >
+              Non précisé
+            </span>
+
+          </td>
+
+
+          <!-- ==========================================
+               DATE LIMITE
+          =========================================== -->
+
+          <td>
+
+            <div
+              class="date-cell"
+              *ngIf="offre.dateLimite"
+            >
+
+              <i class="fa-regular fa-calendar"></i>
+
+              <span>
+                {{ offre.dateLimite | date:'dd/MM/yyyy' }}
+              </span>
+
+            </div>
+
+          </td>
+
+
+          <!-- ==========================================
+               STATUT
+          =========================================== -->
+
+          <td>
+
+            <span
+              class="status-badge"
+              [ngClass]="getStatutClass(offre.statut)"
+            >
+
+              {{ getStatutLabel(offre.statut) }}
+
+            </span>
+
+          </td>
+
+
+          <!-- ==========================================
+               ACTIONS
+          =========================================== -->
+
+          <td>
+
+            <div class="table-actions">
+
+              <button
+                type="button"
+                class="table-action-btn edit"
+                title="Modifier l'offre"
+                (click)="ouvrirModification(offre)"
+              >
+
+                <i class="fa-solid fa-pen"></i>
+
+              </button>
+
+
+              <button
+                type="button"
+                class="table-action-btn delete"
+                title="Supprimer l'offre"
+                (click)="supprimer(offre)"
+              >
+
+                <i class="fa-solid fa-trash"></i>
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+  </div>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL CREATION / MODIFICATION
+============================================================ -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showModal"
+  (click)="fermerModal()"
+>
+
+  <div
+    class="modal-container"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- ========================================================
+         MODAL HEADER
+    ========================================================= -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+
+          <i
+            class="fa-solid"
+            [ngClass]="
+              isEditing
+                ? 'fa-pen-to-square'
+                : 'fa-plus-circle'
+            "
+          ></i>
+
+          {{ isEditing
+              ? 'Modifier l’offre'
+              : 'Créer une nouvelle offre'
+          }}
+
+        </h2>
+
+        <p>
+          Remplissez les informations de l'offre.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="fermerModal()"
+        [disabled]="isSaving"
+      >
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         MODAL BODY
+    ========================================================= -->
+
+    <div class="modal-body">
+
+      <!-- Message erreur -->
+
+      <div
+        class="form-error"
+        *ngIf="errorMessage"
+      >
+
+        <i class="fa-solid fa-circle-exclamation"></i>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+
+      <!-- ======================================================
+           FORMULAIRE
+      ======================================================= -->
+
+      <form
+        (ngSubmit)="enregistrer()"
+        #offreForm="ngForm"
+      >
+
+
+        <!-- ----------------------------------------------------
+             ENTREPRISE
+        ----------------------------------------------------- -->
+
+        <div class="form-section">
+
+          <div class="section-title">
+
+            <i class="fa-solid fa-building"></i>
+
+            <span>
+              Entreprise
+            </span>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="entreprise">
+
+              Entreprise
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-building input-icon"></i>
+
+              <select
+                id="entreprise"
+                name="entreprise"
+                [(ngModel)]="form.entreprise"
+                required
+                [disabled]="isEditing || isSaving"
+              >
+
+                <option
+                  [ngValue]="null"
+                >
+                  Sélectionnez une entreprise
+                </option>
+
+
+                <option
+                  *ngFor="let entreprise of entreprises"
+                  [ngValue]="entreprise.id"
+                >
+
+                  {{ entreprise.nom }}
+
+                </option>
+
+              </select>
+
+              <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+            </div>
+
+
+            <small class="field-help">
+
+              Sélectionnez l'entreprise pour laquelle cette
+              offre est publiée.
+
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- ----------------------------------------------------
+             INFORMATIONS GENERALES
+        ----------------------------------------------------- -->
+
+        <div class="form-section">
+
+          <div class="section-title">
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            <span>
+              Informations générales
+            </span>
+
+          </div>
+
+
+          <!-- Titre -->
+
+          <div class="form-group">
+
+            <label for="titre">
+
+              Titre de l'offre
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <div class="input-wrapper">
+
+              <i class="fa-solid fa-heading input-icon"></i>
+
+              <input
+                id="titre"
+                type="text"
+                name="titre"
+                [(ngModel)]="form.titre"
+                placeholder="Ex : Développeur Web Full Stack"
+                maxlength="200"
+                required
+                [disabled]="isSaving"
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- Description -->
+
+          <div class="form-group">
+
+            <label for="description">
+
+              Description
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <textarea
+              id="description"
+              name="description"
+              [(ngModel)]="form.description"
+              placeholder="Décrivez le poste, les missions, le profil recherché..."
+              rows="6"
+              required
+              [disabled]="isSaving"
+            ></textarea>
+
+          </div>
+
+
+          <!-- Type + localisation -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label for="typeOffre">
+
+                Type d'offre
+
+                <span class="required">
+                  *
+                </span>
+
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="fa-solid fa-file-contract input-icon"></i>
+
+                <select
+                  id="typeOffre"
+                  name="typeOffre"
+                  [(ngModel)]="form.typeOffre"
+                  required
+                  [disabled]="isSaving"
+                >
+
+                  <option value="CDI">
+                    CDI
+                  </option>
+
+                  <option value="CDD">
+                    CDD
+                  </option>
+
+                  <option value="stage">
+                    Stage
+                  </option>
+
+                  <option value="freelance">
+                    Freelance
+                  </option>
+
+                  <option value="alternance">
+                    Alternance
+                  </option>
+
+                  <option value="interim">
+                    Intérim
+                  </option>
+
+                </select>
+
+                <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="localisation">
+                Localisation
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="fa-solid fa-location-dot input-icon"></i>
+
+                <input
+                  id="localisation"
+                  type="text"
+                  name="localisation"
+                  [(ngModel)]="form.localisation"
+                  placeholder="Ex : Dakar"
+                  [disabled]="isSaving"
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ----------------------------------------------------
+             SALAIRE
+        ----------------------------------------------------- -->
+
+        <div class="form-section">
+
+          <div class="section-title">
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+
+            <span>
+              Rémunération
+            </span>
+
+          </div>
+
+
+          <div class="form-row salary-row">
+
+            <div class="form-group">
+
+              <label for="salaireMin">
+                Salaire minimum
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="fa-solid fa-money-bill input-icon"></i>
+
+                <input
+                  id="salaireMin"
+                  type="number"
+                  name="salaireMin"
+                  [(ngModel)]="form.salaireMin"
+                  min="0"
+                  placeholder="200000"
+                  [disabled]="isSaving"
+                />
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="salaireMax">
+                Salaire maximum
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="fa-solid fa-money-bill-trend-up input-icon"></i>
+
+                <input
+                  id="salaireMax"
+                  type="number"
+                  name="salaireMax"
+                  [(ngModel)]="form.salaireMax"
+                  min="0"
+                  placeholder="500000"
+                  [disabled]="isSaving"
+                />
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group salary-currency">
+
+              <label for="deviseSalaire">
+                Devise
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <select
+                  id="deviseSalaire"
+                  name="deviseSalaire"
+                  [(ngModel)]="form.deviseSalaire"
+                  [disabled]="isSaving"
+                >
+
+                  <option value="FCFA">
+                    FCFA
+                  </option>
+
+                  <option value="EUR">
+                    EUR
+                  </option>
+
+                  <option value="USD">
+                    USD
+                  </option>
+
+                </select>
+
+                <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ----------------------------------------------------
+             DATE ET STATUT
+        ----------------------------------------------------- -->
+
+        <div class="form-section">
+
+          <div class="section-title">
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            <span>
+              Publication
+            </span>
+
+          </div>
+
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label for="dateLimite">
+
+                Date limite
+
+                <span class="required">
+                  *
+                </span>
+
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="fa-regular fa-calendar input-icon"></i>
+
+                <input
+                  id="dateLimite"
+                  type="date"
+                  name="dateLimite"
+                  [(ngModel)]="form.dateLimite"
+                  required
+                  [disabled]="isSaving"
+                />
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="statut">
+                Statut
+              </label>
+
+
+              <div class="input-wrapper">
+
+                <i class="fa-solid fa-toggle-on input-icon"></i>
+
+                <select
+                  id="statut"
+                  name="statut"
+                  [(ngModel)]="form.statut"
+                  [disabled]="isSaving"
+                >
+
+                  <option value="brouillon">
+                    Brouillon
+                  </option>
+
+                  <option value="en_attente">
+                    En attente
+                  </option>
+
+                  <option value="publiee">
+                    Publiée
+                  </option>
+
+                  <option value="suspendue">
+                    Suspendue
+                  </option>
+
+                  <option value="fermee">
+                    Fermée
+                  </option>
+
+                </select>
+
+                <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ----------------------------------------------------
+             COMPETENCES
+        ----------------------------------------------------- -->
+
+        <div class="form-section">
+
+          <div class="section-header">
+
+            <div class="section-title">
+
+              <i class="fa-solid fa-code"></i>
+
+              <span>
+                Compétences requises
+              </span>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="btn-add-skill"
+              (click)="ajouterCompetence()"
+              [disabled]="isSaving || competences.length === 0"
+            >
+
+              <i class="fa-solid fa-plus"></i>
+
+              Ajouter une compétence
+
+            </button>
+
+          </div>
+
+
+          <!-- Aucune compétence -->
+
+          <div
+            class="no-skills"
+            *ngIf="competencesForm.length === 0"
+          >
+
+            <i class="fa-solid fa-code"></i>
+
+            <p>
+              Aucune compétence ajoutée.
+            </p>
+
+            <small>
+              Ajoutez les compétences nécessaires pour ce poste.
+            </small>
+
+          </div>
+
+
+          <!-- Liste compétences -->
+
+          <div
+            class="skill-form-list"
+            *ngIf="competencesForm.length > 0"
+          >
+
+            <div
+              class="skill-form-item"
+              *ngFor="
+                let niveau of competencesForm;
+                let i = index
+              "
+            >
+
+              <div class="skill-number">
+                {{ i + 1 }}
+              </div>
+
+
+              <!-- Compétence -->
+
+              <div class="form-group">
+
+                <label>
+                  Compétence
+                </label>
+
+
+                <div class="input-wrapper">
+
+                  <i class="fa-solid fa-code input-icon"></i>
+
+                  <select
+                    [name]="'competence_' + i"
+                    [(ngModel)]="niveau.competence"
+                    [disabled]="isSaving"
+                  >
+
+                    <option
+                      *ngFor="let competence of competences"
+                      [ngValue]="competence.id"
+                    >
+
+                      {{ competence.nom }}
+
+                    </option>
+
+                  </select>
+
+                  <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+                </div>
+
+              </div>
+
+
+              <!-- Niveau -->
+
+              <div class="form-group">
+
+                <label>
+                  Niveau requis
+                </label>
+
+
+                <div class="input-wrapper">
+
+                  <i class="fa-solid fa-chart-line input-icon"></i>
+
+                  <select
+                    [name]="'niveau_' + i"
+                    [(ngModel)]="niveau.niveauRequis"
+                    [disabled]="isSaving"
+                  >
+
+                    <option value="debutant">
+                      Débutant
+                    </option>
+
+                    <option value="intermediaire">
+                      Intermédiaire
+                    </option>
+
+                    <option value="avance">
+                      Avancé
+                    </option>
+
+                    <option value="expert">
+                      Expert
+                    </option>
+
+                  </select>
+
+                  <i class="fa-solid fa-chevron-down select-arrow"></i>
+
+                </div>
+
+              </div>
+
+
+              <!-- Obligatoire -->
+
+              <div class="required-skill">
+
+                <label class="checkbox-label">
+
+                  <input
+                    type="checkbox"
+                    [name]="'obligatoire_' + i"
+                    [(ngModel)]="niveau.estObligatoire"
+                    [disabled]="isSaving"
+                  />
+
+                  <span class="custom-checkbox"></span>
+
+                  <span>
+                    Obligatoire
+                  </span>
+
+                </label>
+
+              </div>
+
+
+              <!-- Supprimer -->
+
+              <button
+                type="button"
+                class="btn-remove-skill"
+                (click)="supprimerCompetence(i)"
+                [disabled]="isSaving"
+                title="Supprimer cette compétence"
+              >
+
+                <i class="fa-solid fa-trash"></i>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ====================================================
+             ACTIONS MODAL
+        ===================================================== -->
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="fermerModal()"
+            [disabled]="isSaving"
+          >
+
+            Annuler
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn-save"
+            [disabled]="
+              isSaving ||
+              !offreForm.valid ||
+              !form.entreprise
+            "
+          >
+
+            <span
+              class="button-spinner"
+              *ngIf="isSaving"
+            ></span>
+
+
+            <i
+              class="fa-solid"
+              [ngClass]="
+                isEditing
+                  ? 'fa-floppy-disk'
+                  : 'fa-plus'
+              "
+              *ngIf="!isSaving"
+            ></i>
+
+
+            <span>
+
+              {{ isSaving
+                  ? 'Enregistrement...'
+                  : (isEditing
+                      ? 'Enregistrer les modifications'
+                      : 'Créer l’offre')
+              }}
+
+            </span>
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

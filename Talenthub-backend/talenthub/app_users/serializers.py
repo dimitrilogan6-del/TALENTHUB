@@ -3,11 +3,13 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from .models import (
+    CommandeService,
     Entreprise,
     Profil,
     RecruteurEntreprise,
     Message,
     Notification,
+    Service,
 )
 
 
@@ -662,3 +664,188 @@ class NotificationSerializer(serializers.ModelSerializer):
             "dateEnvoi",
             "destinataire",
         ]
+
+from rest_framework import serializers
+
+from .models import Entreprise
+
+
+class MesEntrepriseSerializer(
+    serializers.ModelSerializer
+):
+
+    class Meta:
+
+        model = Entreprise
+
+        fields = [
+            "id",
+            "nom",
+            "secteur",
+            "adresse",
+            "telephone",
+            "email",
+            "siteweb",
+            "logo",
+            "statut",
+            "verifiee"
+        ]
+
+class ServiceSerializer(
+    serializers.ModelSerializer
+):
+
+    freelance_nom = serializers.SerializerMethodField()
+
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Service
+
+        fields = [
+            "id",
+            "titre",
+            "description",
+            "categorie",
+            "prix",
+            "devise",
+            "delaiLivraison",
+            "image",
+            "image_url",
+            "actif",
+            "freelance",
+            "freelance_nom",
+            "created_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "freelance",
+            "freelance_nom",
+            "image_url",
+            "created_at",
+            "updated_at",
+        ]
+
+    # ========================================================
+    # VALIDATION PRIX
+    # ========================================================
+
+    def validate_prix(self, value):
+
+        if value < 0:
+
+            raise serializers.ValidationError(
+                "Le prix ne peut pas être négatif."
+            )
+
+        return value
+
+    # ========================================================
+    # VALIDATION DÉLAI
+    # ========================================================
+
+    def validate_delaiLivraison(self, value):
+
+        if value <= 0:
+
+            raise serializers.ValidationError(
+                "Le délai de livraison doit être supérieur à 0."
+            )
+
+        return value
+
+    # ========================================================
+    # NOM FREELANCE
+    # ========================================================
+
+    def get_freelance_nom(
+        self,
+        obj
+    ):
+
+        nom = (
+            f"{obj.freelance.user.first_name} "
+            f"{obj.freelance.user.last_name}"
+        ).strip()
+
+        return (
+            nom
+            if nom
+            else obj.freelance.user.username
+        )
+
+    # ========================================================
+    # URL IMAGE
+    # ========================================================
+
+    def get_image_url(
+        self,
+        obj
+    ):
+
+        if not obj.image:
+
+            return None
+
+        request = self.context.get(
+            "request"
+        )
+
+        if request:
+
+            return request.build_absolute_uri(
+                obj.image.url
+            )
+
+        return obj.image.url
+
+class CommandeServiceSerializer(
+    serializers.ModelSerializer
+):
+
+    client_nom = serializers.SerializerMethodField()
+
+    service_titre = serializers.CharField(
+        source="service.titre",
+        read_only=True
+    )
+
+    class Meta:
+
+        model = CommandeService
+
+        fields = [
+            "id",
+            "service",
+            "service_titre",
+            "client",
+            "client_nom",
+            "message",
+            "statut",
+            "dateCommande",
+            "updated_at"
+        ]
+
+        read_only_fields = [
+            "id",
+            "client",
+            "client_nom",
+            "statut",
+            "dateCommande",
+            "updated_at"
+        ]
+
+    def get_client_nom(
+        self,
+        obj
+    ):
+        nom = (
+            f"{obj.client.first_name} "
+            f"{obj.client.last_name}"
+        ).strip()
+
+        return nom or obj.client.username
+

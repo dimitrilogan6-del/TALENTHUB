@@ -8,7 +8,6 @@ import { Accueil } from './component/accueil/accueil';
 import { InscriptionComponent } from './component/inscription/inscription';
 import { DetailOffreComponent } from './component/detail-offre/detail-offre';
 import { APropos } from './component/a-propos/a-propos';
-import { ConnexionComponent} from './component/connexion/connexion';
 import { Entreprise } from './component/entreprise/entreprise';
 import { Freelances } from './component/freelances/freelances';
 import { PublicLayout } from './layouts/public-layout/public-layout';
@@ -21,6 +20,14 @@ import { NotificationsComponent } from './dashboard/candidat/notifications/notif
 import { ParametresComponent } from './dashboard/candidat/parametres/parametres';
 import { LoginComponent } from './component/login/login';
 import { ConnexionRequiredModalComponent } from './component/connexion-required-modal/connexion-required-modal';
+import { DashboardRecruteur } from './dashboard/recruteur/dashboard/dashboard';
+import { CandidaturesRecruteur } from './dashboard/recruteur/candidatures-recruteur/candidatures-recruteur';
+import { CandidaturesMissions } from './dashboard/recruteur/candidatures-missions/candidatures-missions';
+import { RecruteurLayout } from './layouts/recruteur-layout/recruteur-layout';
+import { EntretiensRecruteur } from './dashboard/recruteur/entretiens-recruteur/entretiens-recruteur';
+import { MissionsRecruteur } from './dashboard/recruteur/missions-recruteur/missions-recruteur';
+import { OffresRecruteur } from './dashboard/recruteur/offres/offres';
+
 const routes: Routes =[
   // {path: 'dashboard', component: Dashboard},
   { path: 'connexion-required', component: ConnexionRequiredModalComponent },
@@ -67,6 +74,7 @@ const routes: Routes =[
     ]
 
   },
+
 
   // =====================================================
   // CANDIDAT_DASHBOARD
@@ -121,11 +129,88 @@ const routes: Routes =[
   ]
 },
 
+  // =====================================================
+  // RECRUTEURE_DASHBOARD
+  // =====================================================
+
+{
+  path: 'recruteur',
+
+  component: RecruteurLayout,
+
+  children: [
+
+    {
+      path: 'dashboard',
+      component: DashboardRecruteur
+    },
+
+    {
+      path: 'candidaturesmissions',
+      component: CandidaturesMissions
+    },
+
+    {
+      path: 'missions',
+      component: MissionsRecruteur
+    },
+
+    {
+      path: 'offres',
+      component: OffresRecruteur
+    },
+    {
+      path: 'offre/:id',
+      component: DetailOffreComponent
+    },
+    {
+      path: 'candidatures',
+      component: CandidaturesRecruteur
+    },
+
+    {
+      path: 'messages',
+      component: MessagesComponent
+    },
+
+    {
+      path: 'entretiens',
+      component: EntretiensRecruteur
+    },
+
+    {
+      path: 'notifications',
+      component: NotificationsComponent
+    },
+
+   {
+      path: 'parametres',
+      component: ParametresComponent
+    },
+
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    }
+
+  ]
+},
  
-  // {
-  //   path: 'register',
-  //   component: RegisterComponent
-  // },
+
+  // =====================================================
+  // LOGIN
+  // =====================================================
+
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'register',
+    component: InscriptionComponent
+  },
+
 
 ];
 

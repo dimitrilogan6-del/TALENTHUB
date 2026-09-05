@@ -1,9 +1,8 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
-from django.db.models import Count
-
-from app_users.models import Profil
+from app_users.models import Profil, Entreprise
 
 from .models import (
     Mission,
@@ -13,11 +12,12 @@ from .models import (
 from .serializers import (
     MissionSerializer,
     CandidatureMissionSerializer,
+    CandidatureMissionStatutSerializer,
 )
 
 
 # ============================================================
-# MISSIONS
+# MISSIONS PUBLIQUES
 # ============================================================
 
 class MissionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -50,7 +50,7 @@ class MissionViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 # ============================================================
-# CANDIDATURES
+# CANDIDATURES DU FREELANCE
 # ============================================================
 
 class CandidatureMissionViewSet(
@@ -63,9 +63,9 @@ class CandidatureMissionViewSet(
         permissions.IsAuthenticated
     ]
 
-    # --------------------------------------------------------
-    # CANDIDATURES DU FREELANCE CONNECTÉ
-    # --------------------------------------------------------
+    # ========================================================
+    # QUERYSET
+    # ========================================================
 
     def get_queryset(self):
 
@@ -89,9 +89,9 @@ class CandidatureMissionViewSet(
             )
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # CRÉER UNE CANDIDATURE
-    # --------------------------------------------------------
+    # ========================================================
 
     def create(
         self,
@@ -209,7 +209,6 @@ class CandidatureMissionViewSet(
                 delaiPropose=request.data.get(
                     "delaiPropose"
                 ),
-
             )
         )
 
@@ -238,4 +237,829 @@ class CandidatureMissionViewSet(
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED
+        )
+
+
+# ============================================================
+# MISSIONS DU RECRUTEUR
+# ============================================================
+
+class RecruteurMissionViewSet(
+    viewsets.ModelViewSet
+):
+
+    serializer_class = MissionSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    # ========================================================
+    # MISSIONS DU RECRUTEUR CONNECTÉ
+    # ========================================================
+
+    def get_queryset(self):
+
+        return (
+            Mission.objects
+            .filter(
+                recruteur=self.request.user
+            )
+            .select_related(
+                "entreprise",
+                "recruteur",
+                "freelance",
+            )
+            .prefetch_related(
+                "competences"
+            )
+            .order_by(
+                "-datePublication"
+            )
+        )
+
+    # ========================================================
+    # CRÉATION D'UNE MISSION
+    # ========================================================
+
+    def create(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        # ----------------------------------------------------
+        # VÉRIFIER LE PROFIL
+        # ----------------------------------------------------
+
+        try:
+
+            profil = Profil.objects.get(
+                user=request.user
+            )
+
+        except Profil.DoesNotExist:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil introuvable."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # VÉRIFIER LE RÔLE
+        # ----------------------------------------------------
+
+        if profil.role != "recruteur":
+
+            return Response(
+                {
+                    "detail":
+                    "Seul un recruteur peut créer une mission."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # ENTREPRISE
+        # ----------------------------------------------------
+
+        entreprise_id = request.data.get(
+            "entreprise"
+        )
+
+        if not entreprise_id:
+
+            return Response(
+                {
+                    "entreprise":
+                    "L'entreprise est obligatoire."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ----------------------------------------------------
+        # VÉRIFIER L'ENTREPRISE
+        # ----------------------------------------------------
+
+        try:
+
+            entreprise = profil.entreprises.get(
+                id=entreprise_id
+            )
+
+        except Entreprise.DoesNotExist:
+
+            return Response(
+                {
+                    "detail":
+                    "Vous n'êtes pas associé à cette entreprise."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # VALIDATION
+        # ----------------------------------------------------
+
+        serializer = self.get_serializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        # ----------------------------------------------------
+        # CRÉER LA MISSION
+        # ----------------------------------------------------
+
+        mission = serializer.save(
+            recruteur=request.user,
+            entreprise=entreprise
+        )
+
+        # ----------------------------------------------------
+        # RÉPONSE
+        # ----------------------------------------------------
+
+        return Response(
+            MissionSerializer(
+                mission,
+                context={
+                    "request": request
+                }
+            ).data,
+            status=status.HTTP_201_CREATED
+        )
+
+    # ========================================================
+    # MODIFICATION D'UNE MISSION
+    # ========================================================
+
+    def update(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        mission = self.get_object()
+
+        # ----------------------------------------------------
+        # SÉCURITÉ
+        # ----------------------------------------------------
+
+        if mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Vous n'êtes pas autorisé à modifier cette mission."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # ENTREPRISE
+        # ----------------------------------------------------
+
+        entreprise_id = request.data.get(
+            "entreprise"
+        )
+
+        if entreprise_id:
+
+            try:
+
+                profil = Profil.objects.get(
+                    user=request.user,
+                    role="recruteur"
+                )
+
+                entreprise = profil.entreprises.get(
+                    id=entreprise_id
+                )
+
+            except (
+                Profil.DoesNotExist,
+                Entreprise.DoesNotExist
+            ):
+
+                return Response(
+                    {
+                        "detail":
+                        "Vous n'êtes pas associé à cette entreprise."
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+        else:
+
+            entreprise = mission.entreprise
+
+        # ----------------------------------------------------
+        # VALIDATION
+        # ----------------------------------------------------
+
+        serializer = self.get_serializer(
+            mission,
+            data=request.data,
+            partial=kwargs.pop(
+                "partial",
+                False
+            )
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        # ----------------------------------------------------
+        # SAUVEGARDE
+        # ----------------------------------------------------
+
+        mission = serializer.save(
+            recruteur=request.user,
+            entreprise=entreprise
+        )
+
+        return Response(
+            MissionSerializer(
+                mission,
+                context={
+                    "request": request
+                }
+            ).data
+        )
+
+    # ========================================================
+    # SUPPRESSION
+    # ========================================================
+
+    def destroy(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        mission = self.get_object()
+
+        if mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Vous n'êtes pas autorisé à supprimer cette mission."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        mission.delete()
+
+        return Response(
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+    # ========================================================
+    # FERMER UNE MISSION
+    # POST /missions-recruteur/{id}/fermer/
+    # ========================================================
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def fermer(
+        self,
+        request,
+        pk=None
+    ):
+
+        mission = self.get_object()
+
+        if mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Accès refusé."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # VÉRIFIER SI DÉJÀ FERMÉE
+        # ----------------------------------------------------
+
+        if mission.statut == "fermee":
+
+            return Response(
+                {
+                    "detail":
+                    "Cette mission est déjà fermée."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ----------------------------------------------------
+        # FERMER
+        # ----------------------------------------------------
+
+        mission.statut = "fermee"
+
+        mission.save(
+            update_fields=[
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        return Response(
+            {
+                "message":
+                "Mission fermée avec succès."
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+# ============================================================
+# CANDIDATURES REÇUES PAR LE RECRUTEUR
+# ============================================================
+
+class RecruteurCandidatureMissionViewSet(
+    viewsets.ModelViewSet
+):
+
+    serializer_class = CandidatureMissionSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    # ========================================================
+    # CANDIDATURES DES MISSIONS DU RECRUTEUR
+    # ========================================================
+
+    def get_queryset(self):
+
+        return (
+            CandidatureMission.objects
+            .filter(
+                mission__recruteur=self.request.user
+            )
+            .select_related(
+                "mission",
+                "mission__entreprise",
+                "mission__recruteur",
+                "freelance",
+                "freelance__user",
+            )
+            .prefetch_related(
+                "mission__competences"
+            )
+            .order_by(
+                "-dateCandidature"
+            )
+        )
+
+    # ========================================================
+    # MODIFIER LE STATUT
+    # ========================================================
+
+    def update(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        candidature = self.get_object()
+
+        # ----------------------------------------------------
+        # SÉCURITÉ
+        # ----------------------------------------------------
+
+        if candidature.mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Vous n'êtes pas autorisé à modifier cette candidature."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # VALIDATION DU STATUT
+        # ----------------------------------------------------
+
+        serializer = (
+            CandidatureMissionStatutSerializer(
+                candidature,
+                data=request.data,
+                partial=True
+            )
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        serializer.save()
+
+        # ----------------------------------------------------
+        # RÉPONSE
+        # ----------------------------------------------------
+
+        return Response(
+            CandidatureMissionSerializer(
+                candidature,
+                context={
+                    "request": request
+                }
+            ).data
+        )
+
+    # ========================================================
+    # ACCEPTER UNE CANDIDATURE
+    # ========================================================
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def accepter(
+        self,
+        request,
+        pk=None
+    ):
+
+        candidature = self.get_object()
+
+        mission = candidature.mission
+
+        # ----------------------------------------------------
+        # SÉCURITÉ
+        # ----------------------------------------------------
+
+        if mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Accès refusé."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # VÉRIFIER LE STATUT
+        # ----------------------------------------------------
+
+        if candidature.statut == "acceptee":
+
+            return Response(
+                {
+                    "detail":
+                    "Cette candidature est déjà acceptée."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ----------------------------------------------------
+        # ACCEPTER
+        # ----------------------------------------------------
+
+        candidature.statut = "acceptee"
+
+        candidature.save(
+            update_fields=[
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        # ----------------------------------------------------
+        # RETENIR LE FREELANCE
+        # ----------------------------------------------------
+
+        mission.freelance = candidature.freelance
+
+        mission.statut = "en_cours"
+
+        mission.save(
+            update_fields=[
+                "freelance",
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        # ----------------------------------------------------
+        # REFUSER LES AUTRES CANDIDATURES
+        # ----------------------------------------------------
+
+        CandidatureMission.objects.filter(
+            mission=mission
+        ).exclude(
+            id=candidature.id
+        ).update(
+            statut="refusee"
+        )
+
+        return Response(
+            {
+                "message":
+                "Freelance sélectionné avec succès."
+            },
+            status=status.HTTP_200_OK
+        )
+
+    # ========================================================
+    # REFUSER UNE CANDIDATURE
+    # ========================================================
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def refuser(
+        self,
+        request,
+        pk=None
+    ):
+
+        candidature = self.get_object()
+
+        # ----------------------------------------------------
+        # SÉCURITÉ
+        # ----------------------------------------------------
+
+        if candidature.mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Accès refusé."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ----------------------------------------------------
+        # VÉRIFIER SI DÉJÀ ACCEPTÉE
+        # ----------------------------------------------------
+
+        if candidature.statut == "acceptee":
+
+            return Response(
+                {
+                    "detail":
+                    "Une candidature déjà acceptée ne peut pas être refusée."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ----------------------------------------------------
+        # REFUSER
+        # ----------------------------------------------------
+
+        candidature.statut = "refusee"
+
+        candidature.save(
+            update_fields=[
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        return Response(
+            {
+                "message":
+                "Candidature refusée avec succès."
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+
+class RecruteurCandidatureMissionViewSet(
+    viewsets.ModelViewSet
+):
+
+    serializer_class = CandidatureMissionSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    # ========================================================
+    # CANDIDATURES DES MISSIONS DU RECRUTEUR
+    # ========================================================
+
+    def get_queryset(self):
+
+        return (
+            CandidatureMission.objects
+            .filter(
+                mission__recruteur=self.request.user
+            )
+            .select_related(
+                "mission",
+                "mission__entreprise",
+                "mission__recruteur",
+                "freelance",
+                "freelance__user",
+            )
+            .prefetch_related(
+                "mission__competences"
+            )
+            .order_by(
+                "-dateCandidature"
+            )
+        )
+
+    # ========================================================
+    # LISTE DES CANDIDATURES
+    # ========================================================
+
+    def list(self, request, *args, **kwargs):
+
+        queryset = self.get_queryset()
+
+        serializer = self.get_serializer(
+            queryset,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    # ========================================================
+    # DETAIL D'UNE CANDIDATURE
+    # ========================================================
+
+    def retrieve(self, request, *args, **kwargs):
+
+        candidature = self.get_object()
+
+        serializer = self.get_serializer(
+            candidature
+        )
+
+        return Response(serializer.data)
+
+    # ========================================================
+    # MODIFIER LE STATUT
+    # ========================================================
+
+    def partial_update(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        candidature = self.get_object()
+
+        if candidature.mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Accès refusé."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = (
+            CandidatureMissionStatutSerializer(
+                candidature,
+                data=request.data,
+                partial=True
+            )
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        serializer.save()
+
+        return Response(
+            CandidatureMissionSerializer(
+                candidature,
+                context={
+                    "request": request
+                }
+            ).data
+        )
+
+    # ========================================================
+    # ACCEPTER UNE CANDIDATURE
+    # ========================================================
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def accepter(
+        self,
+        request,
+        pk=None
+    ):
+
+        candidature = self.get_object()
+
+        if candidature.mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Accès refusé."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        candidature.statut = "acceptee"
+
+        candidature.save(
+            update_fields=[
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        mission = candidature.mission
+
+        mission.freelance = candidature.freelance
+        mission.statut = "en_cours"
+
+        mission.save(
+            update_fields=[
+                "freelance",
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        CandidatureMission.objects.filter(
+            mission=mission
+        ).exclude(
+            id=candidature.id
+        ).update(
+            statut="refusee"
+        )
+
+        return Response(
+            {
+                "message":
+                "Candidature acceptée avec succès."
+            }
+        )
+
+    # ========================================================
+    # REFUSER UNE CANDIDATURE
+    # ========================================================
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def refuser(
+        self,
+        request,
+        pk=None
+    ):
+
+        candidature = self.get_object()
+
+        if candidature.mission.recruteur != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "Accès refusé."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        candidature.statut = "refusee"
+
+        candidature.save(
+            update_fields=[
+                "statut",
+                "updated_at"
+            ]
+        )
+
+        return Response(
+            {
+                "message":
+                "Candidature refusée."
+            }
         )

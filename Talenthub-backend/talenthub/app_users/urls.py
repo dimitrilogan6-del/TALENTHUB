@@ -5,6 +5,8 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     CandidatDashboardView,
     ChangerMotDePasseView,
+    CommandeServiceViewSet,
+    FreelanceCommandeServiceViewSet,
     FreelanceDashboardView,
     InscriptionViewSet,
     MonProfilViewSet,
@@ -12,6 +14,9 @@ from .views import (
     MessageViewSet,
     NotificationViewSet,
     ModifierUtilisateurView,
+    RecruteurDashboardView,
+    ServicePublicViewSet,
+    ServiceViewSet,
 )
 
 
@@ -72,6 +77,31 @@ router.register(
     basename='notifications'
 )
 
+# app_users/urls.py
+
+router.register(
+    r'services',
+    ServiceViewSet,
+    basename='services'
+)
+
+router.register(
+    r'services-public',
+    ServicePublicViewSet,
+    basename='services-public'
+)
+
+router.register(
+    r'commandes-services',
+    CommandeServiceViewSet,
+    basename='commandes-services'
+)
+
+router.register(
+    r'freelance-commandes',
+    FreelanceCommandeServiceViewSet,
+    basename='freelance-commandes'
+)
 
 urlpatterns = [
 
@@ -99,10 +129,16 @@ urlpatterns = [
     ),
 
     path(
-            "candidat/dashboard/",
-            CandidatDashboardView.as_view(),
-            name="candidat-dashboard"
+        "candidat/dashboard/",
+        CandidatDashboardView.as_view(),
+        name="candidat-dashboard"
         ),
     
-    
+    path(
+        'recruteur/dashboard/',
+        RecruteurDashboardView.as_view(),
+        name='recruteur-dashboard'
+),
+
+
 ]

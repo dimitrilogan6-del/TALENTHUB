@@ -1,36 +1,97 @@
 <div class="candidate-layout">
 
-  <!-- ==========================================================
+
+  <!-- ========================================================
        SIDEBAR
-  =========================================================== -->
+  ========================================================= -->
 
   <aside class="dashboard-sidebar">
 
-    <!-- LOGO -->
 
-    <div class="sidebar-logo">
+    <!-- ======================================================
+         HEADER / LOGO
+    ======================================================= -->
 
-      <span class="logo-blue">
-        Talent
-      </span>
+    <div class="sidebar-header">
 
-      <span class="logo-green">
-        Hub
-      </span>
+      <div class="sidebar-logo">
+
+        <div class="brand-logo">
+          TH
+        </div>
+
+        <div class="brand-info">
+
+          <h2>
+            TalentHub
+          </h2>
+
+          <span>
+            Espace Candidat
+          </span>
+
+        </div>
+
+      </div>
 
     </div>
 
 
-    <!-- NAVIGATION -->
+    <!-- ======================================================
+         PROFIL RAPIDE
+    ======================================================= -->
+
+    <div class="sidebar-profile">
+
+      <div class="sidebar-avatar">
+
+        <img
+          *ngIf="photoProfil"
+          [src]="photoProfil"
+          alt="Photo de profil"
+        />
+
+        <span *ngIf="!photoProfil">
+          {{ initialeUtilisateur }}
+        </span>
+
+        <span class="profile-status"></span>
+
+      </div>
+
+
+      <div class="sidebar-user-info">
+
+        <strong>
+          {{ nomComplet }}
+        </strong>
+
+        <span>
+          Candidat
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         NAVIGATION
+    ======================================================= -->
 
     <nav class="sidebar-nav">
+
+
+      <!-- ====================================================
+           PRINCIPAL
+      ===================================================== -->
 
       <span class="nav-title">
         PRINCIPAL
       </span>
 
 
-      <!-- DASHBOARD -->
+      <!-- TABLEAU DE BORD -->
 
       <a
         routerLink="/candidat/dashboard"
@@ -40,10 +101,10 @@
       >
 
         <span class="nav-icon">
-          🏠
+          <i class="fas fa-chart-line"></i>
         </span>
 
-        <span>
+        <span class="nav-text">
           Tableau de bord
         </span>
 
@@ -59,10 +120,10 @@
       >
 
         <span class="nav-icon">
-          📄
+          <i class="fas fa-file-alt"></i>
         </span>
 
-        <span>
+        <span class="nav-text">
           Mes candidatures
         </span>
 
@@ -85,10 +146,10 @@
       >
 
         <span class="nav-icon">
-          📅
+          <i class="fas fa-calendar-check"></i>
         </span>
 
-        <span>
+        <span class="nav-text">
           Mes entretiens
         </span>
 
@@ -99,19 +160,24 @@
 
       <a
         routerLink="/offres"
+        routerLinkActive="active"
         class="nav-item"
       >
 
         <span class="nav-icon">
-          🔎
+          <i class="fas fa-search"></i>
         </span>
 
-        <span>
+        <span class="nav-text">
           Rechercher une offre
         </span>
 
       </a>
 
+
+      <!-- ====================================================
+           COMMUNICATION
+      ===================================================== -->
 
       <span class="nav-title second-title">
         COMMUNICATION
@@ -120,65 +186,82 @@
 
       <!-- MESSAGES -->
 
-     <a
-  routerLink="/candidat/messages"
-  routerLinkActive="active"
-  class="nav-item"
->
+      <a
+        routerLink="/candidat/messages"
+        routerLinkActive="active"
+        class="nav-item"
+      >
 
-  <span class="nav-icon">
-    💬
-  </span>
+        <span class="nav-icon">
+          <i class="fas fa-comments"></i>
+        </span>
 
-  <span>
-    Messages
-  </span>
+        <span class="nav-text">
+          Messages
+        </span>
 
-  <span
-    class="nav-badge"
-    *ngIf="
-      dashboard &&
-      dashboard.statistiques.messages_non_lus > 0
-    "
-  >
-    {{ dashboard.statistiques.messages_non_lus }}
-  </span>
+        <span
+          class="nav-badge"
+          *ngIf="messagesNonLus > 0"
+        >
+          {{ messagesNonLus }}
+        </span>
 
-</a>
+      </a>
 
 
       <!-- NOTIFICATIONS -->
 
-   <a
-  routerLink="/candidat/notifications"
-  routerLinkActive="active"
-  class="nav-item"
->
+      <a
+        routerLink="/candidat/notifications"
+        routerLinkActive="active"
+        class="nav-item"
+      >
 
-  <span class="nav-icon">
-    🔔
-  </span>
+        <span class="nav-icon">
+          <i class="fas fa-bell"></i>
+        </span>
 
-  <span>
-    Notifications
-  </span>
+        <span class="nav-text">
+          Notifications
+        </span>
 
-  <span
-    class="nav-badge"
-    *ngIf="
-      dashboard &&
-      dashboard.statistiques.notifications_non_lues > 0
-    "
-  >
-    {{ dashboard.statistiques.notifications_non_lues }}
-  </span>
+        <span
+          class="nav-badge"
+          *ngIf="notificationsNonLues > 0"
+        >
+          {{ notificationsNonLues }}
+        </span>
 
-</a>
+      </a>
 
+
+      <!-- ====================================================
+           MON COMPTE
+      ===================================================== -->
 
       <span class="nav-title second-title">
         MON COMPTE
       </span>
+
+
+      <!-- PROFIL -->
+
+      <a
+        routerLink="/candidat/profil"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+
+        <span class="nav-icon">
+          <i class="fas fa-user"></i>
+        </span>
+
+        <span class="nav-text">
+          Mon profil
+        </span>
+
+      </a>
 
 
       <!-- PARAMÈTRES -->
@@ -190,21 +273,87 @@
       >
 
         <span class="nav-icon">
-          ⚙️
+          <i class="fas fa-cog"></i>
         </span>
 
-        <span>
+        <span class="nav-text">
           Paramètres
         </span>
 
       </a>
 
+
     </nav>
 
 
-    <!-- BAS SIDEBAR -->
+    <!-- ======================================================
+         BAS DU SIDEBAR
+    ======================================================= -->
 
     <div class="sidebar-bottom">
+
+
+      <!-- ====================================================
+           PROGRESSION DU PROFIL
+      ===================================================== -->
+
+      <div class="profile-completion">
+
+
+        <div class="completion-header">
+
+          <div class="completion-title">
+
+            <i class="fas fa-user-check"></i>
+
+            <span>
+              Profil complété
+            </span>
+
+          </div>
+
+          <strong>
+            {{ profileCompletion }}%
+          </strong>
+
+        </div>
+
+
+        <div class="completion-track">
+
+          <div
+            class="completion-bar"
+            [style.width.%]="profileCompletion"
+          ></div>
+
+        </div>
+
+
+        <p
+          *ngIf="profileCompletion < 100"
+        >
+          Complétez votre profil pour augmenter
+          vos chances d'être recruté.
+        </p>
+
+
+        <p
+          class="completion-success"
+          *ngIf="profileCompletion === 100"
+        >
+
+          <i class="fas fa-check-circle"></i>
+
+          Profil complet
+
+        </p>
+
+      </div>
+
+
+      <!-- ====================================================
+           DÉCONNEXION
+      ===================================================== -->
 
       <button
         type="button"
@@ -213,7 +362,9 @@
       >
 
         <span class="nav-icon">
-          🚪
+
+          <i class="fas fa-sign-out-alt"></i>
+
         </span>
 
         <span>
@@ -222,79 +373,100 @@
 
       </button>
 
+
     </div>
 
   </aside>
 
 
-  <!-- ==========================================================
+  <!-- ========================================================
        ZONE PRINCIPALE
-  =========================================================== -->
+  ========================================================= -->
 
   <main class="main-area">
 
 
-    <!-- ========================================================
-         TOPBAR FIXE
-    ========================================================= -->
+    <!-- ======================================================
+         TOPBAR
+    ======================================================= -->
 
     <header class="dashboard-topbar">
 
 
-      <!-- GAUCHE -->
+      <!-- ====================================================
+           GAUCHE
+      ===================================================== -->
 
       <div class="topbar-left">
 
         <div class="mobile-brand">
 
-          <span class="logo-blue">
-            Talent
-          </span>
+          <div class="brand-logo">
+            TH
+          </div>
 
-          <span class="logo-green">
-            Hub
-          </span>
+          <div class="brand-info">
+
+            <strong>
+              TalentHub
+            </strong>
+
+            <span>
+              Espace Candidat
+            </span>
+
+          </div>
 
         </div>
 
       </div>
 
 
-      <!-- DROITE -->
+      <!-- ====================================================
+           DROITE
+      ===================================================== -->
 
       <div class="topbar-actions">
 
 
-        <!-- MODE SOMBRE -->
+        <!-- ==================================================
+             MODE SOMBRE
+        =================================================== -->
 
         <button
           type="button"
           class="topbar-button theme-button"
           (click)="toggleDarkMode()"
-          [title]="darkMode ? 'Mode clair' : 'Mode sombre'"
+          [title]="darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'"
+          [attr.aria-label]="darkMode ? 'Mode clair' : 'Mode sombre'"
         >
 
-          <span *ngIf="!darkMode">
-            🌙
-          </span>
+          <i
+            *ngIf="!darkMode"
+            class="fas fa-moon"
+          ></i>
 
-          <span *ngIf="darkMode">
-            ☀️
-          </span>
+          <i
+            *ngIf="darkMode"
+            class="fas fa-sun"
+          ></i>
 
         </button>
 
 
-        <!-- NOTIFICATIONS -->
+        <!-- ==================================================
+             NOTIFICATIONS
+        =================================================== -->
 
         <button
           type="button"
           class="topbar-button notification-button"
           routerLink="/candidat/notifications"
           title="Notifications"
+          aria-label="Notifications"
         >
 
-          🔔
+          <i class="fas fa-bell"></i>
 
           <span
             class="topbar-badge"
@@ -306,15 +478,15 @@
         </button>
 
 
-        <!-- PROFIL -->
+        <!-- ==================================================
+             PROFIL
+        =================================================== -->
 
         <button
           type="button"
           class="topbar-user"
-          routerLink="/candidat/parametres"
+          routerLink="/candidat/profil"
         >
-
-          <!-- PHOTO -->
 
           <div class="topbar-avatar">
 
@@ -331,8 +503,6 @@
           </div>
 
 
-          <!-- INFOS -->
-
           <div class="topbar-user-info">
 
             <strong>
@@ -345,22 +515,29 @@
 
           </div>
 
+
+          <i
+            class="fas fa-chevron-down profile-arrow"
+          ></i>
+
         </button>
+
 
       </div>
 
     </header>
 
 
-    <!-- ========================================================
-         CONTENU
-    ========================================================= -->
+    <!-- ======================================================
+         CONTENU DES PAGES
+    ======================================================= -->
 
-    <div class="page-content">
+    <section class="page-content">
 
       <router-outlet></router-outlet>
 
-    </div>
+    </section>
+
 
   </main>
 

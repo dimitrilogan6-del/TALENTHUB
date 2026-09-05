@@ -1,17 +1,10 @@
-<p>candidat-dashboard works!</p>
 <!-- ============================================================
      DASHBOARD CANDIDAT
 ============================================================= -->
 
 <div class="candidate-dashboard">
 
-
-  <!-- ==========================================================
-       CONTENU PRINCIPAL
-  =========================================================== -->
-
   <main class="dashboard-content">
-
 
     <!-- ========================================================
          CHARGEMENT
@@ -37,14 +30,11 @@
 
     <div
       class="error-state"
-      *ngIf="
-        !isLoading &&
-        errorMessage
-      "
+      *ngIf="!isLoading && errorMessage"
     >
 
       <div class="error-icon">
-        !
+        <i class="fa-solid fa-triangle-exclamation"></i>
       </div>
 
       <h3>
@@ -60,9 +50,8 @@
         class="retry-button"
         (click)="loadDashboard()"
       >
-
+        <i class="fa-solid fa-rotate-right"></i>
         Réessayer
-
       </button>
 
     </div>
@@ -80,26 +69,18 @@
       "
     >
 
-
-      <!-- ======================================================
-           TOPBAR
-      ======================================================= -->
-
-    
-
       <!-- ======================================================
            STATISTIQUES
       ======================================================= -->
 
       <section class="stats-grid">
 
-
         <!-- TOTAL -->
 
         <div class="stat-card">
 
           <div class="stat-icon blue">
-            📄
+            <i class="fa-solid fa-file-lines"></i>
           </div>
 
           <div class="stat-content">
@@ -109,10 +90,7 @@
             </span>
 
             <strong>
-              {{
-                d.statistiques
-                  .total_candidatures
-              }}
+              {{ d.statistiques.total_candidatures }}
             </strong>
 
           </div>
@@ -125,7 +103,7 @@
         <div class="stat-card">
 
           <div class="stat-icon orange">
-            ⏳
+            <i class="fa-solid fa-hourglass-half"></i>
           </div>
 
           <div class="stat-content">
@@ -135,10 +113,7 @@
             </span>
 
             <strong>
-              {{
-                d.statistiques
-                  .candidatures_en_attente
-              }}
+              {{ d.statistiques.candidatures_en_attente }}
             </strong>
 
           </div>
@@ -151,7 +126,7 @@
         <div class="stat-card">
 
           <div class="stat-icon purple">
-            ⭐
+            <i class="fa-solid fa-star"></i>
           </div>
 
           <div class="stat-content">
@@ -161,10 +136,7 @@
             </span>
 
             <strong>
-              {{
-                d.statistiques
-                  .candidatures_presselectionnees
-              }}
+              {{ d.statistiques.candidatures_presselectionnees }}
             </strong>
 
           </div>
@@ -177,7 +149,7 @@
         <div class="stat-card">
 
           <div class="stat-icon cyan">
-            📅
+            <i class="fa-solid fa-calendar-days"></i>
           </div>
 
           <div class="stat-content">
@@ -187,10 +159,7 @@
             </span>
 
             <strong>
-              {{
-                d.statistiques
-                  .candidatures_entretien
-              }}
+              {{ d.statistiques.candidatures_entretien }}
             </strong>
 
           </div>
@@ -203,7 +172,7 @@
         <div class="stat-card">
 
           <div class="stat-icon green">
-            ✓
+            <i class="fa-solid fa-circle-check"></i>
           </div>
 
           <div class="stat-content">
@@ -213,10 +182,7 @@
             </span>
 
             <strong>
-              {{
-                d.statistiques
-                  .candidatures_acceptees
-              }}
+              {{ d.statistiques.candidatures_acceptees }}
             </strong>
 
           </div>
@@ -229,7 +195,7 @@
         <div class="stat-card">
 
           <div class="stat-icon red">
-            ×
+            <i class="fa-solid fa-circle-xmark"></i>
           </div>
 
           <div class="stat-content">
@@ -239,10 +205,7 @@
             </span>
 
             <strong>
-              {{
-                d.statistiques
-                  .candidatures_refusees
-              }}
+              {{ d.statistiques.candidatures_refusees }}
             </strong>
 
           </div>
@@ -288,9 +251,7 @@
 
               Voir tout
 
-              <span>
-                →
-              </span>
+              <i class="fa-solid fa-arrow-right"></i>
 
             </button>
 
@@ -301,13 +262,11 @@
 
           <div
             class="empty-state"
-            *ngIf="
-              d.candidatures_recentes.length === 0
-            "
+            *ngIf="d.candidatures_recentes.length === 0"
           >
 
             <div class="empty-icon">
-              📄
+              <i class="fa-solid fa-file-circle-xmark"></i>
             </div>
 
             <h3>
@@ -327,9 +286,7 @@
 
               Découvrir les offres
 
-              <span>
-                →
-              </span>
+              <i class="fa-solid fa-arrow-right"></i>
 
             </button>
 
@@ -340,9 +297,7 @@
 
           <div
             class="applications-list"
-            *ngIf="
-              d.candidatures_recentes.length > 0
-            "
+            *ngIf="d.candidatures_recentes.length > 0"
           >
 
             <div
@@ -352,11 +307,10 @@
               "
             >
 
-
               <div class="application-main">
 
                 <div class="application-icon">
-                  💼
+                  <i class="fa-solid fa-briefcase"></i>
                 </div>
 
 
@@ -367,14 +321,13 @@
                   </h3>
 
                   <p>
+                    <i class="fa-regular fa-building"></i>
                     {{ candidature.entreprise }}
                   </p>
 
                   <small>
-                    {{
-                      candidature.date
-                        | date:'dd/MM/yyyy'
-                    }}
+                    <i class="fa-regular fa-calendar"></i>
+                    {{ candidature.date | date:'dd/MM/yyyy' }}
                   </small>
 
                 </div>
@@ -384,18 +337,10 @@
 
               <span
                 class="status"
-                [ngClass]="
-                  getStatutClass(
-                    candidature.statut
-                  )
-                "
+                [ngClass]="getStatutClass(candidature.statut)"
               >
 
-                {{
-                  getStatutLabel(
-                    candidature.statut
-                  )
-                }}
+                {{ getStatutLabel(candidature.statut) }}
 
               </span>
 
@@ -411,9 +356,7 @@
 
                 Voir
 
-                <span>
-                  →
-                </span>
+                <i class="fa-solid fa-arrow-right"></i>
 
               </button>
 
@@ -455,7 +398,7 @@
           >
 
             <div class="interview-icon">
-              📅
+              <i class="fa-solid fa-calendar-check"></i>
             </div>
 
 
@@ -470,6 +413,7 @@
               </h3>
 
               <p class="interview-company">
+                <i class="fa-regular fa-building"></i>
                 {{ entretien.entreprise }}
               </p>
 
@@ -479,14 +423,11 @@
                 <div>
 
                   <span>
-                    📅
+                    <i class="fa-regular fa-calendar"></i>
                   </span>
 
                   <strong>
-                    {{
-                      entretien.dateHeure
-                        | date:'dd/MM/yyyy'
-                    }}
+                    {{ entretien.dateHeure | date:'dd/MM/yyyy' }}
                   </strong>
 
                 </div>
@@ -495,14 +436,11 @@
                 <div>
 
                   <span>
-                    🕐
+                    <i class="fa-regular fa-clock"></i>
                   </span>
 
                   <strong>
-                    {{
-                      entretien.dateHeure
-                        | date:'HH:mm'
-                    }}
+                    {{ entretien.dateHeure | date:'HH:mm' }}
                   </strong>
 
                 </div>
@@ -511,7 +449,7 @@
                 <div>
 
                   <span>
-                    📍
+                    <i class="fa-solid fa-video"></i>
                   </span>
 
                   <strong>
@@ -527,12 +465,11 @@
 
               <p
                 class="interview-place"
-                *ngIf="
-                  entretien.lieu
-                "
+                *ngIf="entretien.lieu"
               >
 
-                📍
+                <i class="fa-solid fa-location-dot"></i>
+
                 {{ entretien.lieu }}
 
               </p>
@@ -541,20 +478,18 @@
               <!-- VISIO -->
 
               <a
-                *ngIf="
-                  entretien.lienVisio
-                "
+                *ngIf="entretien.lienVisio"
                 [href]="entretien.lienVisio"
                 target="_blank"
                 rel="noopener"
                 class="meeting-link"
               >
 
+                <i class="fa-solid fa-video"></i>
+
                 Rejoindre l'entretien
 
-                <span>
-                  →
-                </span>
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
 
               </a>
 
@@ -567,13 +502,11 @@
 
           <div
             class="empty-interview"
-            *ngIf="
-              !d.prochain_entretien
-            "
+            *ngIf="!d.prochain_entretien"
           >
 
             <div class="empty-interview-icon">
-              📅
+              <i class="fa-regular fa-calendar-xmark"></i>
             </div>
 
             <h3>
@@ -639,9 +572,7 @@
 
               <div
                 class="progress-value"
-                [style.width.%]="
-                  d.profil.profile_completion
-                "
+                [style.width.%]="d.profil.profile_completion"
               ></div>
 
             </div>
@@ -650,12 +581,14 @@
             <span class="progress-message">
 
               <ng-container
-                *ngIf="
-                  d.profil.profile_completion < 50
-                "
+                *ngIf="d.profil.profile_completion < 50"
               >
+
+                <i class="fa-solid fa-circle-info"></i>
+
                 Complétez votre profil pour
                 améliorer votre visibilité.
+
               </ng-container>
 
 
@@ -665,17 +598,23 @@
                   d.profil.profile_completion < 100
                 "
               >
+
+                <i class="fa-solid fa-circle-info"></i>
+
                 Votre profil est bien avancé.
                 Encore quelques informations !
+
               </ng-container>
 
 
               <ng-container
-                *ngIf="
-                  d.profil.profile_completion >= 100
-                "
+                *ngIf="d.profil.profile_completion >= 100"
               >
-                🎉 Votre profil est complet !
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Votre profil est complet !
+
               </ng-container>
 
             </span>
@@ -691,11 +630,11 @@
             routerLink="/profil"
           >
 
+            <i class="fa-solid fa-user-pen"></i>
+
             Modifier mon profil
 
-            <span>
-              →
-            </span>
+            <i class="fa-solid fa-arrow-right"></i>
 
           </button>
 
@@ -710,9 +649,7 @@
 
       <section
         class="dashboard-section upcoming-section"
-        *ngIf="
-          d.entretiens_a_venir.length > 1
-        "
+        *ngIf="d.entretiens_a_venir.length > 1"
       >
 
         <div class="section-header">
@@ -738,9 +675,7 @@
 
             Voir le calendrier
 
-            <span>
-              →
-            </span>
+            <i class="fa-solid fa-arrow-right"></i>
 
           </button>
 
@@ -751,25 +686,17 @@
 
           <div
             class="upcoming-item"
-            *ngFor="
-              let entretien of d.entretiens_a_venir
-            "
+            *ngFor="let entretien of d.entretiens_a_venir"
           >
 
             <div class="upcoming-date">
 
               <strong>
-                {{
-                  entretien.dateHeure
-                    | date:'dd'
-                }}
+                {{ entretien.dateHeure | date:'dd' }}
               </strong>
 
               <span>
-                {{
-                  entretien.dateHeure
-                    | date:'MMM'
-                }}
+                {{ entretien.dateHeure | date:'MMM' }}
               </span>
 
             </div>
@@ -782,6 +709,7 @@
               </h3>
 
               <p>
+                <i class="fa-regular fa-building"></i>
                 {{ entretien.entreprise }}
               </p>
 
@@ -790,10 +718,9 @@
 
             <div class="upcoming-time">
 
-              {{
-                entretien.dateHeure
-                  | date:'HH:mm'
-              }}
+              <i class="fa-regular fa-clock"></i>
+
+              {{ entretien.dateHeure | date:'HH:mm' }}
 
             </div>
 

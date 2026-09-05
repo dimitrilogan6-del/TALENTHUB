@@ -21,10 +21,16 @@ from rest_framework.response import Response
 
 from rest_framework.decorators import action
 
-from .models import ( Entreprise, Profil, RecruteurEntreprise, Message, Notification,)
+from app_candidatures.services.matching import calculer_matching
+from offres.models import Offre
+
+from .models import ( CommandeService, Entreprise, Profil, RecruteurEntreprise, Message, Notification, Service,)
 
 from .serializers import (
     FreelanceSerializer,
+    MesEntrepriseSerializer,
+    ServiceSerializer,
+    ServiceSerializer,
     UserSerializer,
     ProfilSerializer,
     InscriptionSerializer,
@@ -32,6 +38,7 @@ from .serializers import (
     RecruteurEntrepriseSerializer,
     MessageSerializer,
     NotificationSerializer,
+    CommandeServiceSerializer,
 )
 
 # ============================================================
@@ -1727,3 +1734,887 @@ class FreelanceDashboardView(APIView):
                 candidatures_recentes,
 
         })
+
+class RecruteurDashboardView(APIView):
+    
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        # ====================================================
+        # PROFIL RECRUTEUR
+        # ====================================================
+
+        try:
+
+            profil = Profil.objects.select_related(
+                "user"
+            ).get(
+                user=request.user,
+                role="recruteur"
+            )
+
+        except Profil.DoesNotExist:
+
+            return Response(
+                {
+                    "detail":
+                        "Profil recruteur introuvable."
+                },
+                status=404
+            )
+
+        # ====================================================
+        # ENTREPRISE PRINCIPALE
+        # ====================================================
+
+        association = (
+            RecruteurEntreprise.objects
+            .select_related("entreprise")
+            .filter(
+                recruteur=profil,
+                actif=True
+            )
+            .order_by(
+                "-principal",
+                "-dateAssociation"
+            )
+            .first()
+        )
+
+        entreprise = (
+            association.entreprise
+            if association
+            else None
+        )
+
+        # ====================================================
+        # OFFRES DU RECRUTEUR
+        # ====================================================
+
+        offres = (
+            Offre.objects
+            .filter(
+                recruteur=request.user
+            )
+            .select_related("entreprise")
+            .order_by("-created_at")
+        )
+
+        # ====================================================
+        # CANDIDATURES
+        # ====================================================
+
+        candidatures = (
+            Candidature.objects
+            .filter(
+                offre__recruteur=request.user
+            )
+            .select_related(
+                "candidat",
+                "candidat__profil",
+                "offre",
+                "offre__entreprise"
+            )
+            .prefetch_related(
+                "offre__niveaux_competences__competence",
+                "candidat__profil__competences"
+            )
+            .order_by(
+                "-dateSoumission"
+            )
+        )
+
+        # ====================================================
+        # ENTRETIENS
+        # ====================================================
+
+        entretiens = (
+            Entretien.objects
+            .filter(
+                recruteur=request.user
+            )
+            .select_related(
+                "candidature",
+                "candidature__candidat",
+                "candidature__offre"
+            )
+            .order_by(
+                "dateHeure"
+            )
+        )
+
+        # ====================================================
+        # STATISTIQUES
+        # ====================================================
+
+        statistiques = {
+
+            "offres_total":
+                offres.count(),
+
+            "offres_publiees":
+                offres.filter(
+                    statut="publiee"
+                ).count(),
+
+            "offres_brouillons":
+                offres.filter(
+                    statut="brouillon"
+                ).count(),
+
+            "offres_suspendues":
+                offres.filter(
+                    statut="suspendue"
+                ).count(),
+
+            "offres_fermees":
+                offres.filter(
+                    statut="fermee"
+                ).count(),
+
+            "candidatures_total":
+                candidatures.count(),
+
+            "candidatures_attente":
+                candidatures.filter(
+                    statut="En attente"
+                ).count(),
+
+            "candidatures_preselectionnees":
+                candidatures.filter(
+                    statut="Présélectionnée"
+                ).count(),
+
+            "candidatures_entretien":
+                candidatures.filter(
+                    statut="Entretien"
+                ).count(),
+
+            "candidatures_acceptees":
+                candidatures.filter(
+                    statut="Acceptée"
+                ).count(),
+
+            "candidatures_refusees":
+                candidatures.filter(
+                    statut="Refusée"
+                ).count(),
+
+            "entretiens_planifies":
+                entretiens.filter(
+                    statut="Planifié"
+                ).count(),
+
+            "entretiens_confirmes":
+                entretiens.filter(
+                    statut="Confirmé"
+                ).count(),
+
+            "entretiens_a_venir":
+                entretiens.filter(
+                    statut__in=[
+                        "Planifié",
+                        "Confirmé"
+                    ]
+                ).count(),
+
+            "messages_non_lus":
+                Message.objects.filter(
+                    destinataire=request.user,
+                    lu=False
+                ).count(),
+
+            "notifications_non_lues":
+                Notification.objects.filter(
+                    destinataire=request.user,
+                    lu=False
+                ).count(),
+        }
+
+        # ====================================================
+        # DERNIÈRES OFFRES
+        # ====================================================
+
+        offres_recentes = []
+
+        for offre in offres[:5]:
+
+            offres_recentes.append({
+
+                "id":
+                    offre.id,
+
+                "titre":
+                    offre.titre,
+
+                "typeOffre":
+                    offre.typeOffre,
+
+                "statut":
+                    offre.statut,
+
+                "localisation":
+                    offre.localisation,
+
+                "datePublication":
+                    offre.datePublication,
+
+                "dateLimite":
+                    offre.dateLimite,
+
+                "nombre_candidatures":
+                    offre.candidatures.count(),
+
+            })
+
+        # ====================================================
+        # CANDIDATURES AVEC MATCHING
+        # ====================================================
+
+        candidatures_matching = []
+
+        for candidature in candidatures:
+
+            matching = calculer_matching(
+                candidature
+            )
+
+            candidat = candidature.candidat
+
+            try:
+
+                candidat_profil = (
+                    candidat.profil
+                )
+
+            except Profil.DoesNotExist:
+
+                candidat_profil = None
+
+            candidatures_matching.append({
+
+                "id":
+                    candidature.id,
+
+                "candidat_id":
+                    candidat.id,
+
+                "nom":
+                    (
+                        candidat.get_full_name()
+                        or candidat.username
+                    ),
+
+                "email":
+                    candidat.email,
+
+                "photoProfil":
+                    (
+                        request.build_absolute_uri(
+                            candidat_profil.photoProfil.url
+                        )
+                        if (
+                            candidat_profil
+                            and candidat_profil.photoProfil
+                        )
+                        else None
+                    ),
+
+                "offre_id":
+                    candidature.offre.id,
+
+                "offre":
+                    candidature.offre.titre,
+
+                "statut":
+                    candidature.statut,
+
+                "dateSoumission":
+                    candidature.dateSoumission,
+
+                "score_matching":
+                    matching["score"],
+
+                "details_matching": {
+
+                    "competences":
+                        matching[
+                            "competences_score"
+                        ],
+
+                    "experience":
+                        matching[
+                            "experience_score"
+                        ],
+
+                    "specialite":
+                        matching[
+                            "specialite_score"
+                        ],
+
+                    "niveau_etude":
+                        matching[
+                            "etude_score"
+                        ],
+
+                    "profil":
+                        matching[
+                            "profil_score"
+                        ],
+                },
+
+                "competences_correspondantes":
+                    matching[
+                        "competences_correspondantes"
+                    ],
+
+                "competences_manquantes":
+                    matching[
+                        "competences_manquantes"
+                    ],
+
+                "specialite":
+                    (
+                        candidat_profil.specialite
+                        if candidat_profil
+                        else None
+                    ),
+
+                "experience":
+                    (
+                        candidat_profil.anneesExperience
+                        if candidat_profil
+                        else 0
+                    ),
+
+                "niveauEtude":
+                    (
+                        candidat_profil.niveauEtude
+                        if candidat_profil
+                        else None
+                    ),
+
+                "profile_completion":
+                    (
+                        candidat_profil.profile_completion
+                        if candidat_profil
+                        else 0
+                    ),
+            })
+
+        # ====================================================
+        # TRI DU MEILLEUR AU MOINS BON
+        # ====================================================
+
+        candidatures_matching.sort(
+            key=lambda candidature:
+                candidature["score_matching"],
+            reverse=True
+        )
+
+        # ====================================================
+        # TOP CANDIDATS
+        # ====================================================
+
+        top_candidats = (
+            candidatures_matching[:10]
+        )
+
+        # ====================================================
+        # CANDIDATURES RÉCENTES
+        # ====================================================
+
+        candidatures_recentes = sorted(
+            candidatures_matching,
+            key=lambda candidature:
+                candidature["dateSoumission"],
+            reverse=True
+        )[:5]
+
+        # ====================================================
+        # ENTRETIENS
+        # ====================================================
+
+        entretiens_data = []
+
+        for entretien in entretiens[:10]:
+
+            candidat = (
+                entretien
+                .candidature
+                .candidat
+            )
+
+            entretiens_data.append({
+
+                "id":
+                    entretien.id,
+
+                "candidat":
+                    (
+                        candidat.get_full_name()
+                        or candidat.username
+                    ),
+
+                "offre":
+                    entretien
+                    .candidature
+                    .offre
+                    .titre,
+
+                "dateHeure":
+                    entretien.dateHeure,
+
+                "type":
+                    entretien.type,
+
+                "statut":
+                    entretien.statut,
+
+                "reponseCandidat":
+                    entretien.reponseCandidat,
+
+                "lieu":
+                    entretien.lieu,
+
+                "lienVisio":
+                    entretien.lienVisio,
+            })
+
+        # ====================================================
+        # RÉPONSE
+        # ====================================================
+
+        return Response({
+
+            "utilisateur": {
+
+                "id":
+                    request.user.id,
+
+                "username":
+                    request.user.username,
+
+                "prenom":
+                    request.user.first_name,
+
+                "nom":
+                    request.user.last_name,
+
+                "nom_complet":
+                    (
+                        request.user.get_full_name()
+                        or request.user.username
+                    ),
+
+                "email":
+                    request.user.email,
+            },
+
+            "profil": {
+
+                "id":
+                    profil.id,
+
+                "fonction":
+                    profil.fonction,
+
+                "telephone":
+                    profil.telephone,
+
+                "statut_recruteur":
+                    profil.statut_recruteur,
+
+                "photoProfil":
+                    (
+                        request.build_absolute_uri(
+                            profil.photoProfil.url
+                        )
+                        if profil.photoProfil
+                        else None
+                    ),
+
+                "profile_completion":
+                    profil.profile_completion,
+            },
+
+            "entreprise": (
+
+                {
+
+                    "id":
+                        entreprise.id,
+
+                    "nom":
+                        entreprise.nom,
+
+                    "secteur":
+                        entreprise.secteur,
+
+                    "adresse":
+                        entreprise.adresse,
+
+                    "telephone":
+                        entreprise.telephone,
+
+                    "email":
+                        entreprise.email,
+
+                    "siteweb":
+                        entreprise.siteweb,
+
+                    "description":
+                        entreprise.description,
+
+                    "logo":
+                        (
+                            request.build_absolute_uri(
+                                entreprise.logo.url
+                            )
+                            if entreprise.logo
+                            else None
+                        ),
+
+                    "statut":
+                        entreprise.statut,
+
+                    "verifiee":
+                        entreprise.verifiee,
+
+                }
+
+                if entreprise
+
+                else None
+            ),
+
+            "statistiques":
+                statistiques,
+
+            "offres_recentes":
+                offres_recentes,
+
+            "candidatures_recentes":
+                candidatures_recentes,
+
+            "top_candidats":
+                top_candidats,
+
+            "entretiens":
+                entretiens_data,
+        })
+
+
+class MesEntreprisesView(
+    APIView
+):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(
+        self,
+        request
+    ):
+
+        try:
+
+            profil = request.user.profil
+
+        except Exception:
+
+            return Response(
+                {
+                    "detail":
+                    "Profil introuvable."
+                },
+                status=404
+            )
+
+        entreprises = (
+            Entreprise.objects
+            .filter(
+                associations_recruteurs__recruteur=profil,
+                associations_recruteurs__actif=True
+            )
+            .distinct()
+        )
+
+        serializer = MesEntrepriseSerializer(
+            entreprises,
+            many=True
+        )
+
+        return Response(
+            serializer.data
+        )
+
+# ============================================================
+# SERVICES DU FREELANCE
+# ============================================================
+
+
+class ServiceViewSet(
+    viewsets.ModelViewSet
+):
+
+    serializer_class = ServiceSerializer
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+
+        user = self.request.user
+
+        return (
+            Service.objects
+            .filter(
+                freelance__user=user
+            )
+            .select_related(
+                "freelance",
+                "freelance__user"
+            )
+        )
+
+    # ========================================================
+    # CRÉATION
+    # ========================================================
+
+    def create(
+        self,
+        request,
+        *args,
+        **kwargs
+    ):
+
+        print("\n========================================")
+        print("CRÉATION SERVICE")
+        print("========================================")
+        print("Utilisateur :", request.user)
+        print("Authentifié :", request.user.is_authenticated)
+        print("Données reçues :", request.data)
+        print("Fichiers reçus :", request.FILES)
+
+        try:
+
+            profil = Profil.objects.get(
+                user=request.user
+            )
+
+        except Profil.DoesNotExist:
+
+            return Response(
+                {
+                    "detail":
+                        "Profil utilisateur introuvable."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Vérifier que l'utilisateur est bien freelance
+
+        if profil.role != "freelance":
+
+            return Response(
+                {
+                    "detail":
+                        "Seul un freelance peut créer un service."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = self.get_serializer(
+            data=request.data
+        )
+
+        if not serializer.is_valid():
+
+            print("\n========================================")
+            print("ERREURS SERIALIZER")
+            print("========================================")
+            print(serializer.errors)
+
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        service = serializer.save(
+            freelance=profil
+        )
+
+        print("\n========================================")
+        print("SERVICE CRÉÉ")
+        print("ID :", service.id)
+        print("========================================")
+
+        return Response(
+            self.get_serializer(
+                service
+            ).data,
+            status=status.HTTP_201_CREATED
+        )
+
+    # ========================================================
+    # MODIFICATION
+    # ========================================================
+
+    def perform_update(
+        self,
+        serializer
+    ):
+
+        profil = Profil.objects.get(
+            user=self.request.user
+        )
+
+        if profil.role != "freelance":
+
+            raise permissions.PermissionDenied(
+                "Seul un freelance peut modifier un service."
+            )
+
+        serializer.save(
+            freelance=profil
+        )
+
+class ServicePublicViewSet(
+    viewsets.ReadOnlyModelViewSet
+):
+
+    serializer_class = ServiceSerializer
+
+    queryset = Service.objects.filter(
+        actif=True
+    )
+
+    permission_classes = [
+        permissions.AllowAny
+    ]
+
+    filterset_fields = [
+        "categorie"
+    ]
+
+    search_fields = [
+        "titre",
+        "description"
+    ]
+
+class CommandeServiceViewSet(
+    viewsets.ModelViewSet
+):
+
+    serializer_class = (
+        CommandeServiceSerializer
+    )
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+
+        return CommandeService.objects.filter(
+            client=self.request.user
+        )
+
+    def perform_create(
+        self,
+        serializer
+    ):
+        serializer.save(
+            client=self.request.user
+        )
+
+
+class FreelanceCommandeServiceViewSet(
+    viewsets.ModelViewSet
+):
+
+    serializer_class = (
+        CommandeServiceSerializer
+    )
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+
+        profil = Profil.objects.get(
+            user=self.request.user
+        )
+
+        return CommandeService.objects.filter(
+            service__freelance=profil
+        )
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def accepter(
+        self,
+        request,
+        pk=None
+    ):
+
+        commande = self.get_object()
+
+        commande.statut = "acceptee"
+        commande.save()
+
+        return Response({
+            "message":
+            "Commande acceptée."
+        })
+
+    @action(
+        detail=True,
+        methods=["post"]
+    )
+    def terminer(
+        self,
+        request,
+        pk=None
+    ):
+
+        commande = self.get_object()
+
+        commande.statut = "terminee"
+        commande.save()
+
+        return Response({
+            "message":
+            "Commande terminée."
+        })
+
+class FreelanceCommandeServiceViewSet(
+    viewsets.ReadOnlyModelViewSet
+):
+
+    serializer_class = (
+        CommandeServiceSerializer
+    )
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
+    def get_queryset(self):
+
+        profil = Profil.objects.get(
+            user=self.request.user
+        )
+
+        return CommandeService.objects.filter(
+            service__freelance=profil
+        )

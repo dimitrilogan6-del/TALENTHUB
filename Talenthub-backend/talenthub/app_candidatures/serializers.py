@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+from app_candidatures.services.matching import calculer_matching
+
 from .models import (
     Candidature,
     Document,
     Entretien
 )
+
 
 
 # ==============================================================
@@ -16,6 +19,7 @@ class UserResumeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
+
         fields = [
             'id',
             'username',
@@ -122,36 +126,63 @@ class EntretienSerializer(serializers.ModelSerializer):
 
         type_entretien = attrs.get(
             'type',
-            getattr(self.instance, 'type', None)
+            getattr(
+                self.instance,
+                'type',
+                None
+            )
         )
 
         lieu = attrs.get(
             'lieu',
-            getattr(self.instance, 'lieu', None)
+            getattr(
+                self.instance,
+                'lieu',
+                None
+            )
         )
 
         lien_visio = attrs.get(
             'lienVisio',
-            getattr(self.instance, 'lienVisio', None)
+            getattr(
+                self.instance,
+                'lienVisio',
+                None
+            )
         )
 
-        # Présentiel → lieu obligatoire
-        if type_entretien == 'Présentiel' and not lieu:
+        # ------------------------------------------------------
+        # PRESENTIEL
+        # ------------------------------------------------------
+
+        if (
+            type_entretien == 'Présentiel'
+            and not lieu
+        ):
 
             raise serializers.ValidationError({
                 'lieu':
                     'Le lieu est obligatoire pour un entretien présentiel.'
             })
 
-        # Visio → lien obligatoire
-        if type_entretien == 'Visio' and not lien_visio:
+        # ------------------------------------------------------
+        # VISIO
+        # ------------------------------------------------------
+
+        if (
+            type_entretien == 'Visio'
+            and not lien_visio
+        ):
 
             raise serializers.ValidationError({
                 'lienVisio':
                     'Le lien de visioconférence est obligatoire.'
             })
 
-        # Téléphonique → pas besoin de lieu
+        # ------------------------------------------------------
+        # TELEPHONIQUE
+        # ------------------------------------------------------
+
         return attrs
 
 
@@ -161,21 +192,43 @@ class EntretienSerializer(serializers.ModelSerializer):
 
 class CandidatureSerializer(serializers.ModelSerializer):
 
+    # ----------------------------------------------------------
+    # CANDIDAT
+    # ----------------------------------------------------------
+
     candidat = UserResumeSerializer(
         read_only=True
     )
+
+    # ----------------------------------------------------------
+    # DOCUMENTS
+    # ----------------------------------------------------------
 
     documents = DocumentSerializer(
         many=True,
         read_only=True
     )
 
+    # ----------------------------------------------------------
+    # ENTRETIENS
+    # ----------------------------------------------------------
+
     entretiens = EntretienSerializer(
         many=True,
         read_only=True
     )
 
+    # ----------------------------------------------------------
+    # OFFRE
+    # ----------------------------------------------------------
+
     offre_detail = serializers.SerializerMethodField()
+
+    # ----------------------------------------------------------
+    # MATCHING
+    # ----------------------------------------------------------
+
+    matching = serializers.SerializerMethodField()
 
     class Meta:
 
@@ -194,7 +247,8 @@ class CandidatureSerializer(serializers.ModelSerializer):
             'commentaireRecruteur',
             'dateDecision',
             'documents',
-            'entretiens'
+            'entretiens',
+            'matching'
         ]
 
         read_only_fields = [
@@ -207,8 +261,13 @@ class CandidatureSerializer(serializers.ModelSerializer):
             'commentaireRecruteur',
             'dateDecision',
             'documents',
-            'entretiens'
+            'entretiens',
+            'matching'
         ]
+
+    # ==========================================================
+    # DETAIL OFFRE
+    # ==========================================================
 
     def get_offre_detail(self, obj):
 
@@ -220,48 +279,98 @@ class CandidatureSerializer(serializers.ModelSerializer):
             'entreprise': offre.entreprise.nom
         }
 
+    # ==========================================================
+    # MATCHING
+    # ==========================================================
+
+    def get_matching(self, obj):
+
+        return calculer_matching(obj)
+
+    # ==========================================================
+    # VALIDATION CANDIDATURE
+    # ==========================================================
+
     def validate(self, attrs):
 
-        request = self.context.get('request')
+        request = self.context.get(
+            'request'
+        )
 
-        if not request or not request.user.is_authenticated:
+        # ------------------------------------------------------
+        # UTILISATEUR CONNECTE
+        # ------------------------------------------------------
+
+        if (
+            not request
+            or not request.user.is_authenticated
+        ):
+
             raise serializers.ValidationError(
                 'Vous devez être connecté pour postuler.'
             )
 
         user = request.user
 
-        # Seul un candidat peut postuler
+        # ------------------------------------------------------
+        # PROFIL
+        # ------------------------------------------------------
+
         try:
+
             profil = user.profil
+
         except Exception:
+
             raise serializers.ValidationError(
                 'Votre profil est introuvable.'
             )
 
+        # ------------------------------------------------------
+        # ROLE CANDIDAT
+        # ------------------------------------------------------
+
         if profil.role != 'candidat':
+
             raise serializers.ValidationError(
                 'Seuls les candidats peuvent postuler à une offre.'
             )
 
-        offre = attrs.get('offre')
+        # ------------------------------------------------------
+        # OFFRE
+        # ------------------------------------------------------
+
+        offre = attrs.get(
+            'offre'
+        )
 
         if not offre:
+
             raise serializers.ValidationError({
-                'offre': 'L’offre est obligatoire.'
+                'offre':
+                    'L’offre est obligatoire.'
             })
 
-        # Vérification de la date limite
+        # ------------------------------------------------------
+        # DATE LIMITE
+        # ------------------------------------------------------
+
         from django.utils import timezone
 
-        if offre.dateLimite < timezone.localdate():
+        if (
+            offre.dateLimite
+            < timezone.localdate()
+        ):
 
             raise serializers.ValidationError({
                 'offre':
                     'Cette offre n’accepte plus de candidatures.'
             })
 
-        # Une seule candidature
+        # ------------------------------------------------------
+        # UNE SEULE CANDIDATURE
+        # ------------------------------------------------------
+
         if Candidature.objects.filter(
             candidat=user,
             offre=offre
@@ -279,7 +388,9 @@ class CandidatureSerializer(serializers.ModelSerializer):
 # CHANGEMENT DE STATUT
 # ==============================================================
 
-class CandidatureStatutSerializer(serializers.ModelSerializer):
+class CandidatureStatutSerializer(
+    serializers.ModelSerializer
+):
 
     class Meta:
 
@@ -290,7 +401,14 @@ class CandidatureStatutSerializer(serializers.ModelSerializer):
             'commentaireRecruteur'
         ]
 
-    def validate_statut(self, value):
+    # ==========================================================
+    # VALIDATION STATUT
+    # ==========================================================
+
+    def validate_statut(
+        self,
+        value
+    ):
 
         statuts_autorises = [
             'En attente',

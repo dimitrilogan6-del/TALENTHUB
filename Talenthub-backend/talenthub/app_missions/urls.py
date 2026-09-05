@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     MissionViewSet,
     CandidatureMissionViewSet,
+    RecruteurCandidatureMissionViewSet,
+    RecruteurMissionViewSet,
 )
 
 
@@ -18,9 +20,26 @@ router.register(
 router.register(
     r'candidatures_missions',
     CandidatureMissionViewSet,
-    basename='candidatures-missions'
+    basename='candidatures_missions'
 )
 
+router.register(
+    r'recruteur/missions',
+    RecruteurMissionViewSet,
+    basename='recruteur-missions'
+)
+
+router.register(
+    r'freelance_candidature',
+    RecruteurCandidatureMissionViewSet,
+    basename='freelance_candidature'
+)
+
+router.register(
+    r'recruteur/candidatures',
+    RecruteurCandidatureMissionViewSet,
+    basename='recruteur-candidatures'
+)
 
 urlpatterns = [
     path(

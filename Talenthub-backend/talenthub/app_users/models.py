@@ -8,13 +8,6 @@ from django.contrib.auth.models import User
 
 class Entreprise(models.Model):
 
-    """
-    Entreprise présente sur la plateforme.
-
-    Une entreprise peut avoir plusieurs recruteurs.
-    Un recruteur peut appartenir à plusieurs entreprises.
-    """
-
     STATUT_CHOICES = (
         ("en_attente", "En attente"),
         ("active", "Active"),
@@ -327,7 +320,8 @@ class Profil(models.Model):
         ]
 
         completed = len([
-            field for field in fields
+            field
+            for field in fields
             if field
         ])
 
@@ -342,6 +336,67 @@ class Profil(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+
+# ============================================================
+# COMPÉTENCE DU CANDIDAT
+# ============================================================
+
+class CompetenceCandidat(models.Model):
+
+    NIVEAU_CHOICES = (
+        ("debutant", "Débutant"),
+        ("intermediaire", "Intermédiaire"),
+        ("avance", "Avancé"),
+        ("expert", "Expert"),
+    )
+
+    candidat = models.ForeignKey(
+        Profil,
+        on_delete=models.CASCADE,
+        related_name="competences"
+    )
+
+    nom = models.CharField(
+        max_length=100
+    )
+
+    niveau = models.CharField(
+        max_length=30,
+        choices=NIVEAU_CHOICES,
+        default="debutant"
+    )
+
+    anneesExperience = models.PositiveIntegerField(
+        default=0
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+
+        ordering = ["nom"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["candidat", "nom"],
+                name="unique_competence_candidat"
+            )
+        ]
+
+    def __str__(self):
+
+        return (
+            f"{self.candidat.user.username} - "
+            f"{self.nom} - "
+            f"{self.niveau}"
+        )
 
 
 # ============================================================
@@ -381,6 +436,7 @@ class RecruteurEntreprise(models.Model):
     )
 
     class Meta:
+
         constraints = [
             models.UniqueConstraint(
                 fields=[
@@ -392,6 +448,7 @@ class RecruteurEntreprise(models.Model):
         ]
 
     def __str__(self):
+
         return (
             f"{self.recruteur.user.username} - "
             f"{self.entreprise.nom}"
@@ -427,6 +484,7 @@ class Message(models.Model):
     )
 
     def __str__(self):
+
         return (
             f"De {self.expediteur.username} "
             f"à {self.destinataire.username}"
@@ -456,7 +514,104 @@ class Notification(models.Model):
     )
 
     def __str__(self):
+
         return (
             f"Notification pour "
             f"{self.destinataire.username}"
         )
+
+# app_users/models.py
+
+class Service(models.Model):
+
+    freelance = models.ForeignKey(
+        Profil,
+        on_delete=models.CASCADE,
+        related_name="services"
+    )
+
+    titre = models.CharField(
+        max_length=255
+    )
+
+    description = models.TextField()
+
+    categorie = models.CharField(
+        max_length=150
+    )
+
+    prix = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    devise = models.CharField(
+        max_length=10,
+        default="FCFA"
+    )
+
+    delaiLivraison = models.PositiveIntegerField(
+        default=1
+    )
+
+    image = models.ImageField(
+        upload_to="services/",
+        blank=True,
+        null=True
+    )
+
+    actif = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.titre
+
+class CommandeService(models.Model):
+    
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE,
+        related_name="commandes"
+    )
+
+    client = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="commandes_services"
+    )
+
+    message = models.TextField()
+
+    statut = models.CharField(
+        max_length=20,
+        choices=[
+            ("en_attente", "En attente"),
+            ("acceptee", "Acceptée"),
+            ("terminee", "Terminée"),
+            ("annulee", "Annulée"),
+        ],
+        default="en_attente"
+    )
+
+    dateCommande = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return f"Commande #{self.id}"

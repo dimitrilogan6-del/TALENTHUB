@@ -20,10 +20,11 @@ import {
 
 import {
   AuthService
-} from '../../services/connexion';
+} from '../../services/auth';
 
 
 @Component({
+
   selector: 'app-candidat-layout',
 
   templateUrl: './candidat-layout.html',
@@ -31,6 +32,7 @@ import {
   styleUrls: ['./candidat-layout.css'],
 
   standalone: false
+
 })
 export class CandidatLayoutComponent
 implements OnInit, OnDestroy {
@@ -85,8 +87,7 @@ implements OnInit, OnDestroy {
   // SUBSCRIPTIONS
   // ==========================================================
 
-  private subscriptions:
-    Subscription[] = [];
+  private subscriptions: Subscription[] = [];
 
 
   // ==========================================================
@@ -124,7 +125,7 @@ implements OnInit, OnDestroy {
 
 
   // ==========================================================
-  // DASHBOARD
+  // CHARGEMENT DASHBOARD
   // ==========================================================
 
   loadDashboard(): void {
@@ -139,6 +140,10 @@ implements OnInit, OnDestroy {
         .getDashboard()
         .subscribe({
 
+          // ==================================================
+          // SUCCÈS
+          // ==================================================
+
           next: (data) => {
 
             console.log(
@@ -150,18 +155,36 @@ implements OnInit, OnDestroy {
             this.dashboard = data;
 
 
-            // ------------------------------------------------
+            // ================================================
             // CANDIDATURES
-            // ------------------------------------------------
+            // ================================================
 
             this.totalCandidatures =
               data.statistiques
                 ?.total_candidatures || 0;
 
 
-            // ------------------------------------------------
-            // PROFIL
-            // ------------------------------------------------
+            // ================================================
+            // MESSAGES
+            // ================================================
+
+            this.messagesNonLus =
+              data.statistiques
+                ?.messages_non_lus || 0;
+
+
+            // ================================================
+            // NOTIFICATIONS
+            // ================================================
+
+            this.notificationsNonLues =
+              data.statistiques
+                ?.notifications_non_lues || 0;
+
+
+            // ================================================
+            // NOM COMPLET
+            // ================================================
 
             this.nomComplet =
               data.utilisateur?.nom_complet
@@ -176,14 +199,18 @@ implements OnInit, OnDestroy {
               'Utilisateur';
 
 
+            // ================================================
+            // PHOTO
+            // ================================================
+
             this.photoProfil =
               data.profil?.photoProfil
               || null;
 
 
-            // ------------------------------------------------
+            // ================================================
             // INITIALE
-            // ------------------------------------------------
+            // ================================================
 
             const prenom =
               data.utilisateur?.prenom
@@ -199,35 +226,23 @@ implements OnInit, OnDestroy {
                 .toUpperCase();
 
 
-            // ------------------------------------------------
-            // MESSAGES
-            // ------------------------------------------------
-
-            /*
-             * Le backend doit retourner cette information.
-             */
-
-            this.messagesNonLus =
-              (data as any).messages_non_lus || 0;
-
-
-            // ------------------------------------------------
-            // NOTIFICATIONS
-            // ------------------------------------------------
-
-            this.notificationsNonLues =
-              (data as any).notifications_non_lues || 0;
-
+            // ================================================
+            // FIN CHARGEMENT
+            // ================================================
 
             this.isLoading = false;
 
 
-            // ------------------------------------------------
-            // FORCE ANGULAR
-            // ------------------------------------------------
+            // ================================================
+            // DÉTECTION ANGULAR
+            // ================================================
 
             this.cdr.detectChanges();
 
+
+            // ================================================
+            // LOGS
+            // ================================================
 
             console.log(
               'Candidatures :',
@@ -252,6 +267,10 @@ implements OnInit, OnDestroy {
           },
 
 
+          // ==================================================
+          // ERREUR
+          // ==================================================
+
           error: (error) => {
 
             console.error(
@@ -263,9 +282,11 @@ implements OnInit, OnDestroy {
             this.isLoading = false;
 
 
-            if (
-              error.status === 401
-            ) {
+            // ================================================
+            // NON AUTHENTIFIÉ
+            // ================================================
+
+            if (error.status === 401) {
 
               this.auth.logout();
 
@@ -277,6 +298,10 @@ implements OnInit, OnDestroy {
 
             }
 
+
+            // ================================================
+            // AUTRE ERREUR
+            // ================================================
 
             this.errorMessage =
               'Impossible de charger votre tableau de bord.';
@@ -304,19 +329,7 @@ implements OnInit, OnDestroy {
       !this.darkMode;
 
 
-    if (this.darkMode) {
-
-      document.body.classList.add(
-        'dark-mode'
-      );
-
-    } else {
-
-      document.body.classList.remove(
-        'dark-mode'
-      );
-
-    }
+    this.applyDarkMode();
 
 
     localStorage.setItem(
@@ -324,8 +337,19 @@ implements OnInit, OnDestroy {
       String(this.darkMode)
     );
 
+  }
 
-    this.cdr.detectChanges();
+
+  // ==========================================================
+  // APPLIQUER LE MODE
+  // ==========================================================
+
+  private applyDarkMode(): void {
+
+    document.body.classList.toggle(
+      'dark-mode',
+      this.darkMode
+    );
 
   }
 
@@ -346,25 +370,28 @@ implements OnInit, OnDestroy {
       saved === 'true';
 
 
-    if (this.darkMode) {
-
-      document.body.classList.add(
-        'dark-mode'
-      );
-
-    } else {
-
-      document.body.classList.remove(
-        'dark-mode'
-      );
-
-    }
+    this.applyDarkMode();
 
   }
 
 
   // ==========================================================
-  // RAFRAÎCHIR LES COMPTEURS
+  // COMPLETION PROFIL
+  // ==========================================================
+
+  get profileCompletion(): number {
+
+    return (
+      this.dashboard
+        ?.profil
+        ?.profile_completion
+    ) ?? 0;
+
+  }
+
+
+  // ==========================================================
+  // RAFRAÎCHIR DASHBOARD
   // ==========================================================
 
   refreshDashboard(): void {
@@ -382,9 +409,11 @@ implements OnInit, OnDestroy {
 
     this.auth.logout();
 
+
     document.body.classList.remove(
       'dark-mode'
     );
+
 
     localStorage.removeItem(
       'talenthub-dark-mode'

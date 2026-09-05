@@ -1,1 +1,378 @@
-<p>recruteur-layout works!</p>
+<div
+  class="recruteur-layout"
+  [class.dark-mode]="darkMode"
+>
+
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
+
+  <aside class="sidebar">
+
+    <div class="sidebar-header">
+
+      <div class="logo">
+        <span class="logo-icon">
+          TH
+        </span>
+
+        <span class="logo-text">
+          Talent<span>Hub</span>
+        </span>
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         MENU
+    ================================================== -->
+
+    <nav class="sidebar-menu">
+
+      <a
+        routerLink="/recruteur/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          dashboard
+        </span>
+
+        <span>
+          Tableau de bord
+        </span>
+      </a>
+
+
+      <a
+        routerLink="/recruteur/offres"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          work
+        </span>
+
+        <span>
+          Mes offres
+        </span>
+      </a>
+
+
+      <a
+        routerLink="/recruteur/candidatures"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          groups
+        </span>
+
+        <span>
+          Candidatures
+        </span>
+      </a>
+
+
+      <a
+        routerLink="/recruteur/entretiens"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          event
+        </span>
+
+        <span>
+          Entretiens
+        </span>
+      </a>
+
+
+      <a
+        routerLink="/recruteur/messages"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          mail
+        </span>
+
+        <span>
+          Messages
+        </span>
+      </a>
+
+        <a
+        routerLink="/recruteur/candidaturesmissions"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          groups
+        </span>
+
+        <span>
+          Candidatures Missions
+        </span>
+      </a>
+
+       <a
+        routerLink="/recruteur/missions"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          work
+        </span>
+
+        <span>
+          Missions
+        </span>
+      </a>
+      <a
+        routerLink="/recruteur/notifications"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+        <span class="material-icons">
+          notifications
+        </span>
+
+        <span>
+          Notifications
+        </span>
+      </a>
+
+    </nav>
+
+
+    <!-- =================================================
+         BAS SIDEBAR
+    ================================================== -->
+
+    <div class="sidebar-bottom">
+
+      <!-- <a
+        routerLink="/recruteur/profil"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+
+        <span class="material-icons">
+          person
+        </span>
+
+        <span>
+          Mon profil
+        </span>
+
+      </a> -->
+
+
+      <a
+        routerLink="/recruteur/parametres"
+        routerLinkActive="active"
+        class="menu-item"
+      >
+
+        <span class="material-icons">
+          settings
+        </span>
+
+        <span>
+          Paramètres
+        </span>
+
+      </a>
+
+      <div class="sidebar-bottom">
+
+  <!-- =================================================
+       MON PROFIL
+  ================================================== -->
+
+  <a 
+    routerLink="/recruteur/profil" 
+    routerLinkActive="active" 
+    class="menu-item"
+  >
+
+    <span class="material-icons">
+      person
+    </span>
+
+    <span>
+      Mon profil
+    </span>
+
+  </a>
+
+
+  <!-- =================================================
+       DÉCONNEXION
+  ================================================== -->
+
+  <button
+    type="button"
+    class="logout-button"
+    (click)="logout()"
+  >
+
+    <span class="material-icons logout-icon">
+      logout
+    </span>
+
+    <span>
+      Déconnexion
+    </span>
+
+  </button>
+
+</div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =====================================================
+       PARTIE PRINCIPALE
+  ====================================================== -->
+
+  <div class="main-wrapper">
+
+
+    <!-- =================================================
+         TOPBAR
+    ================================================== -->
+
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <button
+          class="sidebar-toggle"
+          type="button"
+        >
+
+          <span class="material-icons">
+            menu
+          </span>
+
+        </button>
+
+        <div class="page-title">
+
+          <h2>
+            Espace recruteur
+          </h2>
+
+          <p>
+            Gérez vos recrutements efficacement
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="topbar-right">
+
+
+        <!-- =================================================
+             MODE SOMBRE
+        ================================================== -->
+
+        <button
+          class="topbar-button theme-button"
+          type="button"
+          (click)="toggleDarkMode()"
+          [title]="darkMode ? 'Mode clair' : 'Mode sombre'"
+        >
+
+          <span
+            class="material-icons"
+            *ngIf="!darkMode"
+          >
+            dark_mode
+          </span>
+
+          <span
+            class="material-icons"
+            *ngIf="darkMode"
+          >
+            light_mode
+          </span>
+
+        </button>
+
+
+        <!-- =================================================
+             NOTIFICATIONS
+        ================================================== -->
+
+        <button
+          class="topbar-button notification-button"
+          type="button"
+        >
+
+          <span class="material-icons">
+            notifications
+          </span>
+
+          <span class="notification-badge">
+            3
+          </span>
+
+        </button>
+
+
+        <!-- =================================================
+             PROFIL
+        ================================================== -->
+
+        <div class="user-profile">
+
+          <div class="user-avatar">
+            R
+          </div>
+
+          <div class="user-info">
+
+            <strong>
+              Recruteur
+            </strong>
+
+            <span>
+              Recruteur
+            </span>
+
+          </div>
+
+          <span class="material-icons user-arrow">
+            expand_more
+          </span>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENU
+    ====================================================== -->
+
+    <main class="page-content">
+
+      <router-outlet></router-outlet>
+
+    </main>
+
+  </div>
+
+</div>

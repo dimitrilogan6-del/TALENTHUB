@@ -208,3 +208,37 @@ class CandidatureMissionSerializer(
             return nom
 
         return obj.freelance.user.username
+
+    # ============================================================
+# CHANGEMENT DE STATUT
+# ============================================================
+
+class CandidatureMissionStatutSerializer(
+    serializers.ModelSerializer
+):
+
+    class Meta:
+
+        model = CandidatureMission
+
+        fields = [
+            "statut"
+        ]
+
+    def validate_statut(self, value):
+
+        statuts_autorises = [
+            "envoyee",
+            "en_examen",
+            "acceptee",
+            "refusee",
+            "retiree"
+        ]
+
+        if value not in statuts_autorises:
+
+            raise serializers.ValidationError(
+                "Statut invalide."
+            )
+
+        return value

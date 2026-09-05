@@ -1,0 +1,841 @@
+<div class="dashboard-container">
+
+  <!-- =====================================================
+       CHARGEMENT
+  ====================================================== -->
+
+  <div
+    class="loading-state"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement de votre tableau de bord...
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERREUR
+  ====================================================== -->
+
+  <div
+    class="error-state"
+    *ngIf="!isLoading && errorMessage"
+  >
+
+    <span class="material-icons">
+      error_outline
+    </span>
+
+    <h3>
+      Une erreur est survenue
+    </h3>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      type="button"
+      (click)="actualiser()"
+    >
+
+      <span class="material-icons">
+        refresh
+      </span>
+
+      Réessayer
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       DASHBOARD
+  ====================================================== -->
+
+  <ng-container
+    *ngIf="!isLoading && dashboard"
+  >
+
+    <!-- ===================================================
+         HEADER
+    ==================================================== -->
+
+    <section class="dashboard-header">
+
+      <div>
+
+        <h1>
+          Bonjour
+          {{ utilisateur?.prenom || 'Recruteur' }} 👋
+        </h1>
+
+        <p>
+          Voici un aperçu de votre activité de recrutement.
+        </p>
+
+      </div>
+
+
+      <button
+        class="refresh-button"
+        type="button"
+        (click)="actualiser()"
+      >
+
+        <span class="material-icons">
+          refresh
+        </span>
+
+        Actualiser
+
+      </button>
+
+    </section>
+
+
+    <!-- ===================================================
+         ENTREPRISE
+    ==================================================== -->
+
+    <section
+      class="company-banner"
+      *ngIf="entreprise"
+    >
+
+      <div class="company-logo">
+
+        <img
+          *ngIf="entreprise.logo"
+          [src]="entreprise.logo"
+          [alt]="entreprise.nom"
+        >
+
+        <span *ngIf="!entreprise.logo">
+          {{ getInitiales(entreprise.nom) }}
+        </span>
+
+      </div>
+
+
+      <div class="company-info">
+
+        <h3>
+          {{ entreprise.nom }}
+        </h3>
+
+        <p>
+          {{ entreprise.secteur || 'Entreprise' }}
+        </p>
+
+      </div>
+
+
+      <div class="company-status">
+
+        <span
+          class="verification-badge"
+          [class.verified]="entreprise.verifiee"
+        >
+
+          <span class="material-icons">
+            {{ entreprise.verifiee ? 'verified' : 'pending' }}
+          </span>
+
+          {{ entreprise.verifiee ? 'Entreprise vérifiée' : 'En attente de vérification' }}
+
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         STATISTIQUES
+    ==================================================== -->
+
+    <section class="stats-grid">
+
+
+      <!-- OFFRES -->
+
+      <div class="stat-card">
+
+        <div class="stat-icon offers-icon">
+
+          <span class="material-icons">
+            work
+          </span>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Offres publiées
+          </span>
+
+          <strong>
+            {{ statistiques?.offres_publiees || 0 }}
+          </strong>
+
+          <small>
+            {{ statistiques?.offres_total || 0 }}
+            offres au total
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- CANDIDATURES -->
+
+      <div class="stat-card">
+
+        <div class="stat-icon applications-icon">
+
+          <span class="material-icons">
+            groups
+          </span>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Candidatures
+          </span>
+
+          <strong>
+            {{ statistiques?.candidatures_total || 0 }}
+          </strong>
+
+          <small>
+            {{ statistiques?.candidatures_attente || 0 }}
+            en attente
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- ENTRETIENS -->
+
+      <div class="stat-card">
+
+        <div class="stat-icon interviews-icon">
+
+          <span class="material-icons">
+            event
+          </span>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Entretiens à venir
+          </span>
+
+          <strong>
+            {{ statistiques?.entretiens_a_venir || 0 }}
+          </strong>
+
+          <small>
+            {{ statistiques?.entretiens_confirmes || 0 }}
+            confirmés
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- NOTIFICATIONS -->
+
+      <div class="stat-card">
+
+        <div class="stat-icon notifications-icon">
+
+          <span class="material-icons">
+            notifications
+          </span>
+
+        </div>
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Notifications
+          </span>
+
+          <strong>
+            {{ statistiques?.notifications_non_lues || 0 }}
+          </strong>
+
+          <small>
+            non lues
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         CONTENU PRINCIPAL
+    ==================================================== -->
+
+    <div class="dashboard-grid">
+
+
+      <!-- =================================================
+           TOP CANDIDATS
+      ================================================== -->
+
+      <section class="dashboard-card candidates-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2>
+              Meilleurs candidats
+            </h2>
+
+            <p>
+              Candidats classés selon le matching
+            </p>
+
+          </div>
+
+          <a
+            routerLink="/recruteur/candidatures"
+          >
+            Voir tout
+          </a>
+
+        </div>
+
+
+        <div
+          class="candidate-list"
+          *ngIf="topCandidats.length > 0"
+        >
+
+          <div
+            class="candidate-row"
+            *ngFor="let candidat of topCandidats"
+          >
+
+            <div class="candidate-avatar">
+
+              <img
+                *ngIf="candidat.photoProfil"
+                [src]="candidat.photoProfil"
+                [alt]="candidat.nom"
+              >
+
+              <span *ngIf="!candidat.photoProfil">
+                {{ getInitiales(candidat.nom) }}
+              </span>
+
+            </div>
+
+
+            <div class="candidate-main">
+
+              <strong>
+                {{ candidat.nom }}
+              </strong>
+
+              <span>
+                {{ candidat.offre }}
+              </span>
+
+            </div>
+
+
+            <div class="candidate-score">
+
+              <div
+                class="score-circle"
+                [ngClass]="getScoreClass(candidat.score_matching)"
+              >
+
+                {{ candidat.score_matching }}%
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="empty-state"
+          *ngIf="topCandidats.length === 0"
+        >
+
+          <span class="material-icons">
+            person_search
+          </span>
+
+          <p>
+            Aucun candidat disponible.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           ENTRETIENS
+      ================================================== -->
+
+      <section class="dashboard-card interviews-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2>
+              Prochains entretiens
+            </h2>
+
+            <p>
+              Vos prochains rendez-vous
+            </p>
+
+          </div>
+
+          <a
+            routerLink="/recruteur/entretiens"
+          >
+            Voir tout
+          </a>
+
+        </div>
+
+
+        <div
+          class="interview-list"
+          *ngIf="entretiens.length > 0"
+        >
+
+          <div
+            class="interview-row"
+            *ngFor="let entretien of entretiens"
+          >
+
+            <div class="date-box">
+
+              <span>
+                {{ formatDate(entretien.dateHeure) }}
+              </span>
+
+              <strong>
+                {{ formatTime(entretien.dateHeure) }}
+              </strong>
+
+            </div>
+
+
+            <div class="interview-info">
+
+              <strong>
+                {{ entretien.candidat }}
+              </strong>
+
+              <span>
+                {{ entretien.offre }}
+              </span>
+
+              <small>
+
+                <span class="material-icons">
+                  {{ entretien.type === 'Visio' ? 'videocam' : 'place' }}
+                </span>
+
+                {{ entretien.type }}
+
+              </small>
+
+            </div>
+
+
+            <span
+              class="status-badge"
+              [ngClass]="getEntretienStatusClass(entretien.statut)"
+            >
+              {{ entretien.statut }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="empty-state"
+          *ngIf="entretiens.length === 0"
+        >
+
+          <span class="material-icons">
+            event_busy
+          </span>
+
+          <p>
+            Aucun entretien prévu.
+          </p>
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+
+    <!-- ===================================================
+         OFFRES + CANDIDATURES
+    ==================================================== -->
+
+    <div class="dashboard-grid">
+
+
+      <!-- =================================================
+           OFFRES RÉCENTES
+      ================================================== -->
+
+      <section class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2>
+              Offres récentes
+            </h2>
+
+            <p>
+              Vos dernières offres
+            </p>
+
+          </div>
+
+          <a
+            routerLink="/recruteur/offres"
+          >
+            Voir tout
+          </a>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Offre
+                </th>
+
+                <th>
+                  Statut
+                </th>
+
+                <th>
+                  Candidatures
+                </th>
+
+                <th>
+                  Date limite
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              <tr
+                *ngFor="let offre of offresRecentes"
+              >
+
+                <td>
+
+                  <div class="offer-title">
+
+                    <span class="material-icons">
+                      work_outline
+                    </span>
+
+                    <strong>
+                      {{ offre.titre }}
+                    </strong>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getOffreStatusClass(offre.statut)"
+                  >
+                    {{ offre.statut }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="applications-count">
+
+                    <span class="material-icons">
+                      people
+                    </span>
+
+                    {{ offre.nombre_candidatures }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+                  {{ formatDate(offre.dateLimite) }}
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <div
+          class="empty-state"
+          *ngIf="offresRecentes.length === 0"
+        >
+
+          <span class="material-icons">
+            work_off
+          </span>
+
+          <p>
+            Vous n'avez encore aucune offre.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           CANDIDATURES RÉCENTES
+      ================================================== -->
+
+      <section class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2>
+              Candidatures récentes
+            </h2>
+
+            <p>
+              Dernières candidatures reçues
+            </p>
+
+          </div>
+
+          <a
+            routerLink="/recruteur/candidatures"
+          >
+            Voir tout
+          </a>
+
+        </div>
+
+
+        <div class="recent-applications">
+
+          <div
+            class="application-row"
+            *ngFor="let candidature of candidaturesRecentes"
+          >
+
+            <div class="candidate-avatar small">
+
+              <img
+                *ngIf="candidature.photoProfil"
+                [src]="candidature.photoProfil"
+                [alt]="candidature.nom"
+              >
+
+              <span
+                *ngIf="!candidature.photoProfil"
+              >
+                {{ getInitiales(candidature.nom) }}
+              </span>
+
+            </div>
+
+
+            <div class="application-info">
+
+              <strong>
+                {{ candidature.nom }}
+              </strong>
+
+              <span>
+                {{ candidature.offre }}
+              </span>
+
+            </div>
+
+
+            <div class="application-score">
+
+              <strong
+                [ngClass]="getScoreClass(candidature.score_matching)"
+              >
+                {{ candidature.score_matching }}%
+              </strong>
+
+              <small>
+                matching
+              </small>
+
+            </div>
+
+
+            <span
+              class="status-badge"
+              [ngClass]="getStatutClass(candidature.statut)"
+            >
+              {{ candidature.statut }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="empty-state"
+          *ngIf="candidaturesRecentes.length === 0"
+        >
+
+          <span class="material-icons">
+            inbox
+          </span>
+
+          <p>
+            Aucune candidature reçue.
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- ===================================================
+         BARRE PROFIL
+    ==================================================== -->
+
+    <section class="profile-progress-card">
+
+      <div class="profile-progress-info">
+
+        <div class="profile-icon">
+
+          <span class="material-icons">
+            person
+          </span>
+
+        </div>
+
+        <div>
+
+          <h3>
+            Complétez votre profil
+          </h3>
+
+          <p>
+            Un profil complet améliore votre visibilité.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="progress-container">
+
+        <div class="progress-label">
+
+          <span>
+            Progression
+          </span>
+
+          <strong>
+            {{ profil?.profile_completion || 0 }}%
+          </strong>
+
+        </div>
+
+        <div class="progress-bar">
+
+          <div
+            class="progress-value"
+            [style.width.%]="profil?.profile_completion || 0"
+          ></div>
+
+        </div>
+
+      </div>
+
+
+      <a
+        routerLink="/recruteur/profil"
+        class="complete-button"
+      >
+        Compléter
+      </a>
+
+    </section>
+
+  </ng-container>
+
+</div>

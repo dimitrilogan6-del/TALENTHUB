@@ -1,0 +1,1303 @@
+<div class="missions-page">
+
+  <!-- ======================================================
+       HEADER
+  ======================================================= -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div>
+
+        <span class="page-eyebrow">
+          ESPACE RECRUTEUR
+        </span>
+
+        <h1>
+          Mes missions
+        </h1>
+
+        <p>
+          Gérez vos missions freelance et suivez
+          les candidatures reçues.
+        </p>
+
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="ouvrirModalCreation()"
+      >
+
+        <span class="btn-icon">+</span>
+
+        Nouvelle mission
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       ALERTES
+  ======================================================= -->
+
+  <div
+    class="alert success"
+    *ngIf="successMessage"
+  >
+
+    <span>✓</span>
+
+    {{ successMessage }}
+
+  </div>
+
+
+  <div
+    class="alert error"
+    *ngIf="errorMessage"
+  >
+
+    <span>!</span>
+
+    {{ errorMessage }}
+
+    <button
+      type="button"
+      (click)="errorMessage = ''"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       LOADING
+  ======================================================= -->
+
+  <div
+    class="loading-state"
+    *ngIf="isLoading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Chargement de vos missions...
+    </p>
+
+  </div>
+
+
+  <!-- ======================================================
+       EMPTY
+  ======================================================= -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !isLoading &&
+      missions.length === 0
+    "
+  >
+
+    <div class="empty-icon">
+      ◇
+    </div>
+
+    <h2>
+      Aucune mission
+    </h2>
+
+    <p>
+      Vous n'avez pas encore créé de mission.
+    </p>
+
+    <button
+      class="btn-primary"
+      type="button"
+      (click)="ouvrirModalCreation()"
+    >
+      Créer ma première mission
+    </button>
+
+  </div>
+
+
+<!-- ======================================================
+     TABLEAU DES MISSIONS
+======================================================= -->
+
+<div
+  class="missions-table-container"
+  *ngIf="
+    !isLoading &&
+    missions.length > 0
+  "
+>
+
+  <table class="missions-table">
+
+    <thead>
+
+      <tr>
+
+        <th>Titre</th>
+
+        <th>Type</th>
+
+        <th>Mode</th>
+
+        <th>Budget</th>
+
+        <th>Candidatures</th>
+
+        <th>Statut</th>
+
+        <th>Actions</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="
+          let mission of missions;
+          trackBy: trackByMission
+        "
+      >
+
+        <td>
+
+          <div class="mission-title">
+
+            <strong>
+              {{ mission.titre }}
+            </strong>
+
+            <small>
+              {{
+                mission.description.length > 80
+                  ? (mission.description | slice:0:80) + '...'
+                  : mission.description
+              }}
+            </small>
+
+          </div>
+
+        </td>
+
+        <td>
+
+          {{
+            getTypeMissionLabel(
+              mission.typeMission
+            )
+          }}
+
+        </td>
+
+        <td>
+
+          {{
+            getModeTravailLabel(
+              mission.modeTravail
+            )
+          }}
+
+        </td>
+
+        <td>
+
+          <ng-container
+            *ngIf="
+              mission.budgetMin ||
+              mission.budgetMax
+            "
+          >
+
+            {{ mission.budgetMin || 0 }}
+            -
+            {{ mission.budgetMax || 0 }}
+            {{ mission.deviseBudget }}
+
+          </ng-container>
+
+          <ng-container
+            *ngIf="
+              !mission.budgetMin &&
+              !mission.budgetMax
+            "
+          >
+
+            Non défini
+
+          </ng-container>
+
+        </td>
+
+        <td>
+
+          <span class="candidate-count">
+
+            {{ mission.nombreCandidats }}
+
+          </span>
+
+        </td>
+
+        <td>
+
+          <span
+            class="status-badge"
+            [ngClass]="mission.statut"
+          >
+
+            {{
+              getStatutLabel(
+                mission.statut
+              )
+            }}
+
+          </span>
+
+        </td>
+
+        <td>
+
+          <div class="table-actions">
+
+            <button
+              class="btn-view"
+              (click)="voirMission(mission)"
+            >
+              Voir
+            </button>
+
+            <button
+              class="btn-edit"
+              (click)="ouvrirModification(mission)"
+            >
+              Modifier
+            </button>
+
+            <button
+              class="btn-danger-outline"
+              *ngIf="
+                mission.statut ===
+                'publiee'
+              "
+              (click)="ouvrirFermeture(mission)"
+            >
+              Fermer
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL CRÉATION
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showCreateModal"
+  (click)="fermerModalCreation()"
+>
+
+  <div
+    class="modal modal-large"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          NOUVELLE MISSION
+        </span>
+
+        <h2>
+          Créer une mission
+        </h2>
+
+      </div>
+
+      <button
+        class="modal-close"
+        type="button"
+        (click)="fermerModalCreation()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form
+      [formGroup]="missionForm"
+      (ngSubmit)="creerMission()"
+    >
+
+      <div class="modal-body">
+
+        <!-- INFORMATIONS -->
+
+        <div class="form-section">
+
+          <h3>
+            Informations générales
+          </h3>
+
+          <div class="form-grid">
+
+            <div class="form-group full">
+
+              <label>
+                Titre *
+              </label>
+
+              <input
+                type="text"
+                formControlName="titre"
+                placeholder="Ex : Développeur Angular freelance"
+              >
+
+              <small
+                class="field-error"
+                *ngIf="
+                  missionForm.get('titre')?.touched &&
+                  missionForm.get('titre')?.invalid
+                "
+              >
+                Le titre est obligatoire.
+              </small>
+
+            </div>
+
+
+            <div class="form-group full">
+
+              <label>
+                Description *
+              </label>
+
+              <textarea
+                rows="5"
+                formControlName="description"
+                placeholder="Décrivez la mission..."
+              ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Type de mission *
+              </label>
+
+              <select
+                formControlName="typeMission"
+              >
+
+                <option value="ponctuelle">
+                  Mission ponctuelle
+                </option>
+
+                <option value="projet">
+                  Projet
+                </option>
+
+                <option value="longue_duree">
+                  Longue durée
+                </option>
+
+                <option value="temps_partiel">
+                  Temps partiel
+                </option>
+
+                <option value="temps_plein">
+                  Temps plein
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Domaine
+              </label>
+
+              <input
+                type="text"
+                formControlName="domaine"
+                placeholder="Ex : Informatique"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Localisation
+              </label>
+
+              <input
+                type="text"
+                formControlName="localisation"
+                placeholder="Ex : Dakar"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Mode de travail *
+              </label>
+
+              <select
+                formControlName="modeTravail"
+              >
+
+                <option value="distance">
+                  À distance
+                </option>
+
+                <option value="hybride">
+                  Hybride
+                </option>
+
+                <option value="sur_place">
+                  Sur place
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- BUDGET -->
+
+        <div class="form-section">
+
+          <h3>
+            Budget
+          </h3>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+
+              <label>
+                Budget minimum
+              </label>
+
+              <input
+                type="number"
+                formControlName="budgetMin"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Budget maximum
+              </label>
+
+              <input
+                type="number"
+                formControlName="budgetMax"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Devise
+              </label>
+
+              <select
+                formControlName="deviseBudget"
+              >
+
+                <option value="FCFA">
+                  FCFA
+                </option>
+
+                <option value="EUR">
+                  EUR
+                </option>
+
+                <option value="USD">
+                  USD
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- DATES -->
+
+        <div class="form-section">
+
+          <h3>
+            Planning
+          </h3>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+
+              <label>
+                Date limite
+              </label>
+
+              <input
+                type="date"
+                formControlName="dateLimite"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Date de début
+              </label>
+
+              <input
+                type="date"
+                formControlName="dateDebut"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Date de fin prévue
+              </label>
+
+              <input
+                type="date"
+                formControlName="dateFinPrevue"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ENTREPRISE -->
+
+        <div class="form-section">
+
+          <h3>
+            Entreprise
+          </h3>
+
+          <div class="form-group">
+
+            <label>
+              Entreprise *
+            </label>
+
+            <input
+              type="number"
+              formControlName="entreprise"
+              placeholder="ID de l'entreprise"
+            >
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="fermerModalCreation()"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="
+            missionForm.invalid ||
+            isSaving
+          "
+        >
+
+          <span
+            class="button-spinner"
+            *ngIf="isSaving"
+          ></span>
+
+          {{
+            isSaving
+              ? 'Création...'
+              : 'Créer la mission'
+          }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL DÉTAIL
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="
+    showDetailModal &&
+    missionSelectionnee
+  "
+  (click)="fermerDetail()"
+>
+
+  <div
+    class="modal modal-large"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          DÉTAIL DE LA MISSION
+        </span>
+
+        <h2>
+          {{ missionSelectionnee.titre }}
+        </h2>
+
+      </div>
+
+      <button
+        class="modal-close"
+        type="button"
+        (click)="fermerDetail()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-body detail-body">
+
+      <div class="detail-top">
+
+        <span
+          class="status-badge"
+          [ngClass]="
+            missionSelectionnee.statut
+          "
+        >
+          {{
+            getStatutLabel(
+              missionSelectionnee.statut
+            )
+          }}
+        </span>
+
+      </div>
+
+
+      <div class="detail-section">
+
+        <h3>
+          Description
+        </h3>
+
+        <p>
+          {{ missionSelectionnee.description }}
+        </p>
+
+      </div>
+
+
+      <div class="detail-grid">
+
+        <div>
+          <span>Type</span>
+
+          <strong>
+            {{
+              getTypeMissionLabel(
+                missionSelectionnee.typeMission
+              )
+            }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span>Domaine</span>
+
+          <strong>
+            {{
+              missionSelectionnee.domaine ||
+              'Non renseigné'
+            }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span>Localisation</span>
+
+          <strong>
+            {{
+              missionSelectionnee.localisation ||
+              'Non renseignée'
+            }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span>Mode de travail</span>
+
+          <strong>
+            {{
+              getModeTravailLabel(
+                missionSelectionnee.modeTravail
+              )
+            }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span>Budget</span>
+
+          <strong>
+
+            {{
+              missionSelectionnee.budgetMin ||
+              0
+            }}
+
+            -
+
+            {{
+              missionSelectionnee.budgetMax ||
+              0
+            }}
+
+            {{ missionSelectionnee.deviseBudget }}
+
+          </strong>
+
+        </div>
+
+
+        <div>
+          <span>Candidatures</span>
+
+          <strong>
+            {{
+              missionSelectionnee.nombreCandidats
+            }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="fermerDetail()"
+      >
+        Fermer
+      </button>
+
+      <button
+        class="btn-edit"
+        type="button"
+        (click)="
+          ouvrirModification(
+            missionSelectionnee
+          )
+        "
+      >
+        Modifier
+      </button>
+
+      <button
+        class="btn-danger-outline"
+        type="button"
+        *ngIf="
+          missionSelectionnee.statut ===
+          'publiee'
+        "
+        (click)="
+          ouvrirFermeture(
+            missionSelectionnee
+          )
+        "
+      >
+        Fermer la mission
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL MODIFICATION
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showEditModal"
+  (click)="fermerModification()"
+>
+
+  <div
+    class="modal modal-large"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          MODIFICATION
+        </span>
+
+        <h2>
+          Modifier la mission
+        </h2>
+
+      </div>
+
+      <button
+        class="modal-close"
+        type="button"
+        (click)="fermerModification()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <form
+      [formGroup]="missionForm"
+      (ngSubmit)="modifierMission()"
+    >
+
+      <div class="modal-body">
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>
+              Titre *
+            </label>
+
+            <input
+              type="text"
+              formControlName="titre"
+            >
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>
+              Description *
+            </label>
+
+            <textarea
+              rows="5"
+              formControlName="description"
+            ></textarea>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Type
+            </label>
+
+            <select
+              formControlName="typeMission"
+            >
+
+              <option value="ponctuelle">
+                Mission ponctuelle
+              </option>
+
+              <option value="projet">
+                Projet
+              </option>
+
+              <option value="longue_duree">
+                Longue durée
+              </option>
+
+              <option value="temps_partiel">
+                Temps partiel
+              </option>
+
+              <option value="temps_plein">
+                Temps plein
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Domaine
+            </label>
+
+            <input
+              formControlName="domaine"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Localisation
+            </label>
+
+            <input
+              formControlName="localisation"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Mode de travail
+            </label>
+
+            <select
+              formControlName="modeTravail"
+            >
+
+              <option value="distance">
+                À distance
+              </option>
+
+              <option value="hybride">
+                Hybride
+              </option>
+
+              <option value="sur_place">
+                Sur place
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Budget minimum
+            </label>
+
+            <input
+              type="number"
+              formControlName="budgetMin"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Budget maximum
+            </label>
+
+            <input
+              type="number"
+              formControlName="budgetMax"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Date limite
+            </label>
+
+            <input
+              type="date"
+              formControlName="dateLimite"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Date de début
+            </label>
+
+            <input
+              type="date"
+              formControlName="dateDebut"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Date de fin prévue
+            </label>
+
+            <input
+              type="date"
+              formControlName="dateFinPrevue"
+            >
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="fermerModification()"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="
+            missionForm.invalid ||
+            isSaving
+          "
+        >
+          Enregistrer les modifications
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL SUPPRESSION
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showDeleteModal"
+  (click)="fermerSuppression()"
+>
+
+  <div
+    class="modal modal-small"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="confirm-icon danger">
+      !
+    </div>
+
+    <h2>
+      Supprimer cette mission ?
+    </h2>
+
+    <p>
+
+      Cette action supprimera définitivement
+      la mission
+
+      <strong>
+        {{ missionASupprimer?.titre }}
+      </strong>.
+
+    </p>
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="fermerSuppression()"
+      >
+        Annuler
+      </button>
+
+      <button
+        class="btn-danger"
+        (click)="supprimerMission()"
+        [disabled]="isSaving"
+      >
+        Supprimer
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================================
+     MODAL FERMETURE
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showCloseModal"
+  (click)="fermerModalFermeture()"
+>
+
+  <div
+    class="modal modal-small"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="confirm-icon">
+      ✓
+    </div>
+
+    <h2>
+      Fermer cette mission ?
+    </h2>
+
+    <p>
+
+      La mission
+
+      <strong>
+        {{ missionAfermer?.titre }}
+      </strong>
+
+      ne sera plus disponible
+      pour de nouvelles candidatures.
+
+    </p>
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="fermerModalFermeture()"
+      >
+        Annuler
+      </button>
+
+      <button
+        class="btn-primary"
+        (click)="fermerMission()"
+        [disabled]="isSaving"
+      >
+        Confirmer
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

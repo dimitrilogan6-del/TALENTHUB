@@ -35,6 +35,12 @@ import { LoginComponent } from './component/login/login';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { MesCandidatures } from './dashboard/freelance/mes-candidatures/mes-candidatures';
 import { AdminDashboard } from './dashboard/admin/admin-dashboard/admin-dashboard';
+import { DashboardRecruteur } from './dashboard/recruteur/dashboard/dashboard';
+import { CandidaturesMissions } from './dashboard/recruteur/candidatures-missions/candidatures-missions';
+import { EntretiensRecruteur } from './dashboard/recruteur/entretiens-recruteur/entretiens-recruteur';
+import { MissionsRecruteur } from './dashboard/recruteur/missions-recruteur/missions-recruteur';
+import { OffresRecruteur } from './dashboard/recruteur/offres/offres';
+import { CandidaturesRecruteur } from './dashboard/recruteur/candidatures-recruteur/candidatures-recruteur';
 @NgModule({
   declarations: [
     App,
@@ -66,6 +72,12 @@ import { AdminDashboard } from './dashboard/admin/admin-dashboard/admin-dashboar
     LoginComponent,
     MesCandidatures,
     AdminDashboard,
+    DashboardRecruteur,
+    CandidaturesMissions,
+    EntretiensRecruteur,
+    MissionsRecruteur,
+    OffresRecruteur,
+    CandidaturesRecruteur,
   ],
   imports: [
     BrowserModule,
