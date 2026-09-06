@@ -128,6 +128,6 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
-   
+  "https://talenthub.vercel.app",
+    "https://www.talenthub.com",   
 ]
