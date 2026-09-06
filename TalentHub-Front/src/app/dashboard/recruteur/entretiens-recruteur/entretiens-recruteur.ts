@@ -3,13 +3,11 @@ import {
   OnInit,
   ChangeDetectorRef
 } from '@angular/core';
-
 import {
   CandidaturesRecruteurService,
   Entretien,
   Candidature
 } from '../../../services/candidatures-recruteur.service';
-
 
 @Component({
   selector: 'app-entretiens-recruteur',
@@ -17,6 +15,7 @@ import {
   templateUrl: './entretiens-recruteur.html',
   styleUrl: './entretiens-recruteur.css'
 })
+
 export class EntretiensRecruteur implements OnInit {
 
 

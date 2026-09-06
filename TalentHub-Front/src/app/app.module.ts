@@ -114,6 +114,7 @@ import { CandidaturesFreelance } from './dashboard/freelance/candidatures/candid
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    
 
     // Material Modules
     MatDialogModule,
