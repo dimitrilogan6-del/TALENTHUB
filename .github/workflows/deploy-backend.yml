@@ -6,7 +6,7 @@ on:
       - developpement
       - main
     paths:
-      - "TalentHub-backend/**"
+      - "Talenthub-backend/**"
       - ".github/workflows/deploy-backend.yml"
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
 
 
       # ----------------------------------------------------------
-      # VÉRIFIER LA STRUCTURE DU PROJET
+      # VÉRIFIER LA STRUCTURE
       # ----------------------------------------------------------
 
       - name:  Vérifier les fichiers du projet
@@ -43,15 +43,16 @@ jobs:
           ls -la
 
           echo ""
-          echo "Contenu de TalentHub-backend :"
-          ls -la TalentHub-backend
+          echo "Contenu de Talenthub-backend :"
+          ls -la Talenthub-backend
 
           echo ""
           echo "Vérification requirements.txt :"
-          if [ -f "TalentHub-backend/requirements.txt" ]; then
+
+          if [ -f "Talenthub-backend/requirements.txt" ]; then
             echo " requirements.txt trouvé"
           else
-            echo " requirements.txt INTROUVABLE"
+            echo " requirements.txt introuvable"
             exit 1
           fi
 
@@ -71,13 +72,13 @@ jobs:
       # ----------------------------------------------------------
 
       - name:  Mettre pip à jour
-        working-directory: ./TalentHub-backend
+        working-directory: ./Talenthub-backend
         run: |
           python -m pip install --upgrade pip
 
 
       - name:  Installer les dépendances
-        working-directory: ./TalentHub-backend
+        working-directory: ./Talenthub-backend
         run: |
           pip install -r requirements.txt
 
@@ -87,7 +88,7 @@ jobs:
       # ----------------------------------------------------------
 
       - name:  Vérifier Django
-        working-directory: ./TalentHub-backend
+        working-directory: ./Talenthub-backend
         run: |
           python manage.py check
 
@@ -97,7 +98,7 @@ jobs:
       # ----------------------------------------------------------
 
       - name:  Exécuter les tests Django
-        working-directory: ./TalentHub-backend
+        working-directory: ./Talenthub-backend
         run: |
           python manage.py test
 
@@ -113,12 +114,17 @@ jobs:
     needs:
       - test-backend
 
+    # Déploiement uniquement sur main
     if: github.ref == 'refs/heads/main'
 
     environment:
       name: production
 
     steps:
+
+      # ----------------------------------------------------------
+      # VÉRIFIER LE SECRET RENDER
+      # ----------------------------------------------------------
 
       - name:  Vérifier le Deploy Hook Render
         env:
@@ -131,6 +137,10 @@ jobs:
 
           echo " RENDER_DEPLOY_HOOK_URL est configuré."
 
+
+      # ----------------------------------------------------------
+      # DÉCLENCHER RENDER
+      # ----------------------------------------------------------
 
       - name:  Déclencher le déploiement Render
         env:
