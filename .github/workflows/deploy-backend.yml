@@ -33,7 +33,7 @@ jobs:
       # VÉRIFIER LA STRUCTURE
       # ----------------------------------------------------------
 
-      - name:  Vérifier les fichiers du projet
+      - name:  Vérifier la structure du backend
         run: |
           echo "Répertoire courant :"
           pwd
@@ -47,7 +47,21 @@ jobs:
           ls -la Talenthub-backend
 
           echo ""
-          echo "Vérification requirements.txt :"
+          echo "Contenu de Talenthub-backend/talenthub :"
+          ls -la Talenthub-backend/talenthub
+
+          echo ""
+          echo "Vérification de manage.py :"
+
+          if [ -f "Talenthub-backend/talenthub/manage.py" ]; then
+            echo " manage.py trouvé"
+          else
+            echo " manage.py introuvable"
+            exit 1
+          fi
+
+          echo ""
+          echo "Vérification de requirements.txt :"
 
           if [ -f "Talenthub-backend/requirements.txt" ]; then
             echo " requirements.txt trouvé"
@@ -68,18 +82,13 @@ jobs:
 
 
       # ----------------------------------------------------------
-      # DÉPENDANCES
+      # INSTALLER LES DÉPENDANCES
       # ----------------------------------------------------------
-
-      - name:  Mettre pip à jour
-        working-directory: ./Talenthub-backend
-        run: |
-          python -m pip install --upgrade pip
-
 
       - name:  Installer les dépendances
         working-directory: ./Talenthub-backend
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
 
@@ -88,7 +97,7 @@ jobs:
       # ----------------------------------------------------------
 
       - name:  Vérifier Django
-        working-directory: ./Talenthub-backend
+        working-directory: ./Talenthub-backend/talenthub
         run: |
           python manage.py check
 
@@ -98,7 +107,7 @@ jobs:
       # ----------------------------------------------------------
 
       - name:  Exécuter les tests Django
-        working-directory: ./Talenthub-backend
+        working-directory: ./Talenthub-backend/talenthub
         run: |
           python manage.py test
 
