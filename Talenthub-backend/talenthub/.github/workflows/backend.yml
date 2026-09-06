@@ -1,0 +1,36 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches:
+      - developpement
+      - main
+    paths:
+      - 'Talenthub-backend/**'
+
+jobs:
+  django:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Talenthub-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Django check
+        run: |
+          python manage.py check
+
+      - name: Django tests
+        run: |
+          python manage.py test
