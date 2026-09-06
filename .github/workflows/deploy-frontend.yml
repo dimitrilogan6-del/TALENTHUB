@@ -1,4 +1,4 @@
-name: Frontend CI/CD - Vercel
+name: CI/CD - Frontend Angular vers Vercel
 
 on:
   push:
@@ -6,17 +6,17 @@ on:
       - developpement
       - main
     paths:
-      - 'TalentHub-Front/**'
-      - '.github/workflows/deploy-frontend.yml'
+      - "TalentHub-Front/**"
+      - ".github/workflows/deploy-frontend.yml"
 
 jobs:
 
-  # ============================================================
-  # CI - TEST ET BUILD ANGULAR
-  # ============================================================
+  # ==========================================================
+  # TESTS ET BUILD ANGULAR
+  # ==========================================================
 
   test-frontend:
-    name: Test et Build Angular
+    name:  Tests et Build Angular
     runs-on: ubuntu-latest
 
     defaults:
@@ -25,60 +25,37 @@ jobs:
 
     steps:
 
-      # ----------------------------------------------------------
-      # Checkout
-      # ----------------------------------------------------------
-
-      - name: Checkout du repository
+      - name:  Récupérer le code
         uses: actions/checkout@v4
 
-      # ----------------------------------------------------------
-      # Node.js
-      # ----------------------------------------------------------
-
-      - name: Installer Node.js
+      - name:  Installer Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: ./TalentHub-Front/package-lock.json
 
-      # ----------------------------------------------------------
-      # Dépendances
-      # ----------------------------------------------------------
-
-      - name: Installer les dépendances
+      - name:  Installer les dépendances
         run: npm ci
 
-      # ----------------------------------------------------------
-      # Build Angular
-      # ----------------------------------------------------------
-
-      - name: Compiler Angular
-        run: npm run build
-
-      # ----------------------------------------------------------
-      # Tests Angular / Vitest
-      # ----------------------------------------------------------
-
-      - name: Exécuter les tests Angular
+      - name:  Exécuter les tests Angular
         run: npm test -- --watch=false
 
+      - name:  Compiler Angular
+        run: npm run build
 
-  # ============================================================
-  # CD - DEPLOIEMENT VERCEL
-  # ============================================================
+  # ==========================================================
+  # DEPLOIEMENT VERCEL
+  # ==========================================================
 
   deploy:
-    name: Déployer Angular sur Vercel
+    name:  Déploiement Frontend sur Vercel
     runs-on: ubuntu-latest
 
-    # Le déploiement ne commence que si le CI réussit
     needs:
       - test-frontend
 
-    # IMPORTANT :
-    # Le déploiement Vercel se fait uniquement depuis main
+    # Déploiement uniquement sur main
     if: github.ref == 'refs/heads/main'
 
     environment:
@@ -90,46 +67,50 @@ jobs:
 
     steps:
 
-      # ----------------------------------------------------------
-      # Checkout
-      # ----------------------------------------------------------
-
-      - name: Checkout du repository
+      - name:  Récupérer le code
         uses: actions/checkout@v4
 
-      # ----------------------------------------------------------
-      # Node.js
-      # ----------------------------------------------------------
-
-      - name: Installer Node.js
+      - name:  Installer Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      # ----------------------------------------------------------
-      # Vercel CLI
-      # ----------------------------------------------------------
-
-      - name: Installer Vercel CLI
+      - name:  Installer Vercel CLI
         run: npm install --global vercel@latest
 
-      # ----------------------------------------------------------
-      # Récupérer la configuration Vercel
-      # ----------------------------------------------------------
+      - name:  Vérifier la configuration Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo " VERCEL_TOKEN est absent."
+            exit 1
+          fi
 
-      - name: Récupérer la configuration Vercel
-        run: vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+          echo " VERCEL_TOKEN est configuré."
 
-      # ----------------------------------------------------------
-      # Build Vercel
-      # ----------------------------------------------------------
+      - name:  Récupérer la configuration Vercel
+        run: |
+          vercel pull \
+            --yes \
+            --environment=production \
+            --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-      - name: Construire le projet Vercel
-        run: vercel build --prod --token="${{ secrets.VERCEL_TOKEN }}"
-
-      # ----------------------------------------------------------
-      # Déploiement Vercel
-      # ----------------------------------------------------------
+      - name:  Construire le projet Vercel
+        run: |
+          vercel build \
+            --prod \
+            --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Déployer sur Vercel
-        run: vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}"
+        run: |
+          vercel deploy \
+            --prebuilt \
+            --prod \
+            --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
