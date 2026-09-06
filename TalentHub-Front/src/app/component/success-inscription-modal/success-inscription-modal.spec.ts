@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SuccessInscriptionModal } from './success-inscription-modal';
+import {  SuccessInscriptionModalComponent  } from './success-inscription-modal';
 
-describe('SuccessInscriptionModal', () => {
-  let component: SuccessInscriptionModal;
-  let fixture: ComponentFixture<SuccessInscriptionModal>;
+describe('SuccessInscriptionModalComponent', () => {
+  let component: SuccessInscriptionModalComponent;
+  let fixture: ComponentFixture<SuccessInscriptionModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SuccessInscriptionModal],
+      declarations: [SuccessInscriptionModalComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SuccessInscriptionModal);
+    fixture = TestBed.createComponent(SuccessInscriptionModalComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

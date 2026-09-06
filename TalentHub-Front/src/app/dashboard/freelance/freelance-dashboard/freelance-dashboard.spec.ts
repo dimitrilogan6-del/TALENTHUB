@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FreelanceDashboard } from './freelance-dashboard';
+import { FreelanceDashboardComponent } from './freelance-dashboard';
 
-describe('FreelanceDashboard', () => {
-  let component: FreelanceDashboard;
-  let fixture: ComponentFixture<FreelanceDashboard>;
+describe('FreelanceDashboardComponent', () => {
+  let component: FreelanceDashboardComponent;
+  let fixture: ComponentFixture<FreelanceDashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FreelanceDashboard],
+      declarations: [FreelanceDashboardComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FreelanceDashboard);
+    fixture = TestBed.createComponent(FreelanceDashboardComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
