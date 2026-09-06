@@ -1,73 +1,182 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CandidatDashboardComponent } from './candidat-dashboard';
-import { CandidatDashboardService } from '../../../services/candidat-dashboard.service';
-import { AuthService } from '../../../services/connexion';
-import { Router } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { CandidatDashboardComponent } from './candidat-dashboard';
+
+import {
+  CandidatDashboardService,
+  CandidatDashboard
+} from '../../../services/candidat-dashboard.service';
+
+import { AuthService } from '../../../services/connexion';
 
 describe('CandidatDashboardComponent', () => {
 
-let component: CandidatDashboardComponent;
-let fixture: ComponentFixture<CandidatDashboardComponent>;
+  let component: CandidatDashboardComponent;
+  let fixture: ComponentFixture<CandidatDashboardComponent>;
 
-const dashboardServiceMock = {
-getDashboard: () => of({
-candidatures_recentes: []
-})
-};
+  // ============================================================
+  // MOCK DASHBOARD COMPLET
+  // ============================================================
 
-const authServiceMock = {
-logout: () => {}
-};
+  const dashboardMock: CandidatDashboard = {
 
-const routerMock = {
-navigate: () => Promise.resolve(true)
-};
-
-beforeEach(async () => {
-
-await TestBed.configureTestingModule({
-
-  declarations: [
-    CandidatDashboardComponent
-  ],
-
-  providers: [
-
-    {
-      provide: CandidatDashboardService,
-      useValue: dashboardServiceMock
+    utilisateur: {
+      id: 1,
+      username: 'testuser',
+      prenom: 'Test',
+      nom: 'Utilisateur',
+      nom_complet: 'Test Utilisateur'
     },
 
-    {
-      provide: AuthService,
-      useValue: authServiceMock
+    profil: {
+      id: 1,
+      photoProfil: null,
+      profile_completion: 80
     },
 
-    {
-      provide: Router,
-      useValue: routerMock
-    }
+    statistiques: {
+      total_candidatures: 5,
+      candidatures_en_attente: 2,
+      candidatures_presselectionnees: 1,
+      candidatures_entretien: 1,
+      candidatures_acceptees: 1,
+      candidatures_refusees: 0,
+      messages_non_lus: 2,
+      notifications_non_lues: 3
+    },
 
-  ]
+    candidatures_recentes: [],
 
-}).compileComponents();
+    prochain_entretien: null,
 
-fixture = TestBed.createComponent(
-  CandidatDashboardComponent
-);
+    entretiens_a_venir: [],
 
-component = fixture.componentInstance;
+    messages_non_lus: 2,
 
-fixture.detectChanges();
+    notifications_non_lues: 3
+  };
 
-});
+  // ============================================================
+  // MOCK DASHBOARD SERVICE
+  // ============================================================
 
-it('should create', () => {
+  const dashboardServiceMock = {
 
-expect(component).toBeTruthy();
+    getDashboard: () =>
+      of(dashboardMock),
 
-});
+    getMessagesNonLus: (
+      dashboard: CandidatDashboard
+    ) =>
+      dashboard.statistiques.messages_non_lus,
+
+    getNotificationsNonLues: (
+      dashboard: CandidatDashboard
+    ) =>
+      dashboard.statistiques.notifications_non_lues,
+
+    getTotalCandidatures: (
+      dashboard: CandidatDashboard
+    ) =>
+      dashboard.statistiques.total_candidatures,
+
+    hasPhoto: (
+      dashboard: CandidatDashboard
+    ) =>
+      !!dashboard.profil.photoProfil,
+
+    getPhotoProfil: (
+      dashboard: CandidatDashboard
+    ) =>
+      dashboard.profil.photoProfil,
+
+    getNomComplet: (
+      dashboard: CandidatDashboard
+    ) =>
+      dashboard.utilisateur.nom_complet || 'Utilisateur',
+
+    getInitiale: (
+      dashboard: CandidatDashboard
+    ) =>
+      (
+        dashboard.utilisateur.nom_complet || 'Utilisateur'
+      ).charAt(0).toUpperCase()
+  };
+
+  // ============================================================
+  // MOCK AUTH SERVICE
+  // ============================================================
+
+  const authServiceMock = {
+
+    logout: () => {},
+
+    isLoggedIn: () => true
+  };
+
+  // ============================================================
+  // MOCK ROUTER
+  // ============================================================
+
+  const routerMock = {
+
+    navigate: () =>
+      Promise.resolve(true)
+  };
+
+  // ============================================================
+  // CONFIGURATION
+  // ============================================================
+
+  beforeEach(async () => {
+
+    await TestBed.configureTestingModule({
+
+      declarations: [
+        CandidatDashboardComponent
+      ],
+
+      providers: [
+
+        {
+          provide: CandidatDashboardService,
+          useValue: dashboardServiceMock
+        },
+
+        {
+          provide: AuthService,
+          useValue: authServiceMock
+        },
+
+        {
+          provide: Router,
+          useValue: routerMock
+        }
+
+      ]
+
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(
+      CandidatDashboardComponent
+    );
+
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+
+  });
+
+  // ============================================================
+  // TEST
+  // ============================================================
+
+  it('should create', () => {
+
+    expect(component).toBeTruthy();
+
+  });
 
 });

@@ -1,22 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { MesCandidaturesComponent } from './mes-candidatures';
 
 describe('MesCandidaturesComponent', () => {
+
   let component: MesCandidaturesComponent;
   let fixture: ComponentFixture<MesCandidaturesComponent>;
 
   beforeEach(async () => {
+
     await TestBed.configureTestingModule({
-      declarations: [MesCandidaturesComponent],
+
+      declarations: [
+        MesCandidaturesComponent
+      ],
+
+      imports: [
+        FormsModule
+      ]
+
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MesCandidaturesComponent);
+    fixture = TestBed.createComponent(
+      MesCandidaturesComponent
+    );
+
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
+
   });
 
   it('should create', () => {
+
     expect(component).toBeTruthy();
+
   });
+
 });

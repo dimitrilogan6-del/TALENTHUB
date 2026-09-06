@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { OffreList } from './offre-list';
 
@@ -8,12 +9,19 @@ describe('OffreList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [OffreList],
+      declarations: [
+        OffreList
+      ],
+
+      imports: [
+        FormsModule
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(OffreList);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {

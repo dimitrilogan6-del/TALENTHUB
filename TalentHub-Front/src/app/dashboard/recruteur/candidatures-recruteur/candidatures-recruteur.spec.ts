@@ -1,22 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { CandidaturesRecruteur } from './candidatures-recruteur';
 
 describe('CandidaturesRecruteur', () => {
+
   let component: CandidaturesRecruteur;
   let fixture: ComponentFixture<CandidaturesRecruteur>;
 
   beforeEach(async () => {
+
     await TestBed.configureTestingModule({
-      declarations: [CandidaturesRecruteur],
+
+      declarations: [
+        CandidaturesRecruteur
+      ],
+
+      imports: [
+        FormsModule
+      ]
+
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CandidaturesRecruteur);
+    fixture = TestBed.createComponent(
+      CandidaturesRecruteur
+    );
+
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
+
   });
 
   it('should create', () => {
+
     expect(component).toBeTruthy();
+
   });
+
 });

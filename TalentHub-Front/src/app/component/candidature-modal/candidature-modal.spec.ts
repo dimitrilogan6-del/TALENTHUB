@@ -1,4 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA
+} from '@angular/material/dialog';
 
 import { CandidatureModal } from './candidature-modal';
 
@@ -8,12 +13,33 @@ describe('CandidatureModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CandidatureModal],
+      declarations: [
+        CandidatureModal
+      ],
+
+      imports: [
+        MatDialogModule
+      ],
+
+      providers: [
+        {
+          provide: MatDialogRef,
+          useValue: {
+            close: () => {}
+          }
+        },
+
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {}
+        }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CandidatureModal);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
