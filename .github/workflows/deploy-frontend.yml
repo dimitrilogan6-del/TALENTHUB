@@ -17,17 +17,42 @@ jobs:
         working-directory: TalentHub-Front
 
     steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      # ==========================================
+      # Récupération du code
+      # ==========================================
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ==========================================
+      # Installation de Node.js
+      # ==========================================
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+          cache-dependency-path: TalentHub-Front/package-lock.json
+
+      # ==========================================
+      # Installation des dépendances
+      # ==========================================
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      # ==========================================
+      # Build Angular
+      # ==========================================
 
       - name: Build Angular
         run: npm run build
 
+      # ==========================================
+      # Tests Angular avec Vitest
+      # ==========================================
+
       - name: Run tests
-        run: npm test -- --watch=false --browsers=ChromeHeadless
+        run: npm test -- --watch=false
