@@ -6,7 +6,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Register } from '../../services/inscription';
+import { InscriptionService } from '../../services/inscription';
 import { AuthService } from '../../services/connexion';
 
 @Component({
@@ -32,7 +32,7 @@ export class InscriptionComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private inscriptionService: Register,
+    private inscriptionService: InscriptionService,
     private authService: AuthService,
     private router: Router
   ) {

@@ -35,7 +35,7 @@ export interface RegisterRequest {
 @Injectable({
   providedIn: 'root'
 })
-export class Register {
+export class InscriptionService {
 
   private apiUrl =
     environment.apiUrl;
